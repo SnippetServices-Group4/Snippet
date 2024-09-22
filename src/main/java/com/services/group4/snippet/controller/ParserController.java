@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ParserController {
-  @GetMapping("/parser/communication")
+  @GetMapping("/test/parser/communication")
   public CommunicationMessage testParserCommunication() {
     return new CommunicationMessage("Snippet", "Communication between Snippet and Parser works!");
   }

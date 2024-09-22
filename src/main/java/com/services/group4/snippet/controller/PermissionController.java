@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PermissionController {
-  @GetMapping("/permission/communication")
+  @GetMapping("/test/permission/communication")
   public CommunicationMessage testPermissionCommunication() {
     return new CommunicationMessage("Snippet", "Communication between Snippet and Permission works!");
   }

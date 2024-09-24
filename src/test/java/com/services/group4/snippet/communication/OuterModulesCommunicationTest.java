@@ -1,4 +1,4 @@
-package com.services.group4.snippet;
+package com.services.group4.snippet.communication;
 
 import com.services.group4.snippet.model.CommunicationMessage;
 import org.junit.jupiter.api.Test;

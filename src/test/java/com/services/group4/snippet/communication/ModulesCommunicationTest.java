@@ -1,4 +1,4 @@
-package com.services.group4.snippet;
+package com.services.group4.snippet.communication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class ModulesCommunicationTest {
     this.mockMvc.perform(get("/test/permission/communication"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.source").value("Snippet"))
-        .andExpect(jsonPath("$.message").value("Communication between Snippet and Permission works!"));
+        .andExpect(jsonPath("$.message").value("Communication from Permission to Snippet works!"));
   }
 
   @Test
@@ -28,6 +28,6 @@ public class ModulesCommunicationTest {
     this.mockMvc.perform(get("/test/parser/communication"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.source").value("Snippet"))
-        .andExpect(jsonPath("$.message").value("Communication between Snippet and Parser works!"));
+        .andExpect(jsonPath("$.message").value("Communication from Parser to Snippet works!"));
   }
 }

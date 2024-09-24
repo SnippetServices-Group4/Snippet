@@ -1,4 +1,4 @@
-package com.services.group4.snippet.utils;
+package com.services.group4.snippet.communication.utils;
 
 import org.springframework.web.client.RestTemplate;
 

@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.services.group4.checkstyle'
 }
 
 group = 'com.services.group4'
@@ -15,6 +16,13 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri('https://maven.pkg.github.com/SnippetServices-Group4/Plugins')
+		credentials {
+			username = project.findProperty('gpr.user') ?: System.getenv('USERNAME')
+			password = project.findProperty('gpr.token') ?: System.getenv('TOKEN')
+		}
+	}
 }
 
 ext {

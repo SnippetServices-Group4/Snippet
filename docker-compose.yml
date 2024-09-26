@@ -1,12 +1,26 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:13
-    container_name: postgres_snippet
+  api:
+    container_name: "snippet-api"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+        - "8080:8080"
     environment:
-      POSTGRES_USER: user_dev
-      POSTGRES_PASSWORD: pass_dev
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: snippet-db
+      DB_HOST: postgres_snippet
+      DB_PORT: 5432
+
+  postgres:
+    container_name: postgres_snippet
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: snippet
     ports:
       - "5432:5432"
@@ -15,3 +29,4 @@ services:
 
 volumes:
   postgres_data:
+    external: false

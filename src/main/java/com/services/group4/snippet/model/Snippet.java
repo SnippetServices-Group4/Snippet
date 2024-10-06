@@ -1,5 +1,7 @@
 package com.services.group4.snippet.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
 @Entity
@@ -22,12 +24,6 @@ public class Snippet {
         this.title = title;
         this.content = content;
     }
-
-  public Snippet(Long snippetID, String title, String content) {
-    this.snippetID = snippetID;
-      this.title = title;
-    this.content = content;
-  }
 
     // Getters and Setters
     public Long getSnippetID() {
@@ -53,4 +49,14 @@ public class Snippet {
     public void setContent(String content) {
         this.content = content;
     }
+
+  public String toJson() {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      return "{}";
+    }
+  }
 }

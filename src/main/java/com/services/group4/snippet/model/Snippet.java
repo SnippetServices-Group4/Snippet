@@ -8,47 +8,48 @@ import jakarta.persistence.*;
 @Table
 public class Snippet {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long snippetID;
-    @Column(nullable = false)
-    private String title;
-    @Column(nullable = true)
-    private String content;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long snippetID;
 
-    // Constructors
-    public Snippet() {
-    }
+  @Column(nullable = false)
+  private String title;
 
-    public Snippet(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
+  @Column(nullable = true)
+  private String content;
 
-    // Getters and Setters
-    public Long getSnippetID() {
-        return snippetID;
-    }
+  // Constructors
+  public Snippet() {}
 
-    public void setSnippetID(Long id) {
-        this.snippetID = id;
-    }
+  public Snippet(String title, String content) {
+    this.title = title;
+    this.content = content;
+  }
 
-    public String getTitle() {
-        return title;
-    }
+  // Getters and Setters
+  public Long getSnippetID() {
+    return snippetID;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public void setSnippetID(Long id) {
+    this.snippetID = id;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
 
   public String toJson() {
     ObjectMapper objectMapper = new ObjectMapper();

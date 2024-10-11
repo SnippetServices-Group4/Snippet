@@ -6,8 +6,8 @@ pluginManagement {
             credentials {
                 // Use the GitHub username and token to authenticate and import plugins.
                 // Reestablish once the plugins are imported.
-                username = System.getenv('USERNAME') ?: ""
-                password = System.getenv('TOKEN') ?: ""
+                username = System.getenv('GITHUB_ACTOR') ?: ""
+                password = System.getenv('GITHUB_TOKEN') ?: ""
             }
         }
         gradlePluginPortal()

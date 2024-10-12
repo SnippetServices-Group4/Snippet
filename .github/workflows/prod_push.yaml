@@ -34,3 +34,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/snippetservices-group4/snippets:latest
+          build-args: |
+            GRAD_USER=${{ secrets.GRAD_USER }}
+            GRAD_PASS=${{ secrets.GRAD_PASS }}

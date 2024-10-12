@@ -3,7 +3,9 @@ package com.services.group4.snippet.communication;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.model.CommunicationMessage;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,11 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class OuterModulesCommunicationTest {
+  @BeforeAll
+  public static void setup() {
+    DotenvConfig.loadEnv();
+  }
+
   @Configuration
   static class TestConfig {
     @Bean

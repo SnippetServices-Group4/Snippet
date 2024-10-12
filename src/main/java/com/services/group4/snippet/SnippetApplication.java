@@ -6,9 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SnippetApplication {
 
-	public static void main(String[] args) {
-		DotenvConfig.loadEnv();
-		SpringApplication.run(SnippetApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    DotenvConfig.loadEnv();
+    SpringApplication.run(SnippetApplication.class, args);
+  }
 }

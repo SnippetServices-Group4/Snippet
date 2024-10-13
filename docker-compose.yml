@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - ${SPRING_PORT}:${SPRING_PORT}
+      - "${SPRING_PORT}:${SPRING_PORT}"
     environment:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -25,7 +25,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - ${DB_PORT}:5432
+      - "${DB_PORT}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 

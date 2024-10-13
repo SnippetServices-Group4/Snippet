@@ -17,12 +17,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Optional;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SnippetControllerTests {
   @BeforeAll
-  public static void setup() {
+  public static void setupEnv() {
     DotenvConfig.loadEnv();
   }
 
@@ -30,11 +32,11 @@ public class SnippetControllerTests {
 
   @Autowired private ObjectMapper objectMapper;
 
-  private static SnippetRepository snippetRepository;
+  @Autowired
+  private SnippetRepository snippetRepository;
 
-  @BeforeAll
-  public static void setup(@Autowired SnippetRepository snippetRepository) {
-    SnippetControllerTests.snippetRepository = snippetRepository;
+  @BeforeEach
+  public void setup() {
     snippetRepository.deleteAll();
     Snippet snippet = new Snippet("Test Title", "Test Content");
     snippetRepository.save(snippet);
@@ -43,16 +45,19 @@ public class SnippetControllerTests {
   @Test
   @Order(1)
   public void testGetAllSnippets() throws Exception {
-    System.out.println(
-        "Snippet saved: " + snippetRepository.findByTitle("Test Title").get().toJson());
-
     mockMvc.perform(get("/snippets")).andExpect(status().isOk());
   }
 
   @Test
   @Order(2)
   public void testGetSnippetById() throws Exception {
-    Snippet snippet = snippetRepository.findByTitle("Test Title").get();
+    Optional<Snippet> optionalSnippet = snippetRepository.findByTitle("Test Title");
+
+    if (optionalSnippet.isEmpty()) {
+      throw new Exception("Snippet not found");
+    }
+
+    Snippet snippet = optionalSnippet.get();
     Long snippetID = snippet.getSnippetID();
 
     mockMvc
@@ -67,9 +72,6 @@ public class SnippetControllerTests {
   @Test
   @Order(3)
   public void testCreateSnippet() throws Exception {
-    System.out.println(
-        "Snippet saved: " + snippetRepository.findByTitle("Test Title").get().toJson());
-
     Snippet snippet = new Snippet("New Title", "New Content");
 
     mockMvc
@@ -84,7 +86,13 @@ public class SnippetControllerTests {
   @Test
   @Order(4)
   public void testUpdateSnippet() throws Exception {
-    Snippet updatedSnippet = snippetRepository.findByTitle("Test Title").get();
+    Optional<Snippet> optionalSnippet = snippetRepository.findByTitle("Test Title");
+
+    if (optionalSnippet.isEmpty()) {
+      throw new Exception("Snippet not found");
+    }
+
+    Snippet updatedSnippet = optionalSnippet.get();
     updatedSnippet.setTitle("Updated Title");
     mockMvc
         .perform(
@@ -98,7 +106,13 @@ public class SnippetControllerTests {
   @Test
   @Order(5)
   public void testDeleteSnippet() throws Exception {
-    Snippet snippet = snippetRepository.findByTitle("Updated Title").get();
+    Optional<Snippet> optionalSnippet = snippetRepository.findByTitle("Test Title");
+
+    if (optionalSnippet.isEmpty()) {
+      throw new Exception("Snippet not found");
+    }
+
+    Snippet snippet = optionalSnippet.get();
     Long snippetID = snippet.getSnippetID();
 
     mockMvc

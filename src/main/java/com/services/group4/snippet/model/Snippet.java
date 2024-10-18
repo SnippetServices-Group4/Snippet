@@ -22,13 +22,10 @@ public class Snippet {
 
   private String name;
 
-  private String content;
-
   public Snippet() {}
 
-  public Snippet(String name, String content, Long owner) {
+  public Snippet(String name, Long owner) {
     this.name = name;
-    this.content = content;
     this.owner = owner;
   }
 

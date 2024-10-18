@@ -17,7 +17,7 @@ public class SnippetService {
 
 
     public Snippet createSnippet(SnippetDto snippetDto) {
-        Snippet snippet = new Snippet(snippetDto.getName(), snippetDto.getContent(), snippetDto.getOwner());
+        Snippet snippet = new Snippet(snippetDto.getName(), snippetDto.getOwner());
         return snippetRepository.save(snippet);
     }
 }

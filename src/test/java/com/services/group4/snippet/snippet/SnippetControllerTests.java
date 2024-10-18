@@ -38,7 +38,7 @@ public class SnippetControllerTests {
   @BeforeEach
   public void setup() {
     snippetRepository.deleteAll();
-    Snippet snippet = new Snippet("Test Title", "Test Content", 1L);
+    Snippet snippet = new Snippet("Test Title", 1L);
     snippetRepository.save(snippet);
   }
 
@@ -51,7 +51,7 @@ public class SnippetControllerTests {
   @Test
   @Order(2)
   public void testGetSnippetById() throws Exception {
-    Optional<Snippet> optionalSnippet = snippetRepository.findByName("Test Title");
+    Optional<Snippet> optionalSnippet = snippetRepository.findSnippetByName("Test Title");
 
     if (optionalSnippet.isEmpty()) {
       throw new Exception("Snippet not found");
@@ -72,7 +72,7 @@ public class SnippetControllerTests {
   @Test
   @Order(3)
   public void testCreateSnippet() throws Exception {
-    Snippet snippet = new Snippet("New Title", "New Content", 1L);
+    Snippet snippet = new Snippet("New Title", 1L);
 
     mockMvc
         .perform(
@@ -86,7 +86,7 @@ public class SnippetControllerTests {
   @Test
   @Order(4)
   public void testUpdateSnippet() throws Exception {
-    Optional<Snippet> optionalSnippet = snippetRepository.findByName("Test Title");
+    Optional<Snippet> optionalSnippet = snippetRepository.findSnippetByName("Test Title");
 
     if (optionalSnippet.isEmpty()) {
       throw new Exception("Snippet not found");
@@ -106,7 +106,7 @@ public class SnippetControllerTests {
   @Test
   @Order(5)
   public void testDeleteSnippet() throws Exception {
-    Optional<Snippet> optionalSnippet = snippetRepository.findByName("Test Title");
+    Optional<Snippet> optionalSnippet = snippetRepository.findSnippetByName("Test Title");
 
     if (optionalSnippet.isEmpty()) {
       throw new Exception("Snippet not found");

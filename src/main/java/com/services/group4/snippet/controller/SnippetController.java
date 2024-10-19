@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/snippet")
 public class SnippetController {
@@ -30,5 +32,15 @@ public class SnippetController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return new ResponseEntity<>(snippet.getId(), HttpStatus.CREATED);
+  }
+
+  @GetMapping()
+  public ResponseEntity<String> getSnippet(@RequestParam Long snippetId) {
+    Optional<String> snippet = snippetService.getSnippet(snippetId);
+    if (snippet.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(snippet.get(), HttpStatus.OK);
   }
 }

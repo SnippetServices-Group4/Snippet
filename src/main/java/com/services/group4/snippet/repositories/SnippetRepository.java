@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SnippetRepository extends JpaRepository<Snippet, Long> {
   Optional<Snippet> findSnippetById(Long id);
-    Optional<Snippet> findSnippetByName(String name);
+  Optional<Snippet> findSnippetByName(String name);
 }

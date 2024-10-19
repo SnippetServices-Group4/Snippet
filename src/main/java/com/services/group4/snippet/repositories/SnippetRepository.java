@@ -1,4 +1,4 @@
-package com.services.group4.snippet.repository;
+package com.services.group4.snippet.repositories;
 
 import com.services.group4.snippet.model.Snippet;
 import java.util.Optional;
@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SnippetRepository extends JpaRepository<Snippet, Long> {
-  Optional<Snippet> findByTitle(String title);
+  Optional<Snippet> findSnippetById(Long id);
+  Optional<Snippet> findSnippetByName(String name);
 }

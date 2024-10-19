@@ -1,63 +1,33 @@
 package com.services.group4.snippet.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import lombok.Data;
+import lombok.Generated;
 
+@Generated
 @Entity
-@Table
+@Data
 public class Snippet {
-
+  @SequenceGenerator(name = "snippet", sequenceName = "snippet_sequence", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "snippet")
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long snippetID;
 
-  @Column(nullable = false)
-  private String title;
+  private Long id;
 
-  @Column(nullable = true)
-  private String content;
+  private Long owner;
 
-  // Constructors
+  private String name;
+
   public Snippet() {}
 
-  public Snippet(String title, String content) {
-    this.title = title;
-    this.content = content;
+  public Snippet(String name, Long owner) {
+    this.name = name;
+    this.owner = owner;
   }
 
-  // Getters and Setters
-  public Long getSnippetID() {
-    return snippetID;
-  }
 
-  public void setSnippetID(Long id) {
-    this.snippetID = id;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  public String toJson() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return "{}";
-    }
-  }
 }

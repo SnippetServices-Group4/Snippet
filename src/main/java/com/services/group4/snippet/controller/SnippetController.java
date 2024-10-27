@@ -1,9 +1,13 @@
 package com.services.group4.snippet.controller;
 
+import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repository.SnippetRepository;
 import java.util.List;
 import java.util.Optional;
+
+import com.services.group4.snippet.services.PermissionService;
+import com.services.group4.snippet.services.SnippetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,4 +81,24 @@ public class SnippetController {
           "Something went wrong deleting the Snippet", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  private PermissionService permissionService;
+
+  @PostMapping("/create2")
+  public ResponseEntity<?> createSnippet2(@RequestBody SnippetRequest request) {
+    // 1. Crear el snippet (ejemplo simulado de creación)
+    Snippet snippet = SnippetService.convertToEntity(request);
+
+    // 2. Enviar la solicitud a Permission (P) para crear la relación de ownership
+    ResponseEntity<?> permissionResponse = permissionService.createOwnership(request.getUserId(), snippet.getSnippetID());
+
+    // 3. Verificar si Permission (P) respondió con éxito
+    if (permissionResponse.getStatusCode().is2xxSuccessful()) {
+      return ResponseEntity.ok(snippet);
+    } else {
+      // Si falló, devolver el error al ReverseProxy y no crear el snippet
+      return ResponseEntity.status(permissionResponse.getStatusCode()).body(permissionResponse.getBody());
+    }
+  }
+
 }

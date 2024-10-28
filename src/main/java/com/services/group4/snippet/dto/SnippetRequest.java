@@ -1,25 +1,15 @@
 package com.services.group4.snippet.dto;
 
 public class SnippetRequest {
-  private Long userId;
   private String title;
   private String content;
 
   // Constructor, getters y setters
   public SnippetRequest() {}
 
-  public SnippetRequest(Long userId, String title, String content) {
-    this.userId = userId;
+  public SnippetRequest(String title, String content) {
     this.title = title;
     this.content = content;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
   }
 
   public String getTitle() {

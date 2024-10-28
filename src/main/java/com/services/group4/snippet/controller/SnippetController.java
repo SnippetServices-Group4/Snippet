@@ -3,10 +3,11 @@ package com.services.group4.snippet.controller;
 import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repository.SnippetRepository;
-import com.services.group4.snippet.services.PermissionService;
-import com.services.group4.snippet.services.SnippetService;
 import java.util.List;
 import java.util.Optional;
+
+import com.services.group4.snippet.services.PermissionService;
+import com.services.group4.snippet.services.SnippetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class SnippetController {
 
   private final SnippetRepository snippetRepository;
+  private final PermissionService permissionService;
 
-  public SnippetController(SnippetRepository snippetRepository) {
+  public SnippetController(SnippetRepository snippetRepository, PermissionService permissionService) {
     this.snippetRepository = snippetRepository;
+    this.permissionService = permissionService;
   }
 
   @PostMapping("/create")
@@ -81,38 +84,22 @@ public class SnippetController {
     }
   }
 
-  private PermissionService permissionService;
-
-  @PostMapping("/create2")
-  public ResponseEntity<?> createSnippet2(@RequestBody SnippetRequest request) {
+  @PostMapping("/createByUser/{userId}")
+  public ResponseEntity<?> createSnippetForUser(@RequestBody SnippetRequest request, @PathVariable Long userId) {
     // 1. Crear el snippet (ejemplo simulado de creación)
     Snippet snippet = SnippetService.convertToEntity(request);
 
     // 2. Enviar la solicitud a Permission (P) para crear la relación de ownership
     ResponseEntity<?> permissionResponse =
-        permissionService.createOwnership(request.getUserId(), snippet.getSnippetID());
+        permissionService.createOwnership(userId, snippet.getSnippetID());
 
     // 3. Verificar si Permission (P) respondió con éxito
-    if (permissionResponse.getStatusCode().is2xxSuccessful()) {
-      return ResponseEntity.ok(snippet);
+    if (permissionResponse.getStatusCode() == HttpStatus.CREATED) {
+      return createSnippet(snippet);
     } else {
       // Si falló, devolver el error al ReverseProxy y no crear el snippet
       return ResponseEntity.status(permissionResponse.getStatusCode())
           .body(permissionResponse.getBody());
-    }
-  }
-  @PostMapping("/create3")
-  public ResponseEntity<String> createSnippet3(@RequestBody String title, @RequestBody String content) {
-    try {
-      Snippet snippet = new Snippet(title, content);
-      snippetRepository.save(snippet);
-      System.out.println(
-          "from controller" + snippetRepository.findById(snippet.getSnippetID()).orElse(null));
-      return new ResponseEntity<>("Snippet created", HttpStatus.CREATED);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(
-          "Something went wrong creating the Snippet", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

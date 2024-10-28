@@ -101,4 +101,18 @@ public class SnippetController {
           .body(permissionResponse.getBody());
     }
   }
+  @PostMapping("/create3")
+  public ResponseEntity<String> createSnippet3(@RequestBody String title, @RequestBody String content) {
+    try {
+      Snippet snippet = new Snippet(title, content);
+      snippetRepository.save(snippet);
+      System.out.println(
+          "from controller" + snippetRepository.findById(snippet.getSnippetID()).orElse(null));
+      return new ResponseEntity<>("Snippet created", HttpStatus.CREATED);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return new ResponseEntity<>(
+          "Something went wrong creating the Snippet", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

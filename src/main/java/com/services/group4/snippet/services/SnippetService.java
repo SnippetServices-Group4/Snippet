@@ -12,5 +12,4 @@ public class SnippetService {
   public static Snippet convertToEntity(SnippetRequest snippetDTO) {
     return new Snippet(snippetDTO.getTitle(), snippetDTO.getContent());
   }
-
 }

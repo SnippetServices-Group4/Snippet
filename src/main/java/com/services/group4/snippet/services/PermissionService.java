@@ -3,6 +3,8 @@ package com.services.group4.snippet.services;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,11 +14,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PermissionService {
-
-  private final RestTemplate restTemplate = new RestTemplate();
+  @Autowired private RestTemplate restTemplate;
 
   public ResponseEntity<?> createOwnership(Long userId, Long snippetId) {
-    String url = "http://localhost:8081/ownership/create2";
+    String url = "http://localhost:8081/ownership/created";
     Map<String, Object> requestBody = new HashMap<>();
     requestBody.put("userId", userId);
     requestBody.put("snippetId", snippetId);
@@ -27,11 +28,11 @@ public class PermissionService {
     HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
     try {
-      ResponseEntity<?> response = restTemplate.postForEntity(url, entity, Object.class);
+      ResponseEntity<String> response = restTemplate.postForEntity(url, requestBody, String.class);
       return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     } catch (Exception e) {
       e.printStackTrace();
-      return new ResponseEntity<>("Error creating ownership", HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>("Error creating ownership :(", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

@@ -22,6 +22,7 @@ public class Snippet {
   public Snippet() {}
 
   public Snippet(String title, String content) {
+
     this.title = title;
     this.content = content;
   }

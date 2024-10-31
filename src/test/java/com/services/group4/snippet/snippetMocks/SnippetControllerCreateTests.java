@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.DotenvConfig;
-import com.services.group4.snippet.dto.SnippetRequest;
+import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.services.PermissionService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class SnippetControllerCreateTests {
 
   @Test
   void testCreateSnippetForUser_Success() throws Exception {
-    SnippetRequest request = new SnippetRequest("Test Snippet", "This is a test snippet.", "1.0", "Java");
+    SnippetDto request = new SnippetDto("Test Snippet", "This is a test snippet.", "1.0", "Java");
 
     Mockito.when(permissionService.createOwnership(Mockito.anyLong(), Mockito.anyLong()))
         .thenReturn(new ResponseEntity<>(HttpStatus.CREATED));

@@ -1,9 +1,9 @@
 package com.services.group4.snippet.dto;
 
-import lombok.Data;
-import lombok.Generated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.Generated;
 
 @Generated
 @Data
@@ -24,9 +24,9 @@ public class SnippetDto {
   public SnippetDto() {}
 
   public SnippetDto(String title, String content, String version, String language) {
-      this.title = title;
-      this.content = content;
-      this.version = version;
-      this.language = language;
+    this.title = title;
+    this.content = content;
+    this.version = version;
+    this.language = language;
   }
 }

@@ -1,31 +1,31 @@
 package com.services.group4.snippet.services;
 
-import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class SnippetService {
-    private final String container = "snippets";
-    final SnippetRepository snippetRepository;
-    final BlobStorageService blobStorageService;
+  private final String container = "snippets";
+  final SnippetRepository snippetRepository;
+  final BlobStorageService blobStorageService;
 
   @Autowired
-  public SnippetService(SnippetRepository snippetRepository, BlobStorageService blobStorageService) {
+  public SnippetService(
+      SnippetRepository snippetRepository, BlobStorageService blobStorageService) {
     this.snippetRepository = snippetRepository;
     this.blobStorageService = blobStorageService;
   }
 
   public void createSnippet(SnippetDto snippetDto) {
-    Snippet snippet = new Snippet(
-        snippetDto.getTitle(), snippetDto.getContent(),
-        snippetDto.getVersion(), snippetDto.getLanguage());
+    Snippet snippet =
+        new Snippet(
+            snippetDto.getTitle(), snippetDto.getContent(),
+            snippetDto.getVersion(), snippetDto.getLanguage());
 
     snippetRepository.save(snippet);
 
@@ -33,9 +33,10 @@ public class SnippetService {
   }
 
   public Snippet createSnippet2(SnippetDto snippetDto) {
-    Snippet snippet = new Snippet(
-        snippetDto.getTitle(), snippetDto.getContent(),
-        snippetDto.getVersion(), snippetDto.getLanguage());
+    Snippet snippet =
+        new Snippet(
+            snippetDto.getTitle(), snippetDto.getContent(),
+            snippetDto.getVersion(), snippetDto.getLanguage());
 
     snippetRepository.save(snippet);
 

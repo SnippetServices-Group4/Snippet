@@ -9,20 +9,24 @@ import jakarta.validation.constraints.NotNull;
 @Data
 public class SnippetDto {
 
-    @NotBlank(message = "Name is required")
-    private String name;
+  @NotBlank(message = "Title is required")
+  private String title;
 
-    @NotNull(message = "Content is required")
-    private String content;
+  @NotNull(message = "Content is required")
+  private String content;
 
-    @NotNull(message = "Owner is required")
-    private Long owner;
+  @NotNull(message = "Version is required")
+  private String version;
 
-    public SnippetDto() {}
+  @NotNull(message = "Language is required")
+  private String language;
 
-    public SnippetDto(String name, String content, Long owner) {
-        this.name = name;
-        this.content = content;
-        this.owner = owner;
-    }
+  public SnippetDto() {}
+
+  public SnippetDto(String title, String content, String version, String language) {
+      this.title = title;
+      this.content = content;
+      this.version = version;
+      this.language = language;
+  }
 }

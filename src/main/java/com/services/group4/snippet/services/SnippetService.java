@@ -6,6 +6,8 @@ import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,27 +22,69 @@ public class SnippetService {
     this.blobStorageService = blobStorageService;
   }
 
-  public Snippet createSnippet(SnippetDto snippetDto) {
-    blobStorageService.uploadSnippet(container, snippetDto.getTitle(), snippetDto.getContent());
-    Snippet snippet = new Snippet(snippetDto.getTitle(), snippetDto.getOwner());
-    return snippetRepository.save(snippet);
+  public void createSnippet(SnippetDto snippetDto) {
+    Snippet snippet = new Snippet(
+        snippetDto.getTitle(), snippetDto.getContent(),
+        snippetDto.getVersion(), snippetDto.getLanguage());
+
+    snippetRepository.save(snippet);
+
+    blobStorageService.saveSnippet(container, snippet.getId(), snippet.getContent());
+  }
+
+  public Snippet createSnippet2(SnippetDto snippetDto) {
+    Snippet snippet = new Snippet(
+        snippetDto.getTitle(), snippetDto.getContent(),
+        snippetDto.getVersion(), snippetDto.getLanguage());
+
+    snippetRepository.save(snippet);
+
+    blobStorageService.saveSnippet(container, snippet.getId(), snippet.getContent());
+
+    return snippet;
   }
 
   public Optional<String> getSnippet(Long snippetId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
     if (snippetOptional.isPresent()) {
       Snippet snippet = snippetOptional.get();
-      String name = snippet.getTitle();
-      return blobStorageService.getSnippet(container, name);
+      Long id = snippet.getId();
+      return blobStorageService.getSnippet(container, id);
     }
     return Optional.empty();
   }
 
-  public SnippetRequest convertToDTO(Snippet snippet) {
-    return new SnippetRequest(snippet.getTitle(), snippet.getContent(), snippet.getVersion(), snippet.getLanguage());
+  public Optional<List<String>> getAllSnippet() {
+    return blobStorageService.getAllSnippets(container);
   }
 
-  public static Snippet convertToEntity(SnippetRequest snippetDTO) {
-    return new Snippet(snippetDTO.getTitle(), snippetDTO.getContent(), snippetDTO.getVersion(), snippetDTO.getLanguage());
+  public Optional<Snippet> updateSnippet(Long id, SnippetDto snippetRequest) {
+    Optional<Snippet> snippetOptional = snippetRepository.findById(id);
+    if (snippetOptional.isPresent()) {
+      Snippet snippet = snippetOptional.get();
+      snippet.setTitle(snippetRequest.getTitle());
+      snippet.setContent(snippetRequest.getContent());
+      snippet.setLanguage(snippetRequest.getLanguage());
+      snippet.setVersion(snippetRequest.getVersion());
+
+      // Actualizar en el blob storage
+      blobStorageService.saveSnippet(container, snippet.getId(), snippet.getContent());
+
+      return Optional.of(snippetRepository.save(snippet));
+    }
+    return Optional.empty();
+  }
+
+  public String deleteSnippet(Long id) {
+    Optional<Snippet> snippetOptional = snippetRepository.findById(id);
+    if (snippetOptional.isPresent()) {
+      Snippet snippet = snippetOptional.get();
+      Long idSnippet = snippet.getId();
+      snippetRepository.delete(snippet);
+
+      blobStorageService.deleteSnippet(container, idSnippet);
+      return "Snippet deleted";
+    }
+    return "Snippet not found";
   }
 }

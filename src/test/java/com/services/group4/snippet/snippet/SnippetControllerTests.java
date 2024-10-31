@@ -9,7 +9,7 @@ import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repository.SnippetRepository;
 import java.util.Optional;
-import com.services.group4.snippet.repositories.SnippetRepository;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -58,7 +58,7 @@ public class SnippetControllerTests {
     }
 
     Snippet snippet = optionalSnippet.get();
-    Long snippetID = snippet.getSnippetID();
+    Long snippetID = snippet.getId();
 
     mockMvc
         .perform(get("/snippet/{id}", snippetID))
@@ -113,7 +113,7 @@ public class SnippetControllerTests {
     }
 
     Snippet snippet = optionalSnippet.get();
-    Long snippetID = snippet.getSnippetID();
+    Long snippetID = snippet.getId();
 
     mockMvc
         .perform(delete("/snippet/delete/{id}", snippetID))

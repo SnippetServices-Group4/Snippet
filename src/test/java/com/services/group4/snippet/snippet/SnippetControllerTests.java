@@ -95,7 +95,7 @@ public class SnippetControllerTests {
     updatedSnippet.setTitle("Updated Title");
     mockMvc
         .perform(
-            put("/snippet/update/{id}", updatedSnippet.getId())
+            put("/snippets/update/{id}", updatedSnippet.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedSnippet)))
         .andExpect(status().isOk())
@@ -115,7 +115,7 @@ public class SnippetControllerTests {
     Long snippetID = snippet.getId();
 
     mockMvc
-        .perform(delete("/snippet/delete/{id}", snippetID))
+        .perform(delete("/snippets/delete/{id}", snippetID))
         .andExpect(status().isOk())
         .andExpect(content().string("Snippet deleted"));
   }

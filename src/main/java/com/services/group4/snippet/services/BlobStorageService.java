@@ -34,12 +34,4 @@ public class BlobStorageService {
   public void deleteSnippet(String container, Long id) {
     bucketClient.deleteSnippet(container, id);
   }
-
-  public Optional<List<String>> getAllSnippets(String container) {
-    ResponseEntity<List<String>> response = bucketClient.getAllSnippets(container);
-    if (response.hasBody()) {
-      return Optional.ofNullable(response.getBody());
-    }
-    return Optional.empty();
-  }
 }

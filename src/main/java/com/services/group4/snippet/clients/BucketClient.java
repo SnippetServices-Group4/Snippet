@@ -12,9 +12,6 @@ public interface BucketClient {
   ResponseEntity<String> getSnippet(
       @PathVariable("container") String container, @PathVariable("key") Long key);
 
-  @GetMapping("/asset/{container}")
-  ResponseEntity<List<String>> getAllSnippets(@PathVariable("container") String container);
-
   @PutMapping("/asset/{container}/{key}")
   ResponseEntity<Void> saveSnippet(
       @PathVariable("container") String container,

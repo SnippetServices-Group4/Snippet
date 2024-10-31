@@ -55,10 +55,6 @@ public class SnippetService {
     return Optional.empty();
   }
 
-  public Optional<List<String>> getAllSnippet() {
-    return blobStorageService.getAllSnippets(container);
-  }
-
   public Optional<Snippet> updateSnippet(Long id, SnippetDto snippetRequest) {
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
     if (snippetOptional.isPresent()) {

@@ -44,14 +44,6 @@ public class SnippetController {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  @GetMapping
-  public ResponseEntity<List<String>> getAllSnippets() {
-    Optional<List<String>> spts = snippetService.getAllSnippet();
-    System.out.println("from controller" + spts);
-    return spts.map(s -> new ResponseEntity<>(s, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
   @PutMapping("/update/{id}")
   public ResponseEntity<String> updateSnippet(
       @PathVariable Long id, @RequestBody SnippetDto SnippetDto) {

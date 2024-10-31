@@ -3,11 +3,10 @@ package com.services.group4.snippet.controller;
 import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repository.SnippetRepository;
-import java.util.List;
-import java.util.Optional;
-
 import com.services.group4.snippet.services.PermissionService;
 import com.services.group4.snippet.services.SnippetService;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,8 @@ public class SnippetController {
   private final SnippetRepository snippetRepository;
   private final PermissionService permissionService;
 
-  public SnippetController(SnippetRepository snippetRepository, PermissionService permissionService) {
+  public SnippetController(
+      SnippetRepository snippetRepository, PermissionService permissionService) {
     this.snippetRepository = snippetRepository;
     this.permissionService = permissionService;
   }
@@ -85,15 +85,15 @@ public class SnippetController {
   }
 
   @PostMapping("/createByUser/{userId}")
-  public ResponseEntity<?> createSnippetForUser(@RequestBody SnippetRequest request, @PathVariable Long userId) {
+  public ResponseEntity<?> createSnippetForUser(
+      @RequestBody SnippetRequest request, @PathVariable Long userId) {
     // 1. Crear el snippet (ejemplo simulado de creación)
     Snippet convertToSnippet = SnippetService.convertToEntity(request);
     snippetRepository.save(convertToSnippet);
     Long snippetID = convertToSnippet.getSnippetID();
 
     // 2. Enviar la solicitud a Permission (P) para crear la relación de ownership
-    ResponseEntity<?> permissionResponse =
-        permissionService.createOwnership(userId, snippetID);
+    ResponseEntity<?> permissionResponse = permissionService.createOwnership(userId, snippetID);
 
     // 3. Verificar si Permission (P) respondió con éxito
     if (permissionResponse.getStatusCode() == HttpStatus.CREATED) {

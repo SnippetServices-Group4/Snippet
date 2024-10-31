@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.DotenvConfig;
+import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repository.SnippetRepository;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class SnippetControllerTests {
   @Test
   @Order(3)
   public void testCreateSnippet() throws Exception {
-    Snippet snippet = new Snippet("New Title", "New Content");
+    SnippetRequest snippet = new SnippetRequest("New Title", "New Content");
 
     mockMvc
         .perform(

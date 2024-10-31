@@ -84,7 +84,7 @@ public class SnippetController {
     }
   }
 
-  @PostMapping("/createByUser/{userId}")
+  @PostMapping(value = "/createByUser/{userId}", consumes = "application/json")
   public ResponseEntity<?> createSnippetForUser(@RequestBody SnippetRequest request, @PathVariable Long userId) {
     // 1. Crear el snippet (ejemplo simulado de creación)
     Snippet snippet = SnippetService.convertToEntity(request);
@@ -101,5 +101,23 @@ public class SnippetController {
       return ResponseEntity.status(permissionResponse.getStatusCode())
           .body(permissionResponse.getBody());
     }
+  }
+
+  @PostMapping("/createe")
+  public ResponseEntity<?> createSnippetForUser1(@RequestBody SnippetRequest request) {
+    // 1. Crear el snippet (ejemplo simulado de creación)
+    Snippet snippet = SnippetService.convertToEntity(request);
+    Long userId=1L;
+    // 2. Enviar la solicitud a Permission (P) para crear la relación de ownership
+    //ResponseEntity<?> permissionResponse = permissionService.createOwnership(userId, snippet.getSnippetID());
+
+    // 3. Verificar si Permission (P) respondió con éxito
+    //if (permissionResponse.getStatusCode() == HttpStatus.CREATED) {
+      return createSnippet(snippet);
+//    } else {
+//      // Si falló, devolver el error al ReverseProxy y no crear el snippet
+//      return ResponseEntity.status(permissionResponse.getStatusCode())
+//          .body(permissionResponse.getBody());
+//    }
   }
 }

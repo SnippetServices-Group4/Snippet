@@ -3,8 +3,6 @@ package com.services.group4.snippet.services;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,15 +12,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PermissionService {
-  private RestTemplate restTemplate;
 
-  @Configuration
-  static class TestConfig {
-    @Bean
-    public RestTemplate restTemplate() {
-      return new RestTemplate();
-    }
-  }
+  private final RestTemplate restTemplate = new RestTemplate();
 
   public ResponseEntity<?> createOwnership(Long userId, Long snippetId) {
     String url = "http://localhost:8081/ownership/create2";

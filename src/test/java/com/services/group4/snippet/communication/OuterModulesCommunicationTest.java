@@ -48,7 +48,7 @@ public class OuterModulesCommunicationTest {
   }
 
   @Test
-  @EnabledIf(MODULE_CHECKER_PATH + "#isParserModuleRunning")
+  @EnabledIf(MODULE_CHECKER_PATH + "#isPermissionModuleRunning")
   void fromSnippetToPermissionCommunicationTest() {
     System.out.println("ATTENTION: PERMISSION MODULE MUST BE RUNNING FOR THIS TEST TO PASS!");
     String url = "http://localhost:8081/test/snippet/communication";

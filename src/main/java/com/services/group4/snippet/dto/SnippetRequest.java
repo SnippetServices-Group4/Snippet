@@ -1,7 +1,12 @@
 package com.services.group4.snippet.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public class SnippetRequest {
+  @JsonProperty("title")
   private String title;
+  @JsonProperty("content")
   private String content;
 
   // Constructor, getters y setters

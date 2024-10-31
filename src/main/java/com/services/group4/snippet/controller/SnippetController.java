@@ -1,7 +1,12 @@
 package com.services.group4.snippet.controller;
 
+import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.model.Snippet;
+
+import com.services.group4.snippet.services.SnippetService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.services.group4.snippet.repository.SnippetRepository;
 import com.services.group4.snippet.services.PermissionService;
 import com.services.group4.snippet.services.SnippetService;
@@ -11,31 +16,44 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/snippets")
+@RequestMapping("/snippet")
 public class SnippetController {
 
+  private final SnippetService snippetService;
   private final SnippetRepository snippetRepository;
   private final PermissionService permissionService;
 
+  @Autowired
   public SnippetController(
-      SnippetRepository snippetRepository, PermissionService permissionService) {
+      SnippetService snippetService, SnippetRepository snippetRepository, PermissionService permissionService) {
     this.snippetRepository = snippetRepository;
     this.permissionService = permissionService;
+    this.snippetService = snippetService;
   }
 
+
   @PostMapping("/create")
-  public ResponseEntity<String> createSnippet(@RequestBody Snippet snippet) {
+  public ResponseEntity<Long> createSnippet(@RequestBody @Valid SnippetDto snippetDto) {
+    Snippet snippet;
     try {
-      snippetRepository.save(snippet);
-      System.out.println(
-          "from controller" + snippetRepository.findById(snippet.getSnippetID()).orElse(null));
-      return new ResponseEntity<>("Snippet created", HttpStatus.CREATED);
+      snippet = snippetService.createSnippet(snippetDto);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(
-          "Something went wrong creating the Snippet", HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    return new ResponseEntity<>(snippet.getId(), HttpStatus.CREATED);
+  }
+
+  @GetMapping()
+  public ResponseEntity<String> getSnippet(@RequestParam Long snippetId) {
+    Optional<String> snippet = snippetService.getSnippet(snippetId);
+    if (snippet.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(snippet.get(), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")

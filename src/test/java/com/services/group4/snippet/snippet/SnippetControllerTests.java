@@ -9,6 +9,7 @@ import com.services.group4.snippet.dto.SnippetRequest;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repository.SnippetRepository;
 import java.util.Optional;
+import com.services.group4.snippet.repositories.SnippetRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -44,7 +45,7 @@ public class SnippetControllerTests {
   @Test
   @Order(1)
   public void testGetAllSnippets() throws Exception {
-    mockMvc.perform(get("/snippets")).andExpect(status().isOk());
+    mockMvc.perform(get("/snippet")).andExpect(status().isOk());
   }
 
   @Test
@@ -60,7 +61,7 @@ public class SnippetControllerTests {
     Long snippetID = snippet.getSnippetID();
 
     mockMvc
-        .perform(get("/snippets/{id}", snippetID))
+        .perform(get("/snippet/{id}", snippetID))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.title").value("Test Title"))
         .andExpect(jsonPath("$.content").value("Test Content"));
@@ -75,7 +76,7 @@ public class SnippetControllerTests {
 
     mockMvc
         .perform(
-            post("/snippets/create")
+            post("/snippet/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(snippet)))
         .andExpect(status().isCreated())
@@ -95,7 +96,7 @@ public class SnippetControllerTests {
     updatedSnippet.setTitle("Updated Title");
     mockMvc
         .perform(
-            put("/snippets/update/{id}", updatedSnippet.getSnippetID())
+            put("/snippet/update/{id}", updatedSnippet.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedSnippet)))
         .andExpect(status().isOk())
@@ -115,7 +116,7 @@ public class SnippetControllerTests {
     Long snippetID = snippet.getSnippetID();
 
     mockMvc
-        .perform(delete("/snippets/delete/{id}", snippetID))
+        .perform(delete("/snippet/delete/{id}", snippetID))
         .andExpect(status().isOk())
         .andExpect(content().string("Snippet deleted"));
   }

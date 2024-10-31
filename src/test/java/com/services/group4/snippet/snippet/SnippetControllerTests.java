@@ -37,7 +37,7 @@ public class SnippetControllerTests {
   @BeforeEach
   public void setup() {
     snippetRepository.deleteAll();
-    Snippet snippet = new Snippet("Test Title", "Test Content");
+    Snippet snippet = new Snippet("Test Title", "Test Content","1.1", "Java");
     snippetRepository.save(snippet);
   }
 
@@ -71,7 +71,7 @@ public class SnippetControllerTests {
   @Test
   @Order(3)
   public void testCreateSnippet() throws Exception {
-    SnippetRequest snippet = new SnippetRequest("New Title", "New Content");
+    SnippetRequest snippet = new SnippetRequest("New Title", "New Content", "1.1", "Java");
 
     mockMvc
         .perform(

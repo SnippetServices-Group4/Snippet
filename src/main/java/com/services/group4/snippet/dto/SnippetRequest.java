@@ -9,27 +9,35 @@ public class SnippetRequest {
   @JsonProperty("content")
   private String content;
 
+  @JsonProperty("language")
+  private String language;
+
+  @JsonProperty("version")
+  private String version;
+
   // Constructor, getters y setters
   public SnippetRequest() {}
 
-  public SnippetRequest(String title, String content) {
+  public SnippetRequest(String title, String content, String version, String language) {
     this.title = title;
     this.content = content;
+    this.language = language;
+    this.version = version;
   }
 
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
   public String getContent() {
     return content;
   }
 
-  public void setContent(String content) {
-    this.content = content;
+  public String getLanguage() {
+    return language;
+  }
+
+  public String getVersion() {
+    return version;
   }
 }

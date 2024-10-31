@@ -35,7 +35,7 @@ public class SnippetControllerCreateTests {
 
   @Test
   void testCreateSnippetForUser_Success() throws Exception {
-    SnippetRequest request = new SnippetRequest("Test Snippet", "This is a test snippet.");
+    SnippetRequest request = new SnippetRequest("Test Snippet", "This is a test snippet.", "1.0", "Java");
 
     Mockito.when(permissionService.createOwnership(Mockito.anyLong(), Mockito.anyLong()))
         .thenReturn(new ResponseEntity<>(HttpStatus.CREATED));

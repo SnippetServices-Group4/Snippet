@@ -18,13 +18,20 @@ public class Snippet {
   @Column(nullable = true)
   private String content;
 
+  @Column(nullable = false)
+  private String version;
+
+  @Column(nullable = false)
+  private String language;
+
   // Constructors
   public Snippet() {}
 
-  public Snippet(String title, String content) {
-
+  public Snippet(String title, String content, String version, String language) {
     this.title = title;
     this.content = content;
+    this.version = version;
+    this.language = language;
   }
 
   // Getters and Setters
@@ -52,13 +59,19 @@ public class Snippet {
     this.content = content;
   }
 
-  public String toJson() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return "{}";
-    }
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
   }
 }

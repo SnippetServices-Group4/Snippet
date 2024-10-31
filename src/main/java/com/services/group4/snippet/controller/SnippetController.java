@@ -87,6 +87,7 @@ public class SnippetController {
   @PostMapping("/createByUser/{userId}")
   public ResponseEntity<?> createSnippetForUser(
       @RequestBody SnippetRequest request, @PathVariable Long userId) {
+
     // 1. Crear el snippet (ejemplo simulado de creación)
     Snippet convertToSnippet = SnippetService.convertToEntity(request);
     snippetRepository.save(convertToSnippet);

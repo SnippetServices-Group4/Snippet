@@ -9,8 +9,8 @@ import lombok.Generated;
 @Data
 public class SnippetDto {
 
-  @NotBlank(message = "Title is required")
-  private String title;
+  @NotBlank(message = "Name is required")
+  private String name;
 
   @NotNull(message = "Content is required")
   private String content;
@@ -23,8 +23,8 @@ public class SnippetDto {
 
   public SnippetDto() {}
 
-  public SnippetDto(String title, String content, String version, String language) {
-    this.title = title;
+  public SnippetDto(String name, String content, String version, String language) {
+    this.name = name;
     this.content = content;
     this.version = version;
     this.language = language;

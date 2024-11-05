@@ -1,7 +1,6 @@
 package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.clients.BucketClient;
-import java.util.List;
 import java.util.Optional;
 import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;

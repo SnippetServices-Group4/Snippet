@@ -1,10 +1,18 @@
 package com.services.group4.snippet.model;
 
+import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.common.states.snippet.SnippetState;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.Data;
 import lombok.Generated;
 
@@ -12,26 +20,31 @@ import lombok.Generated;
 @Entity
 @Data
 public class Snippet {
-  @SequenceGenerator(name = "snippet", sequenceName = "snippet_sequence", allocationSize = 1)
+
+  @SequenceGenerator(name = "snippet", sequenceName = "snippet_sequence")
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "snippet")
   @Id
   private Long id;
 
-  private String title;
+  @NotBlank private String name;
 
-  private String content;
+  // TODO: add url
+  // @NotBlank private String url;
 
-  private String version;
+  @NotBlank private Long owner;
 
-  private String language;
+  @Embedded private Language language;
 
-  // Constructors
+  @Embedded private SnippetState status = new SnippetState();
+
+  @OneToMany(mappedBy = "snippet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<TestCase> testCases;
+
   public Snippet() {}
 
-  public Snippet(String title, String content, String version, String language) {
-    this.title = title;
-    this.content = content;
-    this.version = version;
-    this.language = language;
+  public Snippet(String name, Long owner, Language languageVersion) {
+    this.name = name;
+    this.owner = owner;
+    this.language = languageVersion;
   }
 }

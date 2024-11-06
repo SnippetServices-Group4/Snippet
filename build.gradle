@@ -35,7 +35,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'io.github.cdimascio:dotenv-java:2.3.1'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     testImplementation 'org.mockito:mockito-core'

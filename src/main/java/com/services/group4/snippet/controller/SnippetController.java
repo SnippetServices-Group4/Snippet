@@ -20,7 +20,6 @@ public class SnippetController {
   @Autowired
   public SnippetController(SnippetService snippetService, PermissionService permissionService) {
     this.snippetService = snippetService;
-    this.permissionService = permissionService;
   }
 
   // TODO: improve error handling

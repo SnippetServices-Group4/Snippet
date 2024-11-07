@@ -1,5 +1,6 @@
-// src/main/java/com/services/group4/snippet/DotenvConfig.java
 package com.services.group4.snippet;
+
+// src/main/java/com/services/group4/snippet/DotenvConfig.java
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.nio.file.Files;

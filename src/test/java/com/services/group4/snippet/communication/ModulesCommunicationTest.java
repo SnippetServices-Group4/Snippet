@@ -1,7 +1,8 @@
 package com.services.group4.snippet.communication;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.services.group4.snippet.DotenvConfig;
 import org.junit.jupiter.api.BeforeAll;

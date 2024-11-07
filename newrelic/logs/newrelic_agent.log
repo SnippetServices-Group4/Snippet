@@ -1,0 +1,16 @@
+2024-11-07T15:58:13,257-0300 [17724 1] com.newrelic INFO: Writing to New Relic log file: C:\Users\mynew\development\projects\ingsis\snippet-services\Snippet\newrelic\logs\newrelic_agent.log
+2024-11-07T15:58:13,257-0300 [17724 1] com.newrelic INFO: JRE vendor Oracle Corporation version 21.0.4
+2024-11-07T15:58:13,257-0300 [17724 1] com.newrelic INFO: JVM vendor Oracle Corporation Java HotSpot(TM) 64-Bit Server VM version 21.0.4+8-LTS-274
+2024-11-07T15:58:13,257-0300 [17724 1] com.newrelic INFO: OS Windows 11 version 10.0 arch amd64
+2024-11-07T15:58:13,258-0300 [17724 1] com.newrelic INFO: Agent Host: Lenovo IP: 172.22.36.245
+2024-11-07T15:58:13,258-0300 [17724 1] com.newrelic INFO: New Relic Agent v8.15.0 is initializing...
+2024-11-07T15:58:14,066-0300 [17724 34] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2024-11-07T15:58:15,409-0300 [17724 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2024-11-07T15:58:15,813-0300 [17724 1] com.newrelic INFO: Setting audit_mode to false
+2024-11-07T15:58:15,997-0300 [17724 1] com.newrelic.agent.config.ConfigServiceImpl INFO: Configuration file is C:\Users\mynew\development\projects\ingsis\snippet-services\Snippet\newrelic\.\newrelic.yml
+2024-11-07T15:58:16,003-0300 [17724 1] com.newrelic INFO: New Relic Agent v8.15.0 has started
+2024-11-07T15:58:16,003-0300 [17724 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@5fdef03a
+2024-11-07T15:58:16,003-0300 [17724 1] com.newrelic INFO: Premain startup complete in 3.997ms
+2024-11-07T15:58:16,005-0300 [17724 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2024-11-07T15:58:16,013-0300 [17724 29] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2024-11-07T15:58:16,016-0300 [17724 29] com.newrelic.agent.core.CoreServiceImpl INFO: New Relic Agent has shutdown

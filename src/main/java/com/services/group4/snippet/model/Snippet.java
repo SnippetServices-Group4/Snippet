@@ -31,7 +31,7 @@ public class Snippet {
   // TODO: add url
   // @NotBlank private String url;
 
-  @NotBlank private Long owner;
+  @NotBlank private String owner;
 
   @Embedded private Language language;
 
@@ -42,7 +42,7 @@ public class Snippet {
 
   public Snippet() {}
 
-  public Snippet(String name, Long owner, Language languageVersion) {
+  public Snippet(String name, String owner, Language languageVersion) {
     this.name = name;
     this.owner = owner;
     this.language = languageVersion;

@@ -27,7 +27,7 @@ public class SnippetService {
     this.permissionService = permissionService;
   }
 
-  public SnippetResponseDto createSnippet(SnippetDto snippetDto, Long userId) {
+  public SnippetResponseDto createSnippet(SnippetDto snippetDto, String userId) {
     Language language = new Language(snippetDto.getLanguage(), snippetDto.getVersion());
     Snippet snippet = new Snippet(snippetDto.getName(), userId, language);
 
@@ -93,5 +93,9 @@ public class SnippetService {
     Snippet snippet = snippetOptional.get();
     snippetRepository.delete(snippet);
     blobStorageService.deleteSnippet(container, snippet.getId());
+  }
+
+  public String getUsername(String token) {
+    return permissionService.getUsername(token);
   }
 }

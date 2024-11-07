@@ -28,4 +28,11 @@ public class PermissionService {
   public void grantOwnerPermission(Long snippetId) {
     permissionsClient.addSnippet(snippetId);
   }
+
+
+  // TODO: take it right from the token
+  public String getUsername(String token) {
+
+    return "user 1";
+  }
 }

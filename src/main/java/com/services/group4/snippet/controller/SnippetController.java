@@ -2,20 +2,14 @@ package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.dto.SnippetResponseDto;
+import com.services.group4.snippet.services.PermissionService;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/snippets")
@@ -24,16 +18,18 @@ public class SnippetController {
   private final SnippetService snippetService;
 
   @Autowired
-  public SnippetController(SnippetService snippetService) {
+  public SnippetController(SnippetService snippetService, PermissionService permissionService) {
     this.snippetService = snippetService;
+    this.permissionService = permissionService;
   }
 
   // TODO: improve error handling
-  @PostMapping("/{userId}")
+  @PostMapping("/create/{userId}")
   public ResponseEntity<SnippetResponseDto> createSnippet(
-      @RequestBody @Valid SnippetDto snippetDto, @PathVariable Long userId) {
+      @RequestBody @Valid SnippetDto snippetDto, @PathVariable Long userId, @RequestHeader("Authorization") String token) {
     try {
-      SnippetResponseDto response = snippetService.createSnippet(snippetDto, userId);
+      String userName = snippetService.getUsername(token);
+      SnippetResponseDto response = snippetService.createSnippet(snippetDto, userName);
 
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception e) {
@@ -41,7 +37,7 @@ public class SnippetController {
     }
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/get/{id}")
   public ResponseEntity<SnippetResponseDto> getSnippet(@PathVariable Long id) {
     Optional<SnippetResponseDto> snippet = snippetService.getSnippet(id);
     return snippet
@@ -49,7 +45,7 @@ public class SnippetController {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  @PutMapping("/{id}")
+  @PutMapping("/update/{id}")
   public ResponseEntity<SnippetResponseDto> updateSnippet(
       @PathVariable Long id, @RequestBody SnippetDto snippetDto) {
     try {
@@ -64,7 +60,7 @@ public class SnippetController {
     }
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteSnippet(@PathVariable Long id) {
     try {
       snippetService.deleteSnippet(id);

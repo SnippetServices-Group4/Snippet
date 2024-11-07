@@ -25,8 +25,8 @@ public class PermissionService {
     return response.getBody() != null && response.getBody();
   }
 
-  public void grantOwnerPermission(Long snippetId) {
-    permissionsClient.addSnippet(snippetId);
+  public void grantOwnerPermission(Long snippetId, Long userId) {
+    permissionsClient.addSnippet(snippetId, userId);
   }
 
 

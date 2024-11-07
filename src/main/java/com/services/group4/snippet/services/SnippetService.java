@@ -27,15 +27,15 @@ public class SnippetService {
     this.permissionService = permissionService;
   }
 
-  public SnippetResponseDto createSnippet(SnippetDto snippetDto, String userId) {
+  public SnippetResponseDto createSnippet(SnippetDto snippetDto, String username, Long userId) {
     Language language = new Language(snippetDto.getLanguage(), snippetDto.getVersion());
-    Snippet snippet = new Snippet(snippetDto.getName(), userId, language);
+    Snippet snippet = new Snippet(snippetDto.getName(), username, language);
 
     snippetRepository.save(snippet);
 
     blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.getContent());
 
-    permissionService.grantOwnerPermission(snippet.getId());
+    permissionService.grantOwnerPermission(snippet.getId(), userId);
     return new SnippetResponseDto(
         snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage());
   }

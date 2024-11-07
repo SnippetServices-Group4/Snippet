@@ -15,5 +15,5 @@ public interface PermissionsClient {
       @RequestParam("type") String type, @RequestParam("snippetId") Long snippetId);
 
   @RequestMapping(method = RequestMethod.POST, value = "permissions/create")
-  ResponseEntity<Void> addSnippet(@RequestParam("snippetId") Long snippetId);
+  ResponseEntity<Void> addSnippet(@RequestParam("snippetId") Long snippetId, @RequestParam("userId") Long userId);
 }

@@ -28,7 +28,7 @@ public class SnippetController {
       @RequestBody @Valid SnippetDto snippetDto, @PathVariable Long userId, @RequestHeader("Authorization") String token) {
     try {
       String userName = snippetService.getUsername(token);
-      SnippetResponseDto response = snippetService.createSnippet(snippetDto, userName);
+      SnippetResponseDto response = snippetService.createSnippet(snippetDto, userName, userId);
 
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception e) {

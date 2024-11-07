@@ -12,7 +12,13 @@ public interface PermissionsClient {
 
   @RequestMapping(method = RequestMethod.GET, value = "/permissions/")
   ResponseEntity<Boolean> hasPermission(
-      @RequestParam("type") String type, @RequestParam("snippetId") Long snippetId);
+      //TODO: chequear la ruta de ownership y reader
+      @RequestParam("userId") Long userId, @RequestParam("snippetId") Long snippetId);
+
+  @RequestMapping(method = RequestMethod.GET, value = "/permissions/")
+  ResponseEntity<Boolean> hasOwnerPermission(
+      //TODO: chequear la ruta de ownership
+      @RequestParam("userId") Long userId, @RequestParam("snippetId") Long snippetId);
 
   @RequestMapping(method = RequestMethod.POST, value = "permissions/create")
   ResponseEntity<Void> addSnippet(@RequestParam("snippetId") Long snippetId, @RequestParam("userId") Long userId);

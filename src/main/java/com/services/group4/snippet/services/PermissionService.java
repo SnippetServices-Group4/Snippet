@@ -16,8 +16,17 @@ public class PermissionService {
     this.permissionsClient = permissionsClient;
   }
 
-  public boolean hasPermissionOnSnippet(PermissionType type, Long snippetId) {
-    ResponseEntity<Boolean> response = permissionsClient.hasPermission(type.name, snippetId);
+  public boolean hasPermissionOnSnippet(Long userId, Long snippetId) {
+    ResponseEntity<Boolean> response = permissionsClient.hasPermission(userId, snippetId);
+    if (response == null || response.getStatusCode().isError()) {
+      // TODO
+      return false;
+    }
+    return response.getBody() != null && response.getBody();
+  }
+
+  public boolean hasOwnerPermission(Long userId, Long snippetId) {
+    ResponseEntity<Boolean> response = permissionsClient.hasOwnerPermission(userId, snippetId);
     if (response == null || response.getStatusCode().isError()) {
       // TODO
       return false;
@@ -27,12 +36,5 @@ public class PermissionService {
 
   public void grantOwnerPermission(Long snippetId, Long userId) {
     permissionsClient.addSnippet(snippetId, userId);
-  }
-
-
-  // TODO: take it right from the token
-  public String getUsername(String token) {
-
-    return "user 1";
   }
 }

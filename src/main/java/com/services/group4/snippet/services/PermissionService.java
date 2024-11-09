@@ -45,8 +45,8 @@ public class PermissionService {
     return permissionsClient.addedSnippet(requestData);
   }
 
-  public ResponseEntity<String> shareSnippet(Long snippetId, Long userId) {
-    Map<String, Object> requestData = Map.of("userId", userId, "snippetId", snippetId);
+  public ResponseEntity<String> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
+    Map<String, Object> requestData = Map.of("ownerId", ownerId, "snippetId", snippetId, "targetUserId", targetUserId);
     return permissionsClient.shareSnippet(requestData);
   }
 }

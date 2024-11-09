@@ -122,7 +122,7 @@ public class SnippetService {
     snippetRepository.delete(snippet);
   }
 
-  public ResponseEntity<String> shareSnippet(Long snippetId, Long userId) {
-    return permissionService.shareSnippet(snippetId, userId);
+  public ResponseEntity<String> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
+    return permissionService.shareSnippet(snippetId, ownerId, targetUserId);
   }
 }

@@ -93,9 +93,9 @@ public class SnippetController {
     }
   }
 
-  @PostMapping("/share/{snippetId")
+  @PostMapping("/share/{snippetId}/with/{targetUserId}")
   public ResponseEntity<String> shareSnippet(
-      @RequestParam Long snippetId, @RequestHeader("userId") Long userId) {
-    return snippetService.shareSnippet(snippetId, userId);
+      @RequestHeader("userId") Long userId, @PathVariable Long snippetId, @PathVariable Long targetUserId) {
+    return snippetService.shareSnippet(snippetId, userId, targetUserId);
   }
 }

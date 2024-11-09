@@ -3,7 +3,6 @@ package com.services.group4.snippet.services;
 import com.services.group4.snippet.clients.PermissionsClient;
 import com.services.group4.snippet.dto.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +42,10 @@ public class PermissionService {
   public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
     Map<String, Object> requestData = Map.of("ownerId", ownerId, "snippetId", snippetId, "targetUserId", targetUserId);
     return permissionsClient.shareSnippet(requestData);
+  }
+
+  public ResponseEntity<ResponseDto<Long>> deletePermissions(Long snippetId, Long userId) {
+    Map<String, Object> requestData = Map.of("userId", userId, "snippetId", snippetId);
+    return permissionsClient.deletePermissions(requestData);
   }
 }

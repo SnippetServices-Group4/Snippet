@@ -127,7 +127,7 @@ public class SnippetService {
             snippet.getLanguage()));
   }
 
-  public ResponseEntity<ResponseDto<Long>> deleteSnippet(Long id) {
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(Long id, Long userId) {
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 
     if (snippetOptional.isEmpty()) {
@@ -138,6 +138,11 @@ public class SnippetService {
 
     // TODO: delete snippet content from blob storage from infra bucket
     //blobStorageService.deleteSnippet(container, snippet.getId());
+
+    ResponseEntity<ResponseDto<Long>> responseOwnership = permissionService.deletePermissions(id, userId);
+    if (responseOwnership.getStatusCode().isError()) {
+      return new ResponseEntity<>(new ResponseDto<>(Objects.requireNonNull(responseOwnership.getBody()).message(), id), responseOwnership.getStatusCode());
+    }
 
     snippetRepository.delete(snippet);
     return new ResponseEntity<>(new ResponseDto<>("Snippet deleted", id), HttpStatus.OK);

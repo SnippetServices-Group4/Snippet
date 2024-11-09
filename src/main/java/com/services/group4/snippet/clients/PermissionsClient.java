@@ -23,9 +23,12 @@ public interface PermissionsClient {
   @RequestMapping(method = RequestMethod.POST, value = "/reader/share")
   ResponseEntity<ResponseDto<Long>> shareSnippet(@RequestBody Map<String, Object> requestData);
 
-  @RequestMapping(method = RequestMethod.GET, value = "/reader/allowedSnippets/{userId}")
-  ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable Long userId);
-
   @RequestMapping(method = RequestMethod.GET, value = "/reader/permission/{userId}/for/{snippetId}")
   ResponseEntity<ResponseDto<Boolean>> hasReaderPermission(@PathVariable Long userId, @PathVariable Long snippetId);
+
+  @RequestMapping(method = RequestMethod.GET, value = "/permissions/allowedSnippets/{userId}")
+  ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable Long userId);
+
+  @RequestMapping(method = RequestMethod.DELETE, value = "/permissions/deleteRelation")
+  ResponseEntity<ResponseDto<Long>> deletePermissions(@RequestBody Map<String, Object> requestData);
 }

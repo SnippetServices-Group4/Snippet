@@ -64,10 +64,9 @@ public class SnippetController {
     }
   }
 
-  // TODO: make it right
   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id) {
-      return snippetService.deleteSnippet(id);
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id, @RequestHeader("userId") Long userId) {
+      return snippetService.deleteSnippet(id, userId);
   }
 
   @PostMapping("/share/{snippetId}/with/{targetUserId}")

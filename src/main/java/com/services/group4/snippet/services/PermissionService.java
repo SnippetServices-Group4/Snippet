@@ -19,7 +19,6 @@ public class PermissionService {
     this.permissionsClient = permissionsClient;
   }
 
-  //TODO: improve with one route in reader para q devuleva una lista de long q sea el snippetIDs de los q tiene permiso el userId
   public ResponseEntity<List<Long>> getAllowedSnippets(Long userId) {
     ResponseEntity<List<Long>> response = permissionsClient.getAllowedSnippets(userId);
     if (response == null || response.getStatusCode().isError()) {
@@ -29,9 +28,8 @@ public class PermissionService {
   }
 
   public boolean hasPermissionOnSnippet(Long userId, Long snippetId) {
-    Map<String, Object> requestData = Map.of("userId", userId, "snippetId", snippetId);
-    ResponseEntity<Boolean> hasReaderPermission = permissionsClient.hasReaderPermission(requestData);
-    ResponseEntity<Boolean> hasOwnerPermission = permissionsClient.hasOwnerPermission(requestData);
+    ResponseEntity<Boolean> hasOwnerPermission = permissionsClient.hasOwnerPermission(userId, snippetId);
+    ResponseEntity<Boolean> hasReaderPermission = permissionsClient.hasReaderPermission(userId, snippetId);
     if (hasReaderPermission == null || hasReaderPermission.getStatusCode().isError() ||
         hasOwnerPermission == null || hasOwnerPermission.getStatusCode().isError()) {
       // TODO: improve error handling
@@ -42,8 +40,7 @@ public class PermissionService {
   }
 
   public boolean hasOwnerPermission(Long userId, Long snippetId) {
-    Map<String, Object> requestData = Map.of("userId", userId, "snippetId", snippetId);
-    ResponseEntity<Boolean> response = permissionsClient.hasOwnerPermission(requestData);
+    ResponseEntity<Boolean> response = permissionsClient.hasOwnerPermission(userId, snippetId);
     if (response == null || response.getStatusCode().isError()) {
       // TODO: improve error handling
       return false;

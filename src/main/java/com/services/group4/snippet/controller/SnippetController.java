@@ -27,7 +27,7 @@ public class SnippetController {
     this.snippetService = snippetService;
   }
 
-  // TODO: improve error handling
+  // funcaaaaa postman
   @PostMapping("/create")
   public ResponseEntity<SnippetResponseDto> createSnippet(
       @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") Long userId, @RequestHeader("username") String username) {
@@ -64,7 +64,6 @@ public class SnippetController {
   public ResponseEntity<SnippetResponseDto> updateSnippet(
       @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") Long userId) {
     try {
-      // TODO: take it right from the token
       Optional<SnippetResponseDto> snippet = snippetService.updateSnippet(id, snippetDto, userId);
 
       return snippet
@@ -76,6 +75,7 @@ public class SnippetController {
     }
   }
 
+  // TODO: make it right
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteSnippet(@PathVariable Long id) {
     try {

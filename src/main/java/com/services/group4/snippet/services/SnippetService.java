@@ -62,7 +62,7 @@ public class SnippetService {
     }
     Snippet snippet = snippetOptional.get();
 
-    Optional<String> content = blobStorageService.getSnippet(container, snippetId);
+    Optional<String> content = "contenttttt".describeConstable(); //blobStorageService.getSnippet(container, snippetId);
 
     if (content.isEmpty()) {
       throw new NoSuchElementException("Snippet content not found");
@@ -107,7 +107,7 @@ public class SnippetService {
     Language language = new Language(snippetRequest.getLanguage(), snippetRequest.getVersion());
     snippet.setLanguage(language);
 
-    blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.getContent());
+    //blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.getContent());
 
     snippetRepository.save(snippet);
 

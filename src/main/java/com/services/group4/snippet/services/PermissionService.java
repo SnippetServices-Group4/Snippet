@@ -1,6 +1,7 @@
 package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.clients.PermissionsClient;
+import com.services.group4.snippet.dto.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,41 +20,27 @@ public class PermissionService {
     this.permissionsClient = permissionsClient;
   }
 
-  public ResponseEntity<List<Long>> getAllowedSnippets(Long userId) {
-    ResponseEntity<List<Long>> response = permissionsClient.getAllowedSnippets(userId);
-    if (response == null || response.getStatusCode().isError()) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    return response;
+  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(Long userId) {
+    return permissionsClient.getAllowedSnippets(userId);
   }
 
   public boolean hasPermissionOnSnippet(Long userId, Long snippetId) {
-    ResponseEntity<Boolean> hasOwnerPermission = permissionsClient.hasOwnerPermission(userId, snippetId);
-    ResponseEntity<Boolean> hasReaderPermission = permissionsClient.hasReaderPermission(userId, snippetId);
-    if (hasReaderPermission == null || hasReaderPermission.getStatusCode().isError() ||
-        hasOwnerPermission == null || hasOwnerPermission.getStatusCode().isError()) {
-      // TODO: improve error handling
-      return false;
-    }
-    return (hasReaderPermission.getBody() != null && hasReaderPermission.getBody()) ||
-        (hasOwnerPermission.getBody() != null && hasOwnerPermission.getBody());
+    ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission = permissionsClient.hasOwnerPermission(userId, snippetId);
+    ResponseEntity<ResponseDto<Boolean>> hasReaderPermission = permissionsClient.hasReaderPermission(userId, snippetId);
+    return Boolean.TRUE.equals(hasOwnerPermission.getBody().data()) || Boolean.TRUE.equals(hasReaderPermission.getBody().data());
   }
 
   public boolean hasOwnerPermission(Long userId, Long snippetId) {
-    ResponseEntity<Boolean> response = permissionsClient.hasOwnerPermission(userId, snippetId);
-    if (response == null || response.getStatusCode().isError()) {
-      // TODO: improve error handling
-      return false;
-    }
-    return Boolean.TRUE.equals(response.getBody()) && !response.getStatusCode().isError();
+    ResponseEntity<ResponseDto<Boolean>> response = permissionsClient.hasOwnerPermission(userId, snippetId);
+    return Boolean.TRUE.equals(response.getBody().data());
   }
 
-  public ResponseEntity<String> grantOwnerPermission(Long snippetId, Long userId) {
+  public ResponseEntity<ResponseDto<Long>> grantOwnerPermission(Long snippetId, Long userId) {
     Map<String, Object> requestData = Map.of("userId", userId, "snippetId", snippetId);
     return permissionsClient.addedSnippet(requestData);
   }
 
-  public ResponseEntity<String> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
     Map<String, Object> requestData = Map.of("ownerId", ownerId, "snippetId", snippetId, "targetUserId", targetUserId);
     return permissionsClient.shareSnippet(requestData);
   }

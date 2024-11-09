@@ -2,6 +2,7 @@ package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.dto.AllSnippetResponseDto;
+import com.services.group4.snippet.dto.ResponseDto;
 import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.dto.SnippetResponseDto;
 import com.services.group4.snippet.model.Snippet;
@@ -9,6 +10,7 @@ import com.services.group4.snippet.repositories.SnippetRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,22 +34,25 @@ public class SnippetService {
     this.permissionService = permissionService;
   }
 
-  public SnippetResponseDto createSnippet(SnippetDto snippetDto, String username, Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(SnippetDto snippetDto, String username, Long userId) {
     Language language = new Language(snippetDto.getLanguage(), snippetDto.getVersion());
     Snippet snippet = new Snippet(snippetDto.getName(), username, language);
 
     snippetRepository.save(snippet);
 
+    // TODO: save snippet content from blob storage from infra bucket
     //blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.getContent());
 
-    ResponseEntity<String> response = permissionService.grantOwnerPermission(snippet.getId(), userId);
+    ResponseEntity<ResponseDto<Long>> response = permissionService.grantOwnerPermission(snippet.getId(), userId);
 
     if (response.getStatusCode().equals(HttpStatus.CREATED)) {
-      return new SnippetResponseDto(
-          snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage());
+      return new ResponseEntity<>(new ResponseDto<>( "Snippet created successfully",
+          new SnippetResponseDto(snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage())),
+          HttpStatus.CREATED);
     }
     snippetRepository.delete(snippet);
-    throw new SecurityException(response.getBody());
+    return new ResponseEntity<>(new ResponseDto<>( "Something went wrong creating the snippet", null),
+        HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   public Optional<SnippetResponseDto> getSnippet(Long snippetId, Long userId) {
@@ -62,6 +67,7 @@ public class SnippetService {
     }
     Snippet snippet = snippetOptional.get();
 
+    // TODO: get snippet content from blob storage from infra bucket
     Optional<String> content = "contenttttt".describeConstable(); //blobStorageService.getSnippet(container, snippetId);
 
     if (content.isEmpty()) {
@@ -75,20 +81,21 @@ public class SnippetService {
 
 
   // este no va a tener el content del snippet solo la data de la tabla para la UI
-  public List<AllSnippetResponseDto> getAllSnippet(Long userId) {
-    ResponseEntity<List<Long>> snippetIds = permissionService.getAllowedSnippets(userId);
+  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(Long userId) {
+    ResponseEntity<ResponseDto<List<Long>>> snippetIds = permissionService.getAllowedSnippets(userId);
 
     if (snippetIds.getStatusCode().isError() || snippetIds.getBody() == null) {
       throw new SecurityException("User does not have permission to view snippets, because it has no snippets");
     }
 
-    return snippetIds.getBody().stream()
+    List<AllSnippetResponseDto> snippets =  snippetIds.getBody().data().stream()
         .map(snippetId -> snippetRepository.findSnippetById(snippetId)
             .map(snippet -> new AllSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getLanguage())))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .toList();
 
+    return new ResponseEntity<>(new ResponseDto<>("All snippets that has permission", snippets), HttpStatus.OK);
 }
 
   public Optional<SnippetResponseDto> updateSnippet(Long id, SnippetDto snippetRequest, Long userId) {
@@ -131,7 +138,7 @@ public class SnippetService {
     snippetRepository.delete(snippet);
   }
 
-  public ResponseEntity<String> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
     return permissionService.shareSnippet(snippetId, ownerId, targetUserId);
   }
 }

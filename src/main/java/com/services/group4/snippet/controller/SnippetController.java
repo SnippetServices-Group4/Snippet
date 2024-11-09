@@ -1,6 +1,7 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.dto.AllSnippetResponseDto;
+import com.services.group4.snippet.dto.ResponseDto;
 import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.dto.SnippetResponseDto;
 import com.services.group4.snippet.services.PermissionService;
@@ -29,15 +30,9 @@ public class SnippetController {
 
   // funcaaaaa postman
   @PostMapping("/create")
-  public ResponseEntity<SnippetResponseDto> createSnippet(
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(
       @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") Long userId, @RequestHeader("username") String username) {
-    try {
-      SnippetResponseDto response = snippetService.createSnippet(snippetDto, username, userId);
-
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+      return snippetService.createSnippet(snippetDto, username, userId);
   }
 
   @GetMapping("/get/{id}")
@@ -49,14 +44,8 @@ public class SnippetController {
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<List<AllSnippetResponseDto>> getAllSnippet(@RequestHeader("userId") Long userId) {
-    List<AllSnippetResponseDto> snippet = snippetService.getAllSnippet(userId);
-
-    if (snippet.isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } else {
-      return new ResponseEntity<>(snippet, HttpStatus.OK);
-    }
+  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") Long userId) {
+    return snippetService.getAllSnippet(userId);
   }
 
 
@@ -87,7 +76,7 @@ public class SnippetController {
   }
 
   @PostMapping("/share/{snippetId}/with/{targetUserId}")
-  public ResponseEntity<String> shareSnippet(
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(
       @RequestHeader("userId") Long userId, @PathVariable Long snippetId, @PathVariable Long targetUserId) {
     return snippetService.shareSnippet(snippetId, userId, targetUserId);
   }

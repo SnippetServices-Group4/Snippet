@@ -36,11 +36,11 @@ public class SnippetController {
   }
 
   @GetMapping("/get/{id}")
-  public ResponseEntity<SnippetResponseDto> getSnippet(@PathVariable Long id, @RequestHeader("userId") Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") Long userId) {
     Optional<SnippetResponseDto> snippet = snippetService.getSnippet(id, userId);
     return snippet
-        .map(s -> new ResponseEntity<>(s, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        .map(s -> new ResponseEntity<>(new ResponseDto<>("Snippet found successfully",s), HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(new ResponseDto<>("Snippet not found",null),HttpStatus.NOT_FOUND));
   }
 
   @GetMapping("/getAll")
@@ -50,14 +50,14 @@ public class SnippetController {
 
 
   @PutMapping("/update/{id}")
-  public ResponseEntity<SnippetResponseDto> updateSnippet(
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(
       @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") Long userId) {
     try {
       Optional<SnippetResponseDto> snippet = snippetService.updateSnippet(id, snippetDto, userId);
 
       return snippet
-          .map(snippetResponseDto -> new ResponseEntity<>(snippetResponseDto, HttpStatus.OK))
-          .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+          .map(snippetResponseDto -> new ResponseEntity<>(new ResponseDto<>("Snippet updated successfully",snippetResponseDto), HttpStatus.OK))
+          .orElseGet(() -> new ResponseEntity<>(new ResponseDto<>("Snippet not found",null),HttpStatus.NOT_FOUND));
 
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,13 +66,8 @@ public class SnippetController {
 
   // TODO: make it right
   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<Void> deleteSnippet(@PathVariable Long id) {
-    try {
-      snippetService.deleteSnippet(id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id) {
+      return snippetService.deleteSnippet(id);
   }
 
   @PostMapping("/share/{snippetId}/with/{targetUserId}")

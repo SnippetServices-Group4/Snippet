@@ -114,6 +114,7 @@ public class SnippetService {
     Language language = new Language(snippetRequest.getLanguage(), snippetRequest.getVersion());
     snippet.setLanguage(language);
 
+    // TODO: update snippet content from blob storage from infra bucket
     //blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.getContent());
 
     snippetRepository.save(snippet);
@@ -126,16 +127,20 @@ public class SnippetService {
             snippet.getLanguage()));
   }
 
-  public void deleteSnippet(Long id) {
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(Long id) {
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 
     if (snippetOptional.isEmpty()) {
-      throw new NoSuchElementException("Snippet not found");
+      return new ResponseEntity<>(new ResponseDto<>("Snippet not found", id), HttpStatus.NOT_FOUND);
     }
 
     Snippet snippet = snippetOptional.get();
-    blobStorageService.deleteSnippet(container, snippet.getId());
+
+    // TODO: delete snippet content from blob storage from infra bucket
+    //blobStorageService.deleteSnippet(container, snippet.getId());
+
     snippetRepository.delete(snippet);
+    return new ResponseEntity<>(new ResponseDto<>("Snippet deleted", id), HttpStatus.OK);
   }
 
   public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {

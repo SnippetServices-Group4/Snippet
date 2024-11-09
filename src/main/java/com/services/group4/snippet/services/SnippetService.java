@@ -38,7 +38,7 @@ public class SnippetService {
 
     snippetRepository.save(snippet);
 
-    blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.getContent());
+    //blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.getContent());
 
     ResponseEntity<String> response = permissionService.grantOwnerPermission(snippet.getId(), userId);
 
@@ -46,6 +46,7 @@ public class SnippetService {
       return new SnippetResponseDto(
           snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage());
     }
+    snippetRepository.delete(snippet);
     throw new SecurityException(response.getBody());
   }
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(value = "permissions", url = "http://permissions:8081")
+@FeignClient(value = "permissions", url = "http://localhost:8081")
 public interface PermissionsClient {
 
   //TODO: chequear la ruta de ownership y reader

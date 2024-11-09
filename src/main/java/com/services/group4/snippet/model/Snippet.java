@@ -20,10 +20,8 @@ import lombok.Generated;
 @Entity
 @Data
 public class Snippet {
-
-  @SequenceGenerator(name = "snippet", sequenceName = "snippet_sequence")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "snippet")
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank private String name;

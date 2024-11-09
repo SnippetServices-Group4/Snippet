@@ -50,19 +50,12 @@ public class SnippetController {
 
   @GetMapping("/getAll")
   public ResponseEntity<List<AllSnippetResponseDto>> getAllSnippet(@RequestHeader("userId") Long userId) {
+    List<AllSnippetResponseDto> snippet = snippetService.getAllSnippet(userId);
 
-    List<Optional<AllSnippetResponseDto>> snippet = snippetService.getAllSnippet(userId);
-
-    List<AllSnippetResponseDto> response = snippet
-        .stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
-
-    if (response.isEmpty()) {
+    if (snippet.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } else {
-      return new ResponseEntity<>(response, HttpStatus.OK);
+      return new ResponseEntity<>(snippet, HttpStatus.OK);
     }
   }
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
 import java.util.Map;
 
 @FeignClient(value = "permissions", url = "http://permissions:8081")
@@ -24,4 +25,6 @@ public interface PermissionsClient {
   @RequestMapping(method = RequestMethod.POST, value = "/reader/share")
   ResponseEntity<String> shareSnippet(@RequestBody Map<String, Object> requestData);
 
+  @RequestMapping(method = RequestMethod.GET, value = "/reader/getAllowedSnippets")
+  ResponseEntity<List<Long>> getAllowedSnippets(@RequestBody Long userId);
 }

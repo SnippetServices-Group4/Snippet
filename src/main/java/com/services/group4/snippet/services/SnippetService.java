@@ -72,14 +72,22 @@ public class SnippetService {
             snippet.getId(), snippet.getName(), content.get(), snippet.getLanguage()));
   }
 
+
   // este no va a tener el content del snippet solo la data de la tabla para la UI
-  public List<Optional<AllSnippetResponseDto>> getAllSnippet(Long userId) {
-  return snippetRepository.findAll().stream()
-      .filter(snippet -> permissionService.hasPermissionOnSnippet(userId, snippet.getId()))
-      .map(snippet -> Optional.of(
-          new AllSnippetResponseDto(
-              snippet.getId(), snippet.getName(), snippet.getLanguage())))
-      .toList();
+  public List<AllSnippetResponseDto> getAllSnippet(Long userId) {
+    ResponseEntity<List<Long>> snippetIds = permissionService.getAllowedSnippets(userId);
+
+    if (snippetIds.getStatusCode().isError() || snippetIds.getBody() == null) {
+      throw new SecurityException("User does not have permission to view snippets, because it has no snippets");
+    }
+
+    return snippetIds.getBody().stream()
+        .map(snippetId -> snippetRepository.findSnippetById(snippetId)
+            .map(snippet -> new AllSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getLanguage())))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .toList();
+
 }
 
   public Optional<SnippetResponseDto> updateSnippet(Long id, SnippetDto snippetRequest, Long userId) {

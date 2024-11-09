@@ -2,9 +2,11 @@ package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.clients.PermissionsClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -15,6 +17,15 @@ public class PermissionService {
   @Autowired
   public PermissionService(PermissionsClient permissionsClient) {
     this.permissionsClient = permissionsClient;
+  }
+
+  //TODO: improve with one route in reader para q devuleva una lista de long q sea el snippetIDs de los q tiene permiso el userId
+  public ResponseEntity<List<Long>> getAllowedSnippets(Long userId) {
+    ResponseEntity<List<Long>> response = permissionsClient.getAllowedSnippets(userId);
+    if (response == null || response.getStatusCode().isError()) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return response;
   }
 
   public boolean hasPermissionOnSnippet(Long userId, Long snippetId) {

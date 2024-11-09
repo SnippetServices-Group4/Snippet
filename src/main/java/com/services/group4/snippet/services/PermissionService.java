@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class PermissionService {
@@ -23,14 +24,12 @@ public class PermissionService {
     return permissionsClient.getAllowedSnippets(userId);
   }
 
-  public boolean hasPermissionOnSnippet(Long userId, Long snippetId) {
-    ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission = permissionsClient.hasOwnerPermission(userId, snippetId);
-    ResponseEntity<ResponseDto<Boolean>> hasReaderPermission = permissionsClient.hasReaderPermission(userId, snippetId);
-    return Boolean.TRUE.equals(hasOwnerPermission.getBody().data()) || Boolean.TRUE.equals(hasReaderPermission.getBody().data());
+  public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(Long userId, Long snippetId) {
+    return permissionsClient.hasPermission(userId, snippetId);
   }
 
-  public boolean hasOwnerPermission(Long userId, Long snippetId) {
-    ResponseEntity<ResponseDto<Boolean>> response = permissionsClient.hasOwnerPermission(userId, snippetId);
+  public boolean updateSnippet(Long userId, Long snippetId) {
+    ResponseEntity<ResponseDto<Boolean>> response = permissionsClient.updateSnippet(userId, snippetId);
     return Boolean.TRUE.equals(response.getBody().data());
   }
 

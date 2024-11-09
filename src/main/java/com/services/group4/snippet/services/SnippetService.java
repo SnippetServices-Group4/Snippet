@@ -55,28 +55,31 @@ public class SnippetService {
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  public Optional<SnippetResponseDto> getSnippet(Long snippetId, Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(Long snippetId, Long userId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
     if (snippetOptional.isEmpty()) {
-      throw new NoSuchElementException("Snippet not found");
+      return new ResponseEntity<>(new ResponseDto<>("Snippet not found", null), HttpStatus.NOT_FOUND);
     }
 
-    if (!permissionService.hasPermissionOnSnippet(userId, snippetId)) {
-      throw new SecurityException("User does not have permission to view snippet");
+    ResponseEntity<ResponseDto<Boolean>> hasPermission = permissionService.hasPermissionOnSnippet(userId, snippetId);
+
+    if (Objects.requireNonNull(hasPermission.getBody()).data() != null && !hasPermission.getBody().data()) {
+      return new ResponseEntity<>(new ResponseDto<>("User does not have permission to view snippet", null), HttpStatus.FORBIDDEN);
     }
+
     Snippet snippet = snippetOptional.get();
 
     // TODO: get snippet content from blob storage from infra bucket
     Optional<String> content = "contenttttt".describeConstable(); //blobStorageService.getSnippet(container, snippetId);
 
     if (content.isEmpty()) {
-      throw new NoSuchElementException("Snippet content not found");
+      return new ResponseEntity<>(new ResponseDto<>("Snippet content not found", null), HttpStatus.NOT_FOUND);
     }
 
-    return Optional.of(
-        new SnippetResponseDto(
-            snippet.getId(), snippet.getName(), content.get(), snippet.getLanguage()));
+    return new ResponseEntity<>(new ResponseDto<>("Snippet found successfully",
+        new SnippetResponseDto(snippet.getId(), snippet.getName(), content.get(), snippet.getLanguage())),
+        HttpStatus.OK);
   }
 
 
@@ -105,7 +108,7 @@ public class SnippetService {
       throw new NoSuchElementException("Snippet not found");
     }
 
-    if (!permissionService.hasOwnerPermission(userId, id)) {
+    if (!permissionService.updateSnippet(userId, id)) {
       throw new SecurityException("User does not have permission to update snippet");
     }
 

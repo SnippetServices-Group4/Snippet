@@ -28,7 +28,6 @@ public class SnippetController {
     this.snippetService = snippetService;
   }
 
-  // funcaaaaa postman
   @PostMapping("/create")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(
       @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") Long userId, @RequestHeader("username") String username) {
@@ -37,10 +36,7 @@ public class SnippetController {
 
   @GetMapping("/get/{id}")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") Long userId) {
-    Optional<SnippetResponseDto> snippet = snippetService.getSnippet(id, userId);
-    return snippet
-        .map(s -> new ResponseEntity<>(new ResponseDto<>("Snippet found successfully",s), HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(new ResponseDto<>("Snippet not found",null),HttpStatus.NOT_FOUND));
+    return snippetService.getSnippet(id, userId);
   }
 
   @GetMapping("/getAll")

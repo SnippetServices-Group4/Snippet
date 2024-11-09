@@ -15,7 +15,7 @@ import java.util.Map;
 public interface PermissionsClient {
 
   @RequestMapping(method = RequestMethod.GET, value = "/ownership/permission/{userId}/for/{snippetId}")
-  ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(@PathVariable Long userId, @PathVariable Long snippetId);
+  ResponseEntity<ResponseDto<Boolean>> updateSnippet(@PathVariable Long userId, @PathVariable Long snippetId);
 
   @RequestMapping(method = RequestMethod.POST, value = "/ownership/createRelation")
   ResponseEntity<ResponseDto<Long>> addedSnippet(@RequestBody Map<String, Object> requestData);
@@ -31,4 +31,7 @@ public interface PermissionsClient {
 
   @RequestMapping(method = RequestMethod.DELETE, value = "/permissions/deleteRelation")
   ResponseEntity<ResponseDto<Long>> deletePermissions(@RequestBody Map<String, Object> requestData);
+
+  @RequestMapping(method = RequestMethod.GET, value = "/permissions/{userId}/for/{snippetId}")
+  ResponseEntity<ResponseDto<Boolean>> hasPermission(@PathVariable Long userId, @PathVariable Long snippetId);
 }

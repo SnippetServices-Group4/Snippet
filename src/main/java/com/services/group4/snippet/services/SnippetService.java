@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,9 +40,13 @@ public class SnippetService {
 
     blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.getContent());
 
-    permissionService.grantOwnerPermission(snippet.getId(), userId);
-    return new SnippetResponseDto(
-        snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage());
+    ResponseEntity<String> response = permissionService.grantOwnerPermission(snippet.getId(), userId);
+
+    if (response.getStatusCode().equals(HttpStatus.CREATED)) {
+      return new SnippetResponseDto(
+          snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage());
+    }
+    throw new SecurityException(response.getBody());
   }
 
   public Optional<SnippetResponseDto> getSnippet(Long snippetId, Long userId) {
@@ -114,5 +120,9 @@ public class SnippetService {
     Snippet snippet = snippetOptional.get();
     blobStorageService.deleteSnippet(container, snippet.getId());
     snippetRepository.delete(snippet);
+  }
+
+  public ResponseEntity<String> shareSnippet(Long snippetId, Long userId) {
+    return permissionService.shareSnippet(snippetId, userId);
   }
 }

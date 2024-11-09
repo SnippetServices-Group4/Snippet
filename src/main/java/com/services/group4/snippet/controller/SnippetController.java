@@ -92,4 +92,10 @@ public class SnippetController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @PostMapping("/share/{snippetId")
+  public ResponseEntity<String> shareSnippet(
+      @RequestParam Long snippetId, @RequestHeader("userId") Long userId) {
+    return snippetService.shareSnippet(snippetId, userId);
+  }
 }

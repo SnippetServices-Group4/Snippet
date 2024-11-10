@@ -44,19 +44,13 @@ public class SnippetController {
     return snippetService.getAllSnippet(userId);
   }
 
-
   @PutMapping("/update/{id}")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(
       @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") Long userId) {
     try {
-      Optional<SnippetResponseDto> snippet = snippetService.updateSnippet(id, snippetDto, userId);
-
-      return snippet
-          .map(snippetResponseDto -> new ResponseEntity<>(new ResponseDto<>("Snippet updated successfully",snippetResponseDto), HttpStatus.OK))
-          .orElseGet(() -> new ResponseEntity<>(new ResponseDto<>("Snippet not found",null),HttpStatus.NOT_FOUND));
-
+      return snippetService.updateSnippet(id, snippetDto, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ResponseDto<>("Something went wrong updating the snippet", null), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

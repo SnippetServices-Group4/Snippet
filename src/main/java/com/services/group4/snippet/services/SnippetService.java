@@ -82,7 +82,6 @@ public class SnippetService {
         HttpStatus.OK);
   }
 
-
   // este no va a tener el content del snippet solo la data de la tabla para la UI
   public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(Long userId) {
     ResponseEntity<ResponseDto<List<Long>>> snippetIds = permissionService.getAllowedSnippets(userId);
@@ -101,15 +100,16 @@ public class SnippetService {
     return new ResponseEntity<>(new ResponseDto<>("All snippets that has permission", snippets), HttpStatus.OK);
 }
 
-  public Optional<SnippetResponseDto> updateSnippet(Long id, SnippetDto snippetRequest, Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(Long id, SnippetDto snippetRequest, Long userId) {
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 
     if (snippetOptional.isEmpty()) {
       throw new NoSuchElementException("Snippet not found");
     }
 
-    if (!permissionService.updateSnippet(userId, id)) {
-      throw new SecurityException("User does not have permission to update snippet");
+    ResponseEntity<ResponseDto<Boolean>> hasPermission = permissionService.hasPermissionOnSnippet(userId, id);
+    if (Objects.requireNonNull(hasPermission.getBody()).data() != null && !hasPermission.getBody().data()) {
+      return new ResponseEntity<>(new ResponseDto<>("User does not have permission to update snippet", null), HttpStatus.FORBIDDEN);
     }
 
     Snippet snippet = snippetOptional.get();
@@ -122,12 +122,9 @@ public class SnippetService {
 
     snippetRepository.save(snippet);
 
-    return Optional.of(
-        new SnippetResponseDto(
-            snippet.getId(),
-            snippet.getName(),
-            snippetRequest.getContent(),
-            snippet.getLanguage()));
+    return new ResponseEntity<>(new ResponseDto<>("Snippet updated successfully",
+        new SnippetResponseDto(snippet.getId(), snippet.getName(), snippetRequest.getContent(), snippet.getLanguage())),
+        HttpStatus.OK);
   }
 
   public ResponseEntity<ResponseDto<Long>> deleteSnippet(Long id, Long userId) {

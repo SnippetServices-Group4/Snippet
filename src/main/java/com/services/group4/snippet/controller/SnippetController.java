@@ -56,12 +56,20 @@ public class SnippetController {
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id, @RequestHeader("userId") Long userId) {
+    try {
       return snippetService.deleteSnippet(id, userId);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to delete this snippet", id), HttpStatus.FORBIDDEN);
+    }
   }
 
   @PostMapping("/share/{snippetId}/with/{targetUserId}")
   public ResponseEntity<ResponseDto<Long>> shareSnippet(
       @RequestHeader("userId") Long userId, @PathVariable Long snippetId, @PathVariable Long targetUserId) {
-    return snippetService.shareSnippet(snippetId, userId, targetUserId);
+    try {
+      return snippetService.shareSnippet(snippetId, userId, targetUserId);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to share this snippet", snippetId), HttpStatus.FORBIDDEN);
+    }
   }
 }

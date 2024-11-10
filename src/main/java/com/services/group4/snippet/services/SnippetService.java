@@ -48,10 +48,10 @@ public class SnippetService {
 
     if (response.getStatusCode().equals(HttpStatus.CREATED)) {
       SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage());
-       return FullResponse.create("Snippet created successfully", "Snippet", snippetResponseDto, HttpStatus.CREATED);
+       return FullResponse.create("Snippet created successfully", "snippet", snippetResponseDto, HttpStatus.CREATED);
     }
     snippetRepository.delete(snippet);
-    return FullResponse.create("Something went wrong creating the snippet", "Snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
+    return FullResponse.create("Something went wrong creating the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(Long snippetId, String userId) {
@@ -64,7 +64,7 @@ public class SnippetService {
     ResponseEntity<ResponseDto<Boolean>> hasPermission = permissionService.hasPermissionOnSnippet(userId, snippetId);
 
     if (Objects.requireNonNull(hasPermission.getBody()).data() != null && !hasPermission.getBody().data().data()) {
-      return FullResponse.create("User does not have permission to view snippet", "Snippet", null, HttpStatus.FORBIDDEN);
+      return FullResponse.create("User does not have name to view snippet", "Snippet", null, HttpStatus.FORBIDDEN);
     }
 
     Snippet snippet = snippetOptional.get();
@@ -85,7 +85,7 @@ public class SnippetService {
     ResponseEntity<ResponseDto<List<Long>>> snippetIds = permissionService.getAllowedSnippets(userId);
 
     if (snippetIds.getStatusCode().isError() || snippetIds.getBody() == null) {
-      return FullResponse.create("User does not have permission to view snippets, because it has no snippets", "Snippets", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create("User does not have name to view snippets, because it has no snippets", "Snippets", null, HttpStatus.NOT_FOUND);
     }
 
     List<AllSnippetResponseDto> snippets =  snippetIds.getBody().data().data().stream()
@@ -95,7 +95,7 @@ public class SnippetService {
         .map(Optional::get)
         .toList();
 
-    return FullResponse.create("All snippets that has permission on", "Snippets", snippets, HttpStatus.OK);
+    return FullResponse.create("All snippets that has name on", "Snippets", snippets, HttpStatus.OK);
 }
 
   public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(Long id, SnippetDto snippetRequest, String userId) {

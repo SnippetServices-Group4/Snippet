@@ -37,7 +37,7 @@ public class SnippetController {
     try {
       return snippetService.getSnippet(id, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to view this snippet", null), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have name to view this snippet", null), HttpStatus.FORBIDDEN);
     }
   }
 
@@ -46,7 +46,7 @@ public class SnippetController {
     try {
       return snippetService.getAllSnippet(userId);
     } catch (Exception e) {
-      return FullResponse.create("User doesn't have permission to view any snippet", "Snippet", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create("User doesn't have name to view any snippet", "Snippet", null, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -56,7 +56,7 @@ public class SnippetController {
     try {
       return snippetService.updateSnippet(id, snippetDto, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to update this snippet", null), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have name to update this snippet", null), HttpStatus.FORBIDDEN);
     }
   }
 
@@ -65,7 +65,7 @@ public class SnippetController {
     try {
       return snippetService.deleteSnippet(id, userId);
     } catch (Exception e) {
-      return FullResponse.create("User doesn't have permission to delete this snippet", "Snippet", id, HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have name to delete this snippet", "Snippet", id, HttpStatus.FORBIDDEN);
     }
   }
 
@@ -75,7 +75,7 @@ public class SnippetController {
     try {
       return snippetService.shareSnippet(snippetId, userId, targetUserId);
     } catch (Exception e) {
-      return FullResponse.create("User doesn't have permission to share this snippet", "Snippet", snippetId, HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have name to share this snippet", "Snippet", snippetId, HttpStatus.FORBIDDEN);
     }
   }
 }

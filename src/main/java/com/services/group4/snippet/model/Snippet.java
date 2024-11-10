@@ -20,10 +20,8 @@ import lombok.Generated;
 @Entity
 @Data
 public class Snippet {
-
-  @SequenceGenerator(name = "snippet", sequenceName = "snippet_sequence")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "snippet")
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank private String name;
@@ -31,7 +29,7 @@ public class Snippet {
   // TODO: add url
   // @NotBlank private String url;
 
-  @NotBlank private Long owner;
+  @NotBlank private String owner;
 
   @Embedded private Language language;
 
@@ -42,7 +40,7 @@ public class Snippet {
 
   public Snippet() {}
 
-  public Snippet(String name, Long owner, Language languageVersion) {
+  public Snippet(String name, String owner, Language languageVersion) {
     this.name = name;
     this.owner = owner;
     this.language = languageVersion;

@@ -1,21 +1,19 @@
 package com.services.group4.snippet.controller;
 
+import com.services.group4.snippet.dto.AllSnippetResponseDto;
+import com.services.group4.snippet.dto.ResponseDto;
 import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.dto.SnippetResponseDto;
+import com.services.group4.snippet.services.PermissionService;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
-import java.util.Optional;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/snippets")
@@ -24,53 +22,60 @@ public class SnippetController {
   private final SnippetService snippetService;
 
   @Autowired
-  public SnippetController(SnippetService snippetService) {
+  public SnippetController(SnippetService snippetService, PermissionService permissionService) {
     this.snippetService = snippetService;
   }
 
-  // TODO: improve error handling
-  @PostMapping("/{userId}")
-  public ResponseEntity<SnippetResponseDto> createSnippet(
-      @RequestBody @Valid SnippetDto snippetDto, @PathVariable Long userId) {
-    try {
-      SnippetResponseDto response = snippetService.createSnippet(snippetDto, userId);
+  @PostMapping("/create")
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(
+      @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") String userId, @RequestHeader("username") String username) {
+      return snippetService.createSnippet(snippetDto, username, userId);
+  }
 
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
+  @GetMapping("/get/{id}")
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
+    try {
+      return snippetService.getSnippet(id, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to view this snippet", null), HttpStatus.FORBIDDEN);
     }
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<SnippetResponseDto> getSnippet(@PathVariable Long id) {
-    Optional<SnippetResponseDto> snippet = snippetService.getSnippet(id);
-    return snippet
-        .map(s -> new ResponseEntity<>(s, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
-  @PutMapping("/{id}")
-  public ResponseEntity<SnippetResponseDto> updateSnippet(
-      @PathVariable Long id, @RequestBody SnippetDto snippetDto) {
+  @GetMapping("/getAll")
+  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
     try {
-      Optional<SnippetResponseDto> snippet = snippetService.updateSnippet(id, snippetDto);
-
-      return snippet
-          .map(snippetResponseDto -> new ResponseEntity<>(snippetResponseDto, HttpStatus.OK))
-          .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
+      return snippetService.getAllSnippet(userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to any snippet either because it doesn't have created one yet or no one share one with him yet ", null), HttpStatus.FORBIDDEN);
     }
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteSnippet(@PathVariable Long id) {
+  @PutMapping("/update/{id}")
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(
+      @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") String userId) {
     try {
-      snippetService.deleteSnippet(id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return snippetService.updateSnippet(id, snippetDto, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to update this snippet", null), HttpStatus.FORBIDDEN);
+    }
+  }
+
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
+    try {
+      return snippetService.deleteSnippet(id, userId);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to delete this snippet", id), HttpStatus.FORBIDDEN);
+    }
+  }
+
+  @PostMapping("/share/{snippetId}/with/{targetUserId}")
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(
+      @RequestHeader("userId") String userId, @PathVariable Long snippetId, @PathVariable String targetUserId) {
+    try {
+      return snippetService.shareSnippet(snippetId, userId, targetUserId);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to share this snippet", snippetId), HttpStatus.FORBIDDEN);
     }
   }
 }

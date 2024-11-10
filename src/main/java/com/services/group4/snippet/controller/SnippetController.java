@@ -1,10 +1,10 @@
 package com.services.group4.snippet.controller;
 
+import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.dto.AllSnippetResponseDto;
 import com.services.group4.snippet.dto.ResponseDto;
 import com.services.group4.snippet.dto.SnippetDto;
 import com.services.group4.snippet.dto.SnippetResponseDto;
-import com.services.group4.snippet.services.PermissionService;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 
@@ -22,7 +22,7 @@ public class SnippetController {
   private final SnippetService snippetService;
 
   @Autowired
-  public SnippetController(SnippetService snippetService, PermissionService permissionService) {
+  public SnippetController(SnippetService snippetService) {
     this.snippetService = snippetService;
   }
 
@@ -46,7 +46,7 @@ public class SnippetController {
     try {
       return snippetService.getAllSnippet(userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to any snippet either because it doesn't have created one yet or no one share one with him yet ", null), HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have permission to view any snippet", "Snippet", null, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -65,7 +65,7 @@ public class SnippetController {
     try {
       return snippetService.deleteSnippet(id, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to delete this snippet", id), HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have permission to delete this snippet", "Snippet", id, HttpStatus.FORBIDDEN);
     }
   }
 
@@ -75,7 +75,7 @@ public class SnippetController {
     try {
       return snippetService.shareSnippet(snippetId, userId, targetUserId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to share this snippet", snippetId), HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have permission to share this snippet", "Snippet", snippetId, HttpStatus.FORBIDDEN);
     }
   }
 }

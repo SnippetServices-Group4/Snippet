@@ -9,8 +9,6 @@ import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,23 +28,23 @@ public class SnippetController {
 
   @PostMapping("/create")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(
-      @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") Long userId, @RequestHeader("username") String username) {
+      @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") String userId, @RequestHeader("username") String username) {
       return snippetService.createSnippet(snippetDto, username, userId);
   }
 
   @GetMapping("/get/{id}")
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
     return snippetService.getSnippet(id, userId);
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") Long userId) {
+  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
     return snippetService.getAllSnippet(userId);
   }
 
   @PutMapping("/update/{id}")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(
-      @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") Long userId) {
+      @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") String userId) {
     try {
       return snippetService.updateSnippet(id, snippetDto, userId);
     } catch (Exception e) {
@@ -55,7 +53,7 @@ public class SnippetController {
   }
 
   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id, @RequestHeader("userId") Long userId) {
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
     try {
       return snippetService.deleteSnippet(id, userId);
     } catch (Exception e) {
@@ -65,7 +63,7 @@ public class SnippetController {
 
   @PostMapping("/share/{snippetId}/with/{targetUserId}")
   public ResponseEntity<ResponseDto<Long>> shareSnippet(
-      @RequestHeader("userId") Long userId, @PathVariable Long snippetId, @PathVariable Long targetUserId) {
+      @RequestHeader("userId") String userId, @PathVariable Long snippetId, @PathVariable String targetUserId) {
     try {
       return snippetService.shareSnippet(snippetId, userId, targetUserId);
     } catch (Exception e) {

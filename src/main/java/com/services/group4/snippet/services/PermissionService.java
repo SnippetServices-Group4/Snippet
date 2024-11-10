@@ -20,29 +20,29 @@ public class PermissionService {
     this.permissionsClient = permissionsClient;
   }
 
-  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(Long userId) {
+  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(String userId) {
     return permissionsClient.getAllowedSnippets(userId);
   }
 
-  public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(String userId, Long snippetId) {
     return permissionsClient.hasPermission(userId, snippetId);
   }
 
-  public ResponseEntity<ResponseDto<Boolean>>  updateSnippet(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>>  updateSnippet(String userId, Long snippetId) {
     return permissionsClient.updateSnippet(userId, snippetId);
   }
 
-  public ResponseEntity<ResponseDto<Long>> grantOwnerPermission(Long snippetId, Long userId) {
+  public ResponseEntity<ResponseDto<Long>> grantOwnerPermission(Long snippetId, String userId) {
     Map<String, Object> requestData = Map.of("userId", userId, "snippetId", snippetId);
     return permissionsClient.addedSnippet(requestData);
   }
 
-  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, String ownerId, String targetUserId) {
     Map<String, Object> requestData = Map.of("ownerId", ownerId, "snippetId", snippetId, "targetUserId", targetUserId);
     return permissionsClient.shareSnippet(requestData);
   }
 
-  public ResponseEntity<ResponseDto<Long>> deletePermissions(Long snippetId, Long userId) {
+  public ResponseEntity<ResponseDto<Long>> deletePermissions(Long snippetId, String userId) {
     Map<String, Object> requestData = Map.of("userId", userId, "snippetId", snippetId);
     return permissionsClient.deletePermissions(requestData);
   }

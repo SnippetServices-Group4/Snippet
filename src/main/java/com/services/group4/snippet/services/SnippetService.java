@@ -34,7 +34,7 @@ public class SnippetService {
     this.permissionService = permissionService;
   }
 
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(SnippetDto snippetDto, String username, Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(SnippetDto snippetDto, String username, String userId) {
     Language language = new Language(snippetDto.getLanguage(), snippetDto.getVersion());
     Snippet snippet = new Snippet(snippetDto.getName(), username, language);
 
@@ -55,7 +55,7 @@ public class SnippetService {
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(Long snippetId, Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(Long snippetId, String userId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
     if (snippetOptional.isEmpty()) {
@@ -83,7 +83,7 @@ public class SnippetService {
   }
 
   // este no va a tener el content del snippet solo la data de la tabla para la UI
-  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(Long userId) {
+  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(String userId) {
     ResponseEntity<ResponseDto<List<Long>>> snippetIds = permissionService.getAllowedSnippets(userId);
 
     if (snippetIds.getStatusCode().isError() || snippetIds.getBody() == null) {
@@ -100,7 +100,7 @@ public class SnippetService {
     return new ResponseEntity<>(new ResponseDto<>("All snippets that has permission", snippets), HttpStatus.OK);
 }
 
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(Long id, SnippetDto snippetRequest, Long userId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(Long id, SnippetDto snippetRequest, String userId) {
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 
     if (snippetOptional.isEmpty()) {
@@ -127,7 +127,7 @@ public class SnippetService {
         HttpStatus.OK);
   }
 
-  public ResponseEntity<ResponseDto<Long>> deleteSnippet(Long id, Long userId) {
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(Long id, String userId) {
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 
     if (snippetOptional.isEmpty()) {
@@ -148,7 +148,7 @@ public class SnippetService {
     return new ResponseEntity<>(new ResponseDto<>("Snippet deleted", id), HttpStatus.OK);
   }
 
-  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, Long ownerId, Long targetUserId) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long snippetId, String ownerId, String targetUserId) {
     return permissionService.shareSnippet(snippetId, ownerId, targetUserId);
   }
 }

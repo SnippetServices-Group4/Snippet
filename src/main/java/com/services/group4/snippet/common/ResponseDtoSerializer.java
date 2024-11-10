@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.services.group4.snippet.dto.ResponseDto;
+import com.services.group4.snippet.model.Snippet;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,7 +34,8 @@ public class ResponseDtoSerializer<T> extends JsonSerializer<ResponseDto<T>> {
       return "listSnippet";
     } else if (data instanceof Boolean) {
       return "hasPermission";
-
+    } else if (data instanceof Snippet) {
+      return "snippet";
     }
     // Nombre por defecto si no se cumple ninguna condición
     return "data";

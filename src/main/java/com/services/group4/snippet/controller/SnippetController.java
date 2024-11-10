@@ -34,12 +34,20 @@ public class SnippetController {
 
   @GetMapping("/get/{id}")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
-    return snippetService.getSnippet(id, userId);
+    try {
+      return snippetService.getSnippet(id, userId);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to view this snippet", null), HttpStatus.FORBIDDEN);
+    }
   }
 
   @GetMapping("/getAll")
   public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
-    return snippetService.getAllSnippet(userId);
+    try {
+      return snippetService.getAllSnippet(userId);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to any snippet either because it doesn't have created one yet or no one share one with him yet ", null), HttpStatus.FORBIDDEN);
+    }
   }
 
   @PutMapping("/update/{id}")

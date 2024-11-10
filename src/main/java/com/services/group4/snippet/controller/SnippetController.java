@@ -37,7 +37,7 @@ public class SnippetController {
     try {
       return snippetService.getSnippet(id, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have name to view this snippet", null), HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have name to view this snippet", "Snippet", null, HttpStatus.FORBIDDEN);
     }
   }
 

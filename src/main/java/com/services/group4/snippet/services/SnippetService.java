@@ -109,7 +109,7 @@ public class SnippetService {
 
     ResponseEntity<ResponseDto<Boolean>> hasPermission = permissionService.hasPermissionOnSnippet(userId, id);
     if (Objects.requireNonNull(hasPermission.getBody()).data() != null && !hasPermission.getBody().data()) {
-      return new ResponseEntity<>(new ResponseDto<>("User does not have permission to update snippet", null), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(new ResponseDto<>(hasPermission.getBody().message(), null), HttpStatus.FORBIDDEN);
     }
 
     Snippet snippet = snippetOptional.get();
@@ -117,7 +117,7 @@ public class SnippetService {
     Language language = new Language(snippetRequest.getLanguage(), snippetRequest.getVersion());
     snippet.setLanguage(language);
 
-    // TODO: update snippet content from blob storage from infra bucket
+    // TODO: update snippet content from blob storage infra bucket
     //blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.getContent());
 
     snippetRepository.save(snippet);

@@ -50,7 +50,7 @@ public class SnippetController {
     try {
       return snippetService.updateSnippet(id, snippetDto, userId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("Something went wrong updating the snippet", null), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to update this snippet", null), HttpStatus.FORBIDDEN);
     }
   }
 

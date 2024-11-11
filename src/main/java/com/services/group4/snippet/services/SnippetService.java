@@ -10,7 +10,6 @@ import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,8 +37,8 @@ public class SnippetService {
   }
 
   public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(SnippetDto snippetDto, String username, String userId) {
-    Language language = new Language(snippetDto.getLanguage(), snippetDto.getVersion());
-    Snippet snippet = new Snippet(snippetDto.getName(), username, language);
+    Language language = new Language(snippetDto.language(), snippetDto.version());
+    Snippet snippet = new Snippet(snippetDto.name(), username, language);
 
     snippetRepository.save(snippet);
 
@@ -49,7 +48,7 @@ public class SnippetService {
     ResponseEntity<ResponseDto<Long>> response = permissionService.grantOwnerPermission(snippet.getId(), userId);
 
     if (response.getStatusCode().equals(HttpStatus.CREATED)) {
-      SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), snippetDto.getContent(), snippet.getLanguage());
+      SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(),snippet.getOwner(), snippetDto.content(), snippet.getLanguage());
        return FullResponse.create("Snippet created successfully", "snippet", snippetResponseDto, HttpStatus.CREATED);
     }
     snippetRepository.delete(snippet);
@@ -76,7 +75,7 @@ public class SnippetService {
           return FullResponse.create("Snippet content not found", "Snippet", null, HttpStatus.NOT_FOUND);
         }
 
-        SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), content.get(), snippet.getLanguage());
+        SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),content.get(), snippet.getLanguage());
         return FullResponse.create("Snippet found successfully", "Snippet", snippetResponseDto, HttpStatus.OK);
       }
       return FullResponse.create("Something went wrong getting the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -95,7 +94,7 @@ public class SnippetService {
 
     List<AllSnippetResponseDto> snippets =  snippetIds.getBody().data().data().stream()
         .map(snippetId -> snippetRepository.findSnippetById(snippetId)
-            .map(snippet -> new AllSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getLanguage())))
+            .map(snippet -> new AllSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),snippet.getLanguage())))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .toList();
@@ -115,8 +114,8 @@ public class SnippetService {
 
           if (Objects.requireNonNull(hasPermission.getBody()).data() != null && hasPermission.getBody().data().data()) {
               Snippet snippet = snippetOptional.get();
-              snippet.setName(snippetRequest.getName());
-              Language language = new Language(snippetRequest.getLanguage(), snippetRequest.getVersion());
+              snippet.setName(snippetRequest.name());
+              Language language = new Language(snippetRequest.language(), snippetRequest.version());
               snippet.setLanguage(language);
 
               // TODO: update snippet content from blob storage infra bucket
@@ -124,7 +123,7 @@ public class SnippetService {
 
               snippetRepository.save(snippet);
 
-              SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), snippetRequest.getContent(), snippet.getLanguage());
+              SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),snippetRequest.content(), snippet.getLanguage());
               return FullResponse.create("Snippet updated successfully", "Snippet", snippetResponseDto, HttpStatus.OK);
           }
           return FullResponse.create("Something went wrong updating the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);

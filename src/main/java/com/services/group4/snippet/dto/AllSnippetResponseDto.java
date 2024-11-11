@@ -6,23 +6,9 @@ import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
-@Generated
-@Data
-public class AllSnippetResponseDto {
-  // TODO: should also return url
-  private Long id;
-
-  private String name;
-
-  private Language language;
-
-  public AllSnippetResponseDto() {}
-
-  public AllSnippetResponseDto(Long id, String name, Language language) {
-    this.id = id;
-    this.name = name;
-    this.language = language;
-  }
+public record AllSnippetResponseDto(
+    Long snippetId,
+    String name,
+    String owner,
+    Language language) {
 }

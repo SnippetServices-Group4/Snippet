@@ -34,18 +34,13 @@ public class SnippetController {
 
   @GetMapping("/get/{id}")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
-    try {
-      return snippetService.getSnippet(id, userId);
-    } catch (Exception e) {
-      return FullResponse.create("User doesn't have permission to view this snippet", "snippet", null, HttpStatus.FORBIDDEN);
-    }
+    return snippetService.getSnippet(id, userId);
   }
 
   @GetMapping("/getAll")
   public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
     try {
-      ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> allSnippet = snippetService.getAllSnippet(userId);
-      return allSnippet;
+      return snippetService.getAllSnippet(userId);
     } catch (Exception e) { //"User doesn't have name to view any snippet"
       return FullResponse.create("fuck " + e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
     }
@@ -54,29 +49,17 @@ public class SnippetController {
   @PutMapping("/update/{id}")
   public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(
       @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") String userId) {
-    try {
-      return snippetService.updateSnippet(id, snippetDto, userId);
-    } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have name to update this snippet", null), HttpStatus.FORBIDDEN);
-    }
+    return snippetService.updateSnippet(id, snippetDto, userId);
   }
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
-    try {
-      return snippetService.deleteSnippet(id, userId);
-    } catch (Exception e) {
-      return FullResponse.create("User doesn't have name to delete this snippet", "Snippet", id, HttpStatus.FORBIDDEN);
-    }
+    return snippetService.deleteSnippet(id, userId);
   }
 
   @PostMapping("/share/{snippetId}/with/{targetUserId}")
   public ResponseEntity<ResponseDto<Long>> shareSnippet(
       @RequestHeader("userId") String userId, @PathVariable Long snippetId, @PathVariable String targetUserId) {
-    try {
-      return snippetService.shareSnippet(snippetId, userId, targetUserId);
-    } catch (Exception e) {
-      return FullResponse.create("User doesn't have name to share this snippet", "Snippet", snippetId, HttpStatus.FORBIDDEN);
-    }
+    return snippetService.shareSnippet(snippetId, userId, targetUserId);
   }
 }

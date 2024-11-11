@@ -2,10 +2,10 @@ package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
-import com.services.group4.snippet.dto.AllSnippetResponseDto;
+import com.services.group4.snippet.dto.snippetResponseDto;
 import com.services.group4.snippet.dto.ResponseDto;
 import com.services.group4.snippet.dto.SnippetDto;
-import com.services.group4.snippet.dto.SnippetResponseDto;
+import com.services.group4.snippet.dto.CompleteSnippetResponseDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 
@@ -36,7 +36,7 @@ public class SnippetService {
     this.permissionService = permissionService;
   }
 
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(SnippetDto snippetDto, String username, String userId) {
+  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(SnippetDto snippetDto, String username, String userId) {
     Language language = new Language(snippetDto.language(), snippetDto.version());
     Snippet snippet = new Snippet(snippetDto.name(), username, language);
 
@@ -48,14 +48,14 @@ public class SnippetService {
     ResponseEntity<ResponseDto<Long>> response = permissionService.grantOwnerPermission(snippet.getId(), userId);
 
     if (response.getStatusCode().equals(HttpStatus.CREATED)) {
-      SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(),snippet.getOwner(), snippetDto.content(), snippet.getLanguage());
-       return FullResponse.create("Snippet created successfully", "snippet", snippetResponseDto, HttpStatus.CREATED);
+      CompleteSnippetResponseDto completeSnippetResponseDto = new CompleteSnippetResponseDto(snippet.getId(), snippet.getName(),snippet.getOwner(), snippetDto.content(), snippet.getLanguage());
+       return FullResponse.create("Snippet created successfully", "snippet", completeSnippetResponseDto, HttpStatus.CREATED);
     }
     snippetRepository.delete(snippet);
     return FullResponse.create("Something went wrong creating the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(Long snippetId, String userId) {
+  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> getSnippet(Long snippetId, String userId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
     if (snippetOptional.isEmpty()) {
@@ -75,8 +75,8 @@ public class SnippetService {
           return FullResponse.create("Snippet content not found", "Snippet", null, HttpStatus.NOT_FOUND);
         }
 
-        SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),content.get(), snippet.getLanguage());
-        return FullResponse.create("Snippet found successfully", "Snippet", snippetResponseDto, HttpStatus.OK);
+        CompleteSnippetResponseDto completeSnippetResponseDto = new CompleteSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),content.get(), snippet.getLanguage());
+        return FullResponse.create("Snippet found successfully", "Snippet", completeSnippetResponseDto, HttpStatus.OK);
       }
       return FullResponse.create("Something went wrong getting the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (FeignException.Forbidden e) {
@@ -85,16 +85,16 @@ public class SnippetService {
   }
 
   // este no va a tener el content del snippet solo la data de la tabla para la UI
-  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(String userId) {
+  public ResponseEntity<ResponseDto<List<snippetResponseDto>>> getAllSnippet(String userId) {
     ResponseEntity<ResponseDto<List<Long>>> snippetIds = permissionService.getAllowedSnippets(userId);
 
     if (snippetIds.getStatusCode().isError() || snippetIds.getBody() == null) {
       return FullResponse.create("User does not have name to view snippets, because it has no snippets", "Snippets", null, HttpStatus.NOT_FOUND);
     }
 
-    List<AllSnippetResponseDto> snippets =  snippetIds.getBody().data().data().stream()
+    List<snippetResponseDto> snippets =  snippetIds.getBody().data().data().stream()
         .map(snippetId -> snippetRepository.findSnippetById(snippetId)
-            .map(snippet -> new AllSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),snippet.getLanguage())))
+            .map(snippet -> new snippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),snippet.getLanguage())))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .toList();
@@ -102,7 +102,7 @@ public class SnippetService {
     return FullResponse.create("All snippets that has permission on", "snippetList", snippets, HttpStatus.OK);
   }
 
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(Long id, SnippetDto snippetRequest, String userId) {
+  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> updateSnippet(Long id, SnippetDto snippetRequest, String userId) {
       Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 
       if (snippetOptional.isEmpty()) {
@@ -123,8 +123,8 @@ public class SnippetService {
 
               snippetRepository.save(snippet);
 
-              SnippetResponseDto snippetResponseDto = new SnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),snippetRequest.content(), snippet.getLanguage());
-              return FullResponse.create("Snippet updated successfully", "Snippet", snippetResponseDto, HttpStatus.OK);
+              CompleteSnippetResponseDto completeSnippetResponseDto = new CompleteSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),snippetRequest.content(), snippet.getLanguage());
+              return FullResponse.create("Snippet updated successfully", "Snippet", completeSnippetResponseDto, HttpStatus.OK);
           }
           return FullResponse.create("Something went wrong updating the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
       } catch (FeignException.Forbidden e) {

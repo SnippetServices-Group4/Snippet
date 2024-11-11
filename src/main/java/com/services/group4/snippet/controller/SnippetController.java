@@ -1,10 +1,10 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
-import com.services.group4.snippet.dto.AllSnippetResponseDto;
+import com.services.group4.snippet.dto.snippetResponseDto;
 import com.services.group4.snippet.dto.ResponseDto;
 import com.services.group4.snippet.dto.SnippetDto;
-import com.services.group4.snippet.dto.SnippetResponseDto;
+import com.services.group4.snippet.dto.CompleteSnippetResponseDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 
@@ -27,27 +27,27 @@ public class SnippetController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> createSnippet(
+  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") String userId, @RequestHeader("username") String username) {
       return snippetService.createSnippet(snippetDto, username, userId);
   }
 
   @GetMapping("/get/{id}")
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
+  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
     return snippetService.getSnippet(id, userId);
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
+  public ResponseEntity<ResponseDto<List<snippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
     try {
       return snippetService.getAllSnippet(userId);
     } catch (Exception e) { //"User doesn't have name to view any snippet"
-      return FullResponse.create("fuck " + e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create(e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
     }
   }
 
   @PutMapping("/update/{id}")
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(
+  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> updateSnippet(
       @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") String userId) {
     return snippetService.updateSnippet(id, snippetDto, userId);
   }

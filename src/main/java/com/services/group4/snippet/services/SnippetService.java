@@ -95,7 +95,7 @@ public class SnippetService {
         .map(Optional::get)
         .toList();
 
-    return FullResponse.create("All snippets that has name on", "Snippets", snippets, HttpStatus.OK);
+    return FullResponse.create("All snippets that has permission on", "snippetList", snippets, HttpStatus.OK);
 }
 
   public ResponseEntity<ResponseDto<SnippetResponseDto>> updateSnippet(Long id, SnippetDto snippetRequest, String userId) {

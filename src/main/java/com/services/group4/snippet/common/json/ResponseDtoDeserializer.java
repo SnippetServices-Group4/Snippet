@@ -10,6 +10,8 @@ import com.services.group4.snippet.common.DataTuple;
 import com.services.group4.snippet.dto.ResponseDto;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>> {
 
@@ -23,14 +25,20 @@ public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>>
 
     DataTuple<T> dataTuple;
     if (dataNode.has("name") && dataNode.has("data")) {
-      // Es un DataTuple
       String name = dataNode.get("name").asText();
       T data = mapper.convertValue(dataNode.get("data"), ctxt.getTypeFactory().constructType(Object.class));
       dataTuple = new DataTuple<>(name, data);
     } else {
-      // Es una estructura simple
       String name = dataNode.fieldNames().next();
-      T data = mapper.convertValue(dataNode.get(name), ctxt.getTypeFactory().constructType(Object.class));
+      JsonNode valueNode = dataNode.get(name);
+      T data;
+      if (name.equals("snippetList")) {
+        List<Long> list = new ArrayList<>();
+        valueNode.forEach(node -> list.add(node.asLong()));
+        data = (T) list;
+      } else {
+        data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(Object.class));
+      }
       dataTuple = new DataTuple<>(name, data);
     }
 

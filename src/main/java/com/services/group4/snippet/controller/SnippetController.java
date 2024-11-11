@@ -37,16 +37,17 @@ public class SnippetController {
     try {
       return snippetService.getSnippet(id, userId);
     } catch (Exception e) {
-      return FullResponse.create("User doesn't have name to view this snippet", "Snippet", null, HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have permission to view this snippet", "snippet", null, HttpStatus.FORBIDDEN);
     }
   }
 
   @GetMapping("/getAll")
   public ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
     try {
-      return snippetService.getAllSnippet(userId);
-    } catch (Exception e) {
-      return FullResponse.create("User doesn't have name to view any snippet", "Snippet", null, HttpStatus.NOT_FOUND);
+      ResponseEntity<ResponseDto<List<AllSnippetResponseDto>>> allSnippet = snippetService.getAllSnippet(userId);
+      return allSnippet;
+    } catch (Exception e) { //"User doesn't have name to view any snippet"
+      return FullResponse.create("fuck " + e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
     }
   }
 

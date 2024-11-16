@@ -8,5 +8,4 @@ import com.services.group4.snippet.common.json.ResponseDtoSerializer;
 
 @JsonSerialize(using = ResponseDtoSerializer.class)
 @JsonDeserialize(using = ResponseDtoDeserializer.class)
-public record ResponseDto<T>(String message, DataTuple<T> data) {
-}
+public record ResponseDto<T>(String message, DataTuple<T> data) {}

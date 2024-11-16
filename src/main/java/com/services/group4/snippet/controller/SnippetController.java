@@ -1,15 +1,13 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
-import com.services.group4.snippet.dto.snippetResponseDto;
+import com.services.group4.snippet.dto.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.ResponseDto;
 import com.services.group4.snippet.dto.SnippetDto;
-import com.services.group4.snippet.dto.CompleteSnippetResponseDto;
+import com.services.group4.snippet.dto.snippetResponseDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,38 +26,47 @@ public class SnippetController {
 
   @PostMapping("/create")
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
-      @RequestBody @Valid SnippetDto snippetDto, @RequestHeader("userId") String userId, @RequestHeader("username") String username) {
-      return snippetService.createSnippet(snippetDto, username, userId);
+      @RequestBody @Valid SnippetDto snippetDto,
+      @RequestHeader("userId") String userId,
+      @RequestHeader("username") String username) {
+    return snippetService.createSnippet(snippetDto, username, userId);
   }
 
   @GetMapping("/get/{id}")
-  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> getSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
+  public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> getSnippet(
+      @PathVariable Long id, @RequestHeader("userId") String userId) {
     return snippetService.getSnippet(id, userId);
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<ResponseDto<List<snippetResponseDto>>> getAllSnippet(@RequestHeader("userId") String userId) {
+  public ResponseEntity<ResponseDto<List<snippetResponseDto>>> getAllSnippet(
+      @RequestHeader("userId") String userId) {
     try {
       return snippetService.getAllSnippet(userId);
-    } catch (Exception e) { //"User doesn't have name to view any snippet"
+    } catch (Exception e) { // "User doesn't have name to view any snippet"
       return FullResponse.create(e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
     }
   }
 
   @PutMapping("/update/{id}")
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> updateSnippet(
-      @PathVariable Long id, @RequestBody SnippetDto snippetDto, @RequestHeader("userId") String userId) {
+      @PathVariable Long id,
+      @RequestBody SnippetDto snippetDto,
+      @RequestHeader("userId") String userId) {
     return snippetService.updateSnippet(id, snippetDto, userId);
   }
 
   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<ResponseDto<Long>> deleteSnippet(@PathVariable Long id, @RequestHeader("userId") String userId) {
+  public ResponseEntity<ResponseDto<Long>> deleteSnippet(
+      @PathVariable Long id, @RequestHeader("userId") String userId) {
     return snippetService.deleteSnippet(id, userId);
   }
 
   @PostMapping("/share/{snippetId}/with/{targetUserId}")
   public ResponseEntity<ResponseDto<Long>> shareSnippet(
-      @RequestHeader("userId") String userId, @PathVariable Long snippetId, @PathVariable String targetUserId) {
+      @RequestHeader("userId") String userId,
+      @PathVariable Long snippetId,
+      @PathVariable String targetUserId) {
     return snippetService.shareSnippet(snippetId, userId, targetUserId);
   }
 }

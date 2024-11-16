@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.DataTuple;
 import com.services.group4.snippet.dto.ResponseDto;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,8 @@ import java.util.List;
 public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>> {
 
   @Override
-  public ResponseDto<T> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+  public ResponseDto<T> deserialize(JsonParser p, DeserializationContext ctxt)
+      throws IOException, JsonProcessingException {
     ObjectMapper mapper = (ObjectMapper) p.getCodec();
     JsonNode rootNode = mapper.readTree(p);
 
@@ -26,7 +26,9 @@ public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>>
     DataTuple<T> dataTuple;
     if (dataNode.has("name") && dataNode.has("data")) {
       String name = dataNode.get("name").asText();
-      T data = mapper.convertValue(dataNode.get("data"), ctxt.getTypeFactory().constructType(Object.class));
+      T data =
+          mapper.convertValue(
+              dataNode.get("data"), ctxt.getTypeFactory().constructType(Object.class));
       dataTuple = new DataTuple<>(name, data);
     } else {
       String name = dataNode.fieldNames().next();

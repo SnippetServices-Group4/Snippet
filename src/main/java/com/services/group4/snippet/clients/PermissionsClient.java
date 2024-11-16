@@ -23,9 +23,6 @@ public interface PermissionsClient {
   @RequestMapping(method = RequestMethod.POST, value = "/reader/share")
   ResponseEntity<ResponseDto<Long>> shareSnippet(@RequestBody Map<String, Object> requestData);
 
-  @RequestMapping(method = RequestMethod.GET, value = "/reader/permission/{userId}/for/{snippetId}")
-  ResponseEntity<ResponseDto<Boolean>> hasReaderPermission(@PathVariable String userId, @PathVariable Long snippetId);
-
   @RequestMapping(method = RequestMethod.GET, value = "/permissions/allowedSnippets/{userId}")
   ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable String userId);
 

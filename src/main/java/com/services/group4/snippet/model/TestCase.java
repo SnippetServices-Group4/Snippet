@@ -13,7 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.Data;
+import lombok.Generated;
 
+@Generated
 @Entity
 @Data
 public class TestCase {

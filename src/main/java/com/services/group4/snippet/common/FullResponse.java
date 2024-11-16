@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 public class FullResponse {
 
-  public static <T> ResponseEntity<ResponseDto<T>> create(String message, String name, T data, HttpStatus status) {
+  public static <T> ResponseEntity<ResponseDto<T>> create(
+      String message, String name, T data, HttpStatus status) {
     DataTuple<T> tuple = new DataTuple<>(name, data);
     ResponseDto<T> responseDto = new ResponseDto<>(message, tuple);
     return new ResponseEntity<>(responseDto, status);

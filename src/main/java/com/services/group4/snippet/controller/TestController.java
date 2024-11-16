@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/test")
 public class TestController {
+  @GetMapping("/")
+  public CommunicationMessage snippetCommunication() {
+    return new CommunicationMessage("Snippet", "Snippet is up and running!");
+  }
+
   @GetMapping("/parser/communication")
   public CommunicationMessage testParserCommunication() {
     return new CommunicationMessage("Snippet", "Communication from Parser to Snippet works!");

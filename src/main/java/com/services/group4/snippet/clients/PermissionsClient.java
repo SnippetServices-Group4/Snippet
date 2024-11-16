@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(value = "permissions", url = "http://localhost:8081")
+@FeignClient(name = "permissions", url = "${permissions.service.url}")
 public interface PermissionsClient {
 
   @RequestMapping(method = RequestMethod.GET, value = "/ownership/permission/{userId}/for/{snippetId}")

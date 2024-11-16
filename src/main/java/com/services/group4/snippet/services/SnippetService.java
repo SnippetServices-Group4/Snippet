@@ -43,7 +43,7 @@ public class SnippetService {
     snippetRepository.save(snippet);
 
     // TODO: save snippet content from blob storage from infra bucket
-    //blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.getContent());
+    blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.content());
 
     ResponseEntity<ResponseDto<Long>> response = permissionService.grantOwnerPermission(snippet.getId(), userId);
 
@@ -69,7 +69,7 @@ public class SnippetService {
         Snippet snippet = snippetOptional.get();
 
         // TODO: get snippet content from blob storage from infra bucket
-        Optional<String> content = "contenttttt".describeConstable(); //blobStorageService.getSnippet(container, snippetId);
+        Optional<String> content = blobStorageService.getSnippet(container, snippetId);
 
         if (content.isEmpty()) {
           return FullResponse.create("Snippet content not found", "Snippet", null, HttpStatus.NOT_FOUND);
@@ -119,7 +119,7 @@ public class SnippetService {
               snippet.setLanguage(language);
 
               // TODO: update snippet content from blob storage infra bucket
-              //blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.getContent());
+              blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.content());
 
               snippetRepository.save(snippet);
 
@@ -142,7 +142,7 @@ public class SnippetService {
     Snippet snippet = snippetOptional.get();
 
     // TODO: delete snippet content from blob storage from infra bucket
-    //blobStorageService.deleteSnippet(container, snippet.getId());
+    blobStorageService.deleteSnippet(container, snippet.getId());
 
     try {
       ResponseEntity<ResponseDto<Long>> responseOwnership = permissionService.deletePermissions(snippetId, userId);

@@ -59,7 +59,7 @@ public class SnippetService {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
     if (snippetOptional.isEmpty()) {
-      return FullResponse.create("Snippet not found", "Snippet", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create("Snippet not found", "snippet", null, HttpStatus.NOT_FOUND);
     }
 
     try {
@@ -72,11 +72,11 @@ public class SnippetService {
         Optional<String> content = blobStorageService.getSnippet(container, snippetId);
 
         if (content.isEmpty()) {
-          return FullResponse.create("Snippet content not found", "Snippet", null, HttpStatus.NOT_FOUND);
+          return FullResponse.create("Snippet content not found", "snippet", null, HttpStatus.NOT_FOUND);
         }
 
         CompleteSnippetResponseDto completeSnippetResponseDto = new CompleteSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),content.get(), snippet.getLanguage());
-        return FullResponse.create("Snippet found successfully", "Snippet", completeSnippetResponseDto, HttpStatus.OK);
+        return FullResponse.create("Snippet found successfully", "snippet", completeSnippetResponseDto, HttpStatus.OK);
       }
       return FullResponse.create("Something went wrong getting the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (FeignException.Forbidden e) {
@@ -124,7 +124,7 @@ public class SnippetService {
               snippetRepository.save(snippet);
 
               CompleteSnippetResponseDto completeSnippetResponseDto = new CompleteSnippetResponseDto(snippet.getId(), snippet.getName(), snippet.getOwner(),snippetRequest.content(), snippet.getLanguage());
-              return FullResponse.create("Snippet updated successfully", "Snippet", completeSnippetResponseDto, HttpStatus.OK);
+              return FullResponse.create("Snippet updated successfully", "snippet", completeSnippetResponseDto, HttpStatus.OK);
           }
           return FullResponse.create("Something went wrong updating the snippet", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
       } catch (FeignException.Forbidden e) {

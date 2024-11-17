@@ -3,8 +3,6 @@ plugins {
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'com.services.group4.common-conventions' version '1.0.8'
-	// New relic plugin
-	id "de.undercouch.download" version "5.3.0"
 }
 
 group = 'com.services.group4'
@@ -54,16 +52,4 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-task downloadNewrelic(type: Download) {
-	mkdir 'newrelic'
-	src 'https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip'
-	dest file('newrelic')
-}
-
-task unzipNewrelic(type: Copy) {
-	from zipTree(file('newrelic/newrelic-java.zip'))
-	into rootDir
-	doNotTrackState("Instrumentation needs to re-run every time")
 }

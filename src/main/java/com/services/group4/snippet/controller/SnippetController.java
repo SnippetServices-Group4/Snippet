@@ -1,10 +1,10 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
-import com.services.group4.snippet.dto.CompleteSnippetResponseDto;
-import com.services.group4.snippet.dto.ResponseDto;
-import com.services.group4.snippet.dto.SnippetDto;
-import com.services.group4.snippet.dto.snippetResponseDto;
+import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
+import com.services.group4.snippet.dto.snippet.response.ResponseDto;
+import com.services.group4.snippet.dto.snippet.response.SnippetDto;
+import com.services.group4.snippet.dto.snippet.response.snippetResponseDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 import java.util.List;

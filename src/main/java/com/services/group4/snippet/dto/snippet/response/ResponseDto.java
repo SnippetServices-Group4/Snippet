@@ -1,4 +1,4 @@
-package com.services.group4.snippet.dto;
+package com.services.group4.snippet.dto.snippet.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

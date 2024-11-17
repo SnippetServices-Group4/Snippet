@@ -3,7 +3,7 @@ package com.services.group4.snippet.common.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.services.group4.snippet.dto.ResponseDto;
+import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import java.io.IOException;
 
 public class ResponseDtoSerializer<T> extends JsonSerializer<ResponseDto<T>> {

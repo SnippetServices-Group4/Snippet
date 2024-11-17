@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.DataTuple;
-import com.services.group4.snippet.dto.ResponseDto;
+import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.services.group4.snippet.clients;
 
-import com.services.group4.snippet.dto.RequestDtoShareSnippet;
-import com.services.group4.snippet.dto.RequestDtoSnippet;
-import com.services.group4.snippet.dto.ResponseDto;
+import com.services.group4.snippet.dto.snippet.request.RequestDtoShareSnippet;
+import com.services.group4.snippet.dto.snippet.request.RequestDtoSnippet;
+import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

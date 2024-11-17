@@ -1,6 +1,6 @@
 package com.services.group4.snippet.common;
 
-import com.services.group4.snippet.dto.ResponseDto;
+import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

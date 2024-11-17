@@ -14,10 +14,13 @@ public class Language {
 
   @NotBlank private String version;
 
+  @NotBlank private String extension;
+
   public Language() {}
 
-  public Language(String language, String version) {
+  public Language(String language, String version, String extension) {
     this.langName = language.toLowerCase();
     this.version = version.toLowerCase();
+    this.extension = extension.toLowerCase();
   }
 }

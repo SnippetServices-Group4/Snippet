@@ -36,12 +36,11 @@ public class SnippetService {
 
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       SnippetDto snippetDto, String username, String userId) {
-    Language language = new Language(snippetDto.language(), snippetDto.version());
+    Language language = new Language(snippetDto.language(), snippetDto.version(), snippetDto.extension());
     Snippet snippet = new Snippet(snippetDto.name(), username, language);
 
     snippetRepository.save(snippet);
 
-    // TODO: save snippet content from blob storage from infra bucket
     blobStorageService.saveSnippet(container, snippet.getId(), snippetDto.content());
 
     ResponseEntity<ResponseDto<Long>> response =
@@ -166,9 +165,6 @@ public class SnippetService {
       if (Objects.requireNonNull(hasPermission.getBody()).data() != null
           && hasPermission.getBody().data().data()) {
         Snippet snippet = snippetOptional.get();
-        snippet.setName(snippetRequest.name());
-        Language language = new Language(snippetRequest.language(), snippetRequest.version());
-        snippet.setLanguage(language);
 
         blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.content());
 

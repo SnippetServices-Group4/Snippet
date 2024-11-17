@@ -1,63 +1,47 @@
 package com.services.group4.snippet.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.*;
+import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.common.states.snippet.SnippetState;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import java.util.List;
+import lombok.Data;
+import lombok.Generated;
 
+@Generated
 @Entity
-@Table
+@Data
 public class Snippet {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long snippetID;
+  private Long id;
 
-  @Column(nullable = false)
-  private String title;
+  @NotBlank private String name;
 
-  @Column(nullable = true)
-  private String content;
+  // TODO: add url
+  // @NotBlank private String url;
 
-  // Constructors
+  @NotBlank private String owner;
+
+  @Embedded private Language language;
+
+  @Embedded private SnippetState status = new SnippetState();
+
+  @OneToMany(mappedBy = "snippet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<TestCase> testCases;
+
   public Snippet() {}
 
-  public Snippet(String title, String content) {
-    this.title = title;
-    this.content = content;
-  }
-
-  // Getters and Setters
-  public Long getSnippetID() {
-    return snippetID;
-  }
-
-  public void setSnippetID(Long id) {
-    this.snippetID = id;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  public String toJson() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return "{}";
-    }
+  public Snippet(String name, String owner, Language languageVersion) {
+    this.name = name;
+    this.owner = owner;
+    this.language = languageVersion;
   }
 }

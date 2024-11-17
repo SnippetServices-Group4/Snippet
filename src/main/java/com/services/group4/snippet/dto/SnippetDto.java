@@ -1,6 +1,5 @@
 package com.services.group4.snippet.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record SnippetDto(

@@ -36,7 +36,8 @@ public class SnippetService {
 
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       SnippetDto snippetDto, String username, String userId) {
-    Language language = new Language(snippetDto.language(), snippetDto.version(), snippetDto.extension());
+    Language language =
+        new Language(snippetDto.language(), snippetDto.version(), snippetDto.extension());
     Snippet snippet = new Snippet(snippetDto.name(), username, language);
 
     snippetRepository.save(snippet);

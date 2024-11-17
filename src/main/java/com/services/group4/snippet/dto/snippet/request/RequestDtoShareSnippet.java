@@ -1,4 +1,4 @@
-package com.services.group4.snippet.dto;
+package com.services.group4.snippet.dto.snippet.request;
 
 public record RequestDtoShareSnippet(String userId, Long snippetId, String targetUserId) {
   public RequestDtoShareSnippet {

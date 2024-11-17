@@ -1,9 +1,9 @@
 package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.clients.PermissionsClient;
-import com.services.group4.snippet.dto.RequestDtoShareSnippet;
-import com.services.group4.snippet.dto.RequestDtoSnippet;
-import com.services.group4.snippet.dto.ResponseDto;
+import com.services.group4.snippet.dto.snippet.request.RequestDtoShareSnippet;
+import com.services.group4.snippet.dto.snippet.request.RequestDtoSnippet;
+import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

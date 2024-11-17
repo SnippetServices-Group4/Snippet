@@ -1,4 +1,4 @@
-package com.services.group4.snippet.dto;
+package com.services.group4.snippet.dto.snippet.response;
 
 import jakarta.validation.constraints.NotNull;
 

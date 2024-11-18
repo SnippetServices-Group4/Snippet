@@ -1,4 +1,4 @@
-package com.services.group4.snippet.snippet;
+package com.services.group4.snippet.controller;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

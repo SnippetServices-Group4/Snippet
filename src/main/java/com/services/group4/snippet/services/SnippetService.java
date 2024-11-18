@@ -85,7 +85,6 @@ public class SnippetService {
           || hasPermission.getBody().data().data()) {
         Snippet snippet = snippetOptional.get();
 
-        // TODO: get snippet content from blob storage from infra bucket
         Optional<String> content = blobStorageService.getSnippet(container, snippetId);
 
         if (content.isEmpty()) {
@@ -161,7 +160,7 @@ public class SnippetService {
 
     try {
       ResponseEntity<ResponseDto<Boolean>> hasPermission =
-          permissionService.updateSnippet(userId, id);
+          permissionService.hasOwnershipPermission(userId, id);
 
       if (Objects.requireNonNull(hasPermission.getBody()).data() != null
           && hasPermission.getBody().data().data()) {

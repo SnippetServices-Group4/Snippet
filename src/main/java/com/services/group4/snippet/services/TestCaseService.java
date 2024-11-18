@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +30,7 @@ public class TestCaseService {
     this.permissionService = permissionService;
   }
 
+  @Transactional
   public ResponseEntity<ResponseDto<TestCaseResponseDto>> createTestCase(
       TestCaseRequestDto testCaseRequestDto, String userId, Long snippetId) {
 
@@ -49,10 +51,8 @@ public class TestCaseService {
                 testCase.getOutputs());
         return FullResponse.create("Test case created successfully", "testCase", testCaseResponseDto, HttpStatus.CREATED);
       }
-      testCaseRepository.delete(testCase);
       return FullResponse.create("Something went wrong creating the test case", "testCase", null, HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (Exception e){
-      testCaseRepository.delete(testCase);
       return FullResponse.create("You don't have permission to create a test case", "testCase", null, HttpStatus.FORBIDDEN);
     }
   }

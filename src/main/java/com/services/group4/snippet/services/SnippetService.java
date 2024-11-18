@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SnippetService {
@@ -37,6 +38,7 @@ public class SnippetService {
     this.testCaseService = testCaseService;
   }
 
+  @Transactional
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       SnippetDto snippetDto, String username, String userId) {
     Language language =
@@ -64,7 +66,6 @@ public class SnippetService {
           completeSnippetResponseDto,
           HttpStatus.CREATED);
     }
-    snippetRepository.delete(snippet);
     return FullResponse.create(
         "Something went wrong creating the snippet",
         "snippet",

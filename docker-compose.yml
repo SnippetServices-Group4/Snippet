@@ -20,6 +20,7 @@ services:
       ASSET_SERVICE_URL: "${ASSET_SERVICE_URL}"
     depends_on:
       - db
+
   db:
     container_name: "${DB_HOST}"
     image: postgres:15

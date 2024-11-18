@@ -24,9 +24,8 @@ public class TestCase {
   private Long id;
 
   @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "snippet_id")
-  private Snippet snippet;
+  @Column(name = "snippet_id")
+  private Long snippetId;
 
   @NotNull private String name;
 
@@ -39,8 +38,8 @@ public class TestCase {
   public TestCase() {}
 
   public TestCase(
-      String name, Snippet snippet, List<String> inputs, List<String> outputs, TestState state) {
-    this.snippet = snippet;
+      String name, Long snippetId, List<String> inputs, List<String> outputs, TestState state) {
+    this.snippetId = snippetId;
     this.name = name;
     this.inputs = inputs;
     this.outputs = outputs;

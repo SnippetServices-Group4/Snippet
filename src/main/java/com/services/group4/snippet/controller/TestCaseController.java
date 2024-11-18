@@ -26,7 +26,7 @@ public class TestCaseController {
   }
 
   @PostMapping("/createFor/{snippetId}")
-  public ResponseEntity<ResponseDto<TestCaseResponseDto>> createSnippet(
+  public ResponseEntity<ResponseDto<TestCaseResponseDto>> createTestCase(
       @RequestBody @Valid TestCaseRequestDto testCaseRequestDto,
       @RequestHeader("userId") String userId,
       @PathVariable Long snippetId) {

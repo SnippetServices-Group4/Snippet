@@ -55,4 +55,6 @@ public class TestCaseController {
       @PathVariable Long snippetId) {
     return testCaseService.updateTestCase(testCaseRequestDto, userId, testCaseId, snippetId);
   }
+
+  //TODO: add endpoint to test a test case :)
 }

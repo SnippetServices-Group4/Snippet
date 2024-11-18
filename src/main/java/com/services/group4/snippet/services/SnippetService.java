@@ -204,15 +204,13 @@ public class SnippetService {
 
     Snippet snippet = snippetOptional.get();
 
-    // TODO: delete snippet content from blob storage from infra bucket
-    blobStorageService.deleteSnippet(container, snippet.getId());
-
     try {
       ResponseEntity<ResponseDto<Long>> responseOwnership =
           permissionService.deletePermissions(snippetId, userId);
 
       if (responseOwnership.getStatusCode().equals(HttpStatus.OK)) {
         snippetRepository.delete(snippet);
+        blobStorageService.deleteSnippet(container, snippet.getId());
         return FullResponse.create("Snippet deleted", "snippetId", snippetId, HttpStatus.OK);
       }
       return FullResponse.create(

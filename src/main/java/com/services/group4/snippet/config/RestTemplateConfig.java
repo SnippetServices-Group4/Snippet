@@ -20,6 +20,6 @@ public class RestTemplateConfig {
     interceptors.add(correlationIdInterceptor);
     restTemplate.setInterceptors(interceptors);
 
-    return new RestTemplate();
+    return restTemplate;
   }
 }

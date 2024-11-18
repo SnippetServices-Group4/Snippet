@@ -23,15 +23,18 @@ public class SnippetService {
   final SnippetRepository snippetRepository;
   final BlobStorageService blobStorageService;
   final PermissionService permissionService;
+  final TestCaseService testCaseService;
 
   @Autowired
   public SnippetService(
       SnippetRepository snippetRepository,
       BlobStorageService blobStorageService,
-      PermissionService permissionService) {
+      PermissionService permissionService,
+      TestCaseService testCaseService) {
     this.snippetRepository = snippetRepository;
     this.blobStorageService = blobStorageService;
     this.permissionService = permissionService;
+    this.testCaseService = testCaseService;
   }
 
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
@@ -167,6 +170,9 @@ public class SnippetService {
         Snippet snippet = snippetOptional.get();
 
         blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.content());
+
+        //TODO: add async communication
+        testCaseService.executeSnippetTestCases(snippet.getId());
 
         CompleteSnippetResponseDto completeSnippetResponseDto =
             new CompleteSnippetResponseDto(

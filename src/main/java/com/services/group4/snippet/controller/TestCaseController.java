@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/testCase")
@@ -31,10 +33,10 @@ public class TestCaseController {
     return testCaseService.createTestCase(testCaseRequestDto, userId, snippetId);
   }
 
-  @GetMapping("/get/{testCaseId}")
-  public ResponseEntity<ResponseDto<TestCaseResponseStateDto>> getTestCase(
-      @PathVariable Long testCaseId) {
-    return testCaseService.getTestCase(testCaseId);
+  @GetMapping("/getAll/{snippetId}")
+  public ResponseEntity<ResponseDto<List<TestCaseResponseStateDto>>> getTestCase(
+      @PathVariable Long snippetId) {
+    return testCaseService.getTestCase(snippetId);
   }
 
 

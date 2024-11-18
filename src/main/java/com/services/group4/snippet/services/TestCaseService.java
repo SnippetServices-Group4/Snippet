@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class TestCaseService {
@@ -54,20 +56,23 @@ public class TestCaseService {
     }
   }
 
-  public ResponseEntity<ResponseDto<TestCaseResponseStateDto>> getTestCase(Long testCaseId) {
-    TestCase testCase = testCaseRepository.findById(testCaseId).orElse(null);
-    if (testCase == null) {
+  public ResponseEntity<ResponseDto<List<TestCaseResponseStateDto>>> getTestCase(Long snippetId) {
+
+    Optional<List<TestCase>> optionalTestCases = testCaseRepository.findTestCaseBySnippetId(snippetId);
+
+    if (optionalTestCases.isEmpty()) {
       return FullResponse.create("Test case not found", "testCase", null, HttpStatus.NOT_FOUND);
     }
 
-    TestCaseResponseStateDto testCaseResponseDto =
-        new TestCaseResponseStateDto(
-            testCase.getId(),
-            testCase.getName(),
-            testCase.getState(),
-            testCase.getInputs(),
-            testCase.getOutputs());
-    return FullResponse.create("Test case found", "testCase", testCaseResponseDto, HttpStatus.OK);
+    List<TestCaseResponseStateDto> testCases = optionalTestCases.get().
+        stream().map(
+            testCase -> new TestCaseResponseStateDto(
+                testCase.getId(), testCase.getName(),
+                testCase.getState(), testCase.getInputs(),
+                testCase.getOutputs())
+        ).toList();
+
+    return FullResponse.create("Test cases found successfully", "testCases", testCases, HttpStatus.OK);
   }
 
 

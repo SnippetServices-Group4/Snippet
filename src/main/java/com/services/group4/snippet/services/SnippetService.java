@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SnippetService {
@@ -34,6 +35,7 @@ public class SnippetService {
     this.permissionService = permissionService;
   }
 
+  @Transactional
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       SnippetDto snippetDto, String username, String userId) {
     Language language =
@@ -61,7 +63,6 @@ public class SnippetService {
           completeSnippetResponseDto,
           HttpStatus.CREATED);
     }
-    snippetRepository.delete(snippet);
     return FullResponse.create(
         "Something went wrong creating the snippet",
         "snippet",
@@ -85,7 +86,6 @@ public class SnippetService {
           || hasPermission.getBody().data().data()) {
         Snippet snippet = snippetOptional.get();
 
-        // TODO: get snippet content from blob storage from infra bucket
         Optional<String> content = blobStorageService.getSnippet(container, snippetId);
 
         if (content.isEmpty()) {
@@ -161,15 +161,13 @@ public class SnippetService {
 
     try {
       ResponseEntity<ResponseDto<Boolean>> hasPermission =
-          permissionService.updateSnippet(userId, id);
+          permissionService.hasOwnershipPermission(userId, id);
 
       if (Objects.requireNonNull(hasPermission.getBody()).data() != null
           && hasPermission.getBody().data().data()) {
         Snippet snippet = snippetOptional.get();
 
         blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.content());
-
-        snippetRepository.save(snippet);
 
         CompleteSnippetResponseDto completeSnippetResponseDto =
             new CompleteSnippetResponseDto(

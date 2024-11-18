@@ -17,7 +17,7 @@ public interface PermissionsClient {
   @RequestMapping(
       method = RequestMethod.GET,
       value = "/ownership/permission/{userId}/for/{snippetId}")
-  ResponseEntity<ResponseDto<Boolean>> updateSnippet(
+  ResponseEntity<ResponseDto<Boolean>> hasOwnershipPermission(
       @PathVariable String userId, @PathVariable Long snippetId);
 
   @RequestMapping(method = RequestMethod.POST, value = "/ownership/createRelation")

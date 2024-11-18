@@ -2,16 +2,8 @@ package com.services.group4.snippet.model;
 
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.states.snippet.SnippetState;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import java.util.List;
 import lombok.Data;
 import lombok.Generated;
 
@@ -33,9 +25,6 @@ public class Snippet {
   @Embedded private Language language;
 
   @Embedded private SnippetState status = new SnippetState();
-
-  @OneToMany(mappedBy = "snippet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<TestCase> testCases;
 
   public Snippet() {}
 

@@ -1,4 +1,4 @@
-package com.services.group4.snippet.controller;
+package com.services.group4.snippet.controller.test;
 
 import com.services.group4.snippet.model.CommunicationMessage;
 import org.springframework.web.bind.annotation.GetMapping;

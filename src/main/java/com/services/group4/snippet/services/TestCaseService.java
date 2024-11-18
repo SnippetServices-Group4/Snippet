@@ -8,6 +8,7 @@ import com.services.group4.snippet.dto.testCase.response.TestCaseResponseDto;
 import com.services.group4.snippet.dto.testCase.response.TestCaseResponseStateDto;
 import com.services.group4.snippet.model.TestCase;
 import com.services.group4.snippet.repositories.TestCaseRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,7 @@ public class TestCaseService {
     }
   }
 
+
   public ResponseEntity<ResponseDto<List<TestCaseResponseStateDto>>> getTestCase(Long snippetId) {
 
     Optional<List<TestCase>> optionalTestCases = testCaseRepository.findTestCaseBySnippetId(snippetId);
@@ -97,6 +99,38 @@ public class TestCaseService {
         return FullResponse.create("You don't have permission to delete the test case", "testCase", testCase.getName(), HttpStatus.FORBIDDEN);
       } catch (Exception e){
         return FullResponse.create("You don't have permission to delete the test case", "testCase", testCase.getName(), HttpStatus.FORBIDDEN);
+      }
+  }
+
+
+  public ResponseEntity<ResponseDto<TestCaseResponseStateDto>> updateTestCase(@Valid TestCaseRequestDto testCaseRequestDto, String userId, Long testCaseId, Long snippetId) {
+
+      Optional<TestCase> optionalTestCase = testCaseRepository.findById(testCaseId);
+
+      if (optionalTestCase.isEmpty()) {
+        return FullResponse.create("Test case not found", "testCase", null, HttpStatus.NOT_FOUND);
+      }
+
+      TestCase testCase = optionalTestCase.get();
+
+
+      try {
+        ResponseEntity<ResponseDto<Boolean>> hasPermission = permissionService.hasOwnershipPermission(userId, snippetId);
+
+        if (Objects.requireNonNull(hasPermission.getBody()).data() != null
+            && hasPermission.getBody().data().data()) {
+          testCase.setName(testCaseRequestDto.name());
+          testCase.setInputs(testCaseRequestDto.inputs());
+          testCase.setOutputs(testCaseRequestDto.outputs());
+          testCaseRepository.save(testCase);
+          return FullResponse.create("Test case updated successfully", "testCase",
+              new TestCaseResponseStateDto(testCase.getId(), testCase.getName(),
+                  testCase.getState(), testCase.getInputs(), testCase.getOutputs()),
+              HttpStatus.OK);
+        }
+        return FullResponse.create("You don't have permission to update the test case", "testCase", null, HttpStatus.FORBIDDEN);
+      } catch (Exception e){
+        return FullResponse.create("You don't have permission to update the test case", "testCase", null, HttpStatus.FORBIDDEN);
       }
   }
 }

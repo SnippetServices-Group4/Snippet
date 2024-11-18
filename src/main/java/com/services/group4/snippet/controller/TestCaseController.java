@@ -47,4 +47,12 @@ public class TestCaseController {
     return testCaseService.deleteTestCase(userId, testCaseId, snippetId);
   }
 
+  @PutMapping("/update/{testCaseId}/for/{snippetId}")
+  public ResponseEntity<ResponseDto<TestCaseResponseStateDto>> updateTestCase(
+      @RequestBody @Valid TestCaseRequestDto testCaseRequestDto,
+      @RequestHeader("userId") String userId,
+      @PathVariable Long testCaseId,
+      @PathVariable Long snippetId) {
+    return testCaseService.updateTestCase(testCaseRequestDto, userId, testCaseId, snippetId);
+  }
 }

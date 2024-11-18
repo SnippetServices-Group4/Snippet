@@ -168,8 +168,6 @@ public class SnippetService {
 
         blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.content());
 
-        snippetRepository.save(snippet);
-
         CompleteSnippetResponseDto completeSnippetResponseDto =
             new CompleteSnippetResponseDto(
                 snippet.getId(),

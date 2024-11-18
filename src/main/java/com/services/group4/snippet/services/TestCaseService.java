@@ -76,4 +76,27 @@ public class TestCaseService {
   }
 
 
+  public ResponseEntity<ResponseDto<String>> deleteTestCase(String userId, Long testCaseId, Long snippetId) {
+
+      Optional<TestCase> optionalTestCase = testCaseRepository.findById(testCaseId);
+
+      if (optionalTestCase.isEmpty()) {
+        return FullResponse.create("Test case not found", "testCase", null, HttpStatus.NOT_FOUND);
+      }
+
+      TestCase testCase = optionalTestCase.get();
+
+      try {
+        ResponseEntity<ResponseDto<Boolean>> hasPermission = permissionService.hasOwnershipPermission(userId, snippetId);
+
+        if (Objects.requireNonNull(hasPermission.getBody()).data() != null
+            && hasPermission.getBody().data().data()) {
+          testCaseRepository.delete(testCase);
+          return FullResponse.create("Test case deleted successfully", "testCase", testCase.getName(), HttpStatus.OK);
+        }
+        return FullResponse.create("You don't have permission to delete the test case", "testCase", testCase.getName(), HttpStatus.FORBIDDEN);
+      } catch (Exception e){
+        return FullResponse.create("You don't have permission to delete the test case", "testCase", testCase.getName(), HttpStatus.FORBIDDEN);
+      }
+  }
 }

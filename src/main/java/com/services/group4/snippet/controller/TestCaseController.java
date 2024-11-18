@@ -39,5 +39,12 @@ public class TestCaseController {
     return testCaseService.getTestCase(snippetId);
   }
 
+  @DeleteMapping("/delete/{testCaseId}/for/{snippetId}")
+  public ResponseEntity<ResponseDto<String>> deleteTestCase(
+      @RequestHeader("userId") String userId,
+      @PathVariable Long testCaseId,
+      @PathVariable Long snippetId) {
+    return testCaseService.deleteTestCase(userId, testCaseId, snippetId);
+  }
 
 }

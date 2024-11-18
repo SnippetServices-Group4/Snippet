@@ -171,7 +171,7 @@ public class SnippetService {
 
         blobStorageService.saveSnippet(container, snippet.getId(), snippetRequest.content());
 
-        //TODO: add async communication
+        // TODO: add async communication
         testCaseService.executeSnippetTestCases(snippet.getId());
 
         CompleteSnippetResponseDto completeSnippetResponseDto =

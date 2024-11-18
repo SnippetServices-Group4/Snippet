@@ -2,6 +2,7 @@ package com.services.group4.snippet.services.async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.model.TestCase;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +10,6 @@ import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 public class TestEventProducer {
@@ -20,7 +19,9 @@ public class TestEventProducer {
 
   @Autowired
   public TestEventProducer(
-      @Value("${stream.test.key}") String streamKey, @NotNull RedisTemplate<String, String> redis, ObjectMapper mapper) {
+      @Value("${stream.test.key}") String streamKey,
+      @NotNull RedisTemplate<String, String> redis,
+      ObjectMapper mapper) {
     this.streamKey = streamKey;
     this.redis = redis;
     this.mapper = mapper;

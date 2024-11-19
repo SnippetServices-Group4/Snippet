@@ -8,28 +8,31 @@ import com.services.group4.snippet.dto.testCase.response.TestCaseResponseDto;
 import com.services.group4.snippet.dto.testCase.response.TestCaseResponseStateDto;
 import com.services.group4.snippet.model.TestCase;
 import com.services.group4.snippet.repositories.TestCaseRepository;
+import com.services.group4.snippet.services.async.TestEventProducer;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TestCaseService {
-
+  final TestEventProducer testEventProducer;
   final TestCaseRepository testCaseRepository;
   final PermissionService permissionService;
 
   public TestCaseService(
-      TestCaseRepository testCaseRepository, PermissionService permissionService) {
+      TestCaseRepository testCaseRepository,
+      PermissionService permissionService,
+      TestEventProducer testEventProducer) {
     this.testCaseRepository = testCaseRepository;
     this.permissionService = permissionService;
+    this.testEventProducer = testEventProducer;
   }
 
-  @Transactional
   public ResponseEntity<ResponseDto<TestCaseResponseDto>> createTestCase(
       TestCaseRequestDto testCaseRequestDto, String userId, Long snippetId) {
 
@@ -55,12 +58,14 @@ public class TestCaseService {
         return FullResponse.create(
             "Test case created successfully", "testCase", testCaseResponseDto, HttpStatus.CREATED);
       }
+      testCaseRepository.delete(testCase);
       return FullResponse.create(
           "Something went wrong creating the test case",
           "testCase",
           null,
           HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (Exception e) {
+      testCaseRepository.delete(testCase);
       return FullResponse.create(
           "You don't have permission to create a test case",
           "testCase",
@@ -127,6 +132,37 @@ public class TestCaseService {
           testCase.getName(),
           HttpStatus.FORBIDDEN);
     }
+  }
+
+  public List<Long> executeSnippetTestCases(Long snippetId) {
+    Optional<List<TestCase>> optionalTestCases =
+        testCaseRepository.findTestCaseBySnippetId(snippetId);
+
+    if (optionalTestCases.isPresent()) {
+      List<TestCase> testCases = optionalTestCases.get();
+
+      return publishTestingEvents(snippetId, testCases);
+    }
+
+    return List.of();
+  }
+
+  private List<Long> publishTestingEvents(Long snippetId, List<TestCase> testCases) {
+    List<Long> testCaseIds = new ArrayList<>();
+
+    try {
+      for (TestCase testCase : testCases) {
+        System.out.println("Producing testing event for snippet: " + snippetId);
+
+        testEventProducer.publishEvent(snippetId, testCase);
+
+        testCaseIds.add(testCase.getId());
+      }
+    } catch (Exception e) {
+      return List.of();
+    }
+
+    return testCaseIds;
   }
 
   public ResponseEntity<ResponseDto<TestCaseResponseStateDto>> updateTestCase(

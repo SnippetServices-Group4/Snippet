@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -32,11 +33,20 @@ public class RequestLogFilter implements Filter {
       String method = httpRequest.getMethod();
       String prefix = method + " " + uri;
 
+      logger.info(
+          "(SnippetService) Received request: {} with Correlation ID: {}",
+          prefix,
+          MDC.get(CorrelationIdFilter.CORRELATION_ID_KEY));
+
       try {
         chain.doFilter(request, response);
       } finally {
         int statusCode = httpResponse.getStatus();
-        logger.info("{} - {}", prefix, statusCode);
+        logger.info(
+            "(SnippetService) {} - Status Code: {} - Correlation ID: {}",
+            prefix,
+            statusCode,
+            MDC.get(CorrelationIdFilter.CORRELATION_ID_KEY));
       }
     } else {
       chain.doFilter(request, response);

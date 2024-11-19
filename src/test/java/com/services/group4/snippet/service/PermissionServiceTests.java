@@ -52,15 +52,12 @@ class PermissionServiceTests {
 
   @Test
   void testHasPermissionOnSnippet() {
-    // Mock del cliente
     when(permissionsClient.hasPermission(anyString(), anyLong()))
         .thenReturn(FullResponse.create("Permission granted", "data", true, HttpStatus.OK));
 
-    // Ejecutar método
     ResponseEntity<ResponseDto<Boolean>> response =
         permissionService.hasPermissionOnSnippet("user1", 1L);
 
-    // Aserciones
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertTrue(response.getBody().data().data());
@@ -69,15 +66,12 @@ class PermissionServiceTests {
 
   @Test
   void testHasOwnershipPermission() {
-    // Mock del cliente
     when(permissionsClient.hasOwnershipPermission(anyString(), anyLong()))
         .thenReturn(FullResponse.create("Permission granted", "data", true, HttpStatus.OK));
 
-    // Ejecutar método
     ResponseEntity<ResponseDto<Boolean>> response =
         permissionService.hasOwnershipPermission("user1", 1L);
 
-    // Aserciones
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertTrue(response.getBody().data().data());
@@ -86,15 +80,12 @@ class PermissionServiceTests {
 
   @Test
   void testGrantOwnerPermission() {
-    // Mock del cliente
     when(permissionsClient.addedSnippet(any(RequestDtoSnippet.class)))
         .thenReturn(FullResponse.create("Permission granted", "data", 1L, HttpStatus.OK));
 
-    // Ejecutar método
     ResponseEntity<ResponseDto<Long>> response =
         permissionService.grantOwnerPermission(1L, "user1");
 
-    // Aserciones
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(1L, response.getBody().data().data());
@@ -103,15 +94,12 @@ class PermissionServiceTests {
 
   @Test
   void testShareSnippet() {
-    // Mock del cliente
     when(permissionsClient.shareSnippet(any(RequestDtoShareSnippet.class)))
         .thenReturn(FullResponse.create("Permission granted", "data", 1L, HttpStatus.OK));
 
-    // Ejecutar método
     ResponseEntity<ResponseDto<Long>> response =
         permissionService.shareSnippet(1L, "user1", "user2");
 
-    // Aserciones
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(1L, response.getBody().data().data());

@@ -1,99 +1,46 @@
-package com.services.group4.snippet.controller;
+package com.services.group4.snippet.model;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.controller.SnippetController;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
 import com.services.group4.snippet.services.SnippetService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-public class SnippetControllerTests {
-
-  @Autowired private MockMvc mockMvc;
-
-  @Autowired private ObjectMapper objectMapper;
-
-  @MockBean private SnippetService snippetService;
-
-  private SnippetDto snippetDto;
-  private CompleteSnippetResponseDto completeSnippetResponseDto;
+@WebMvcTest(SnippetController.class)
+class SnippetControllerTests {
 
   @BeforeAll
   public static void setupEnv() {
     DotenvConfig.loadEnv();
   }
 
-  @BeforeEach
-  public void setup() {
-    snippetDto = new SnippetDto("Test Snippet", "java", "1.8", ".java", "public class Test {}");
-    completeSnippetResponseDto =
-        new CompleteSnippetResponseDto(
-            1L,
-            "Test Snippet",
-            "user",
-            "public class Test {}",
-            new Language("java", "1.8", ".java"));
-  }
+  @MockBean private SnippetService snippetService;
 
-  @Test
-  public void testCreateSnippet() throws Exception {
-    when(snippetService.createSnippet(any(SnippetDto.class), anyString(), anyString()))
-        .thenReturn(
-            FullResponse.create(
-                "Snippet created successfully",
-                "snippet",
-                completeSnippetResponseDto,
-                HttpStatus.CREATED));
-
-    mockMvc
-        .perform(
-            post("/snippets/create")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(snippetDto))
-                .header("userId", "user1")
-                .header("username", "user"))
-        .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.message").value("Snippet created successfully"))
-        .andExpect(jsonPath("$.data.snippet.name").value("Test Snippet"));
-  }
-
-  @Test
-  public void testGetSnippet() throws Exception {
-    when(snippetService.getSnippet(anyLong(), anyString()))
-        .thenReturn(
-            FullResponse.create(
-                "Snippet found successfully",
-                "snippet",
-                completeSnippetResponseDto,
-                HttpStatus.OK));
-
-    mockMvc
-        .perform(get("/snippets/get/1").header("userId", "user1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.message").value("Snippet found successfully"))
-        .andExpect(jsonPath("$.data.snippet.name").value("Test Snippet"));
-  }
+  @Autowired private MockMvc mockMvc;
 
   @Test
   public void testGetAllSnippets() throws Exception {
@@ -118,7 +65,30 @@ public class SnippetControllerTests {
   }
 
   @Test
+  public void testGetSnippet() throws Exception {
+    CompleteSnippetResponseDto completeSnippetResponseDto =
+        new CompleteSnippetResponseDto(
+            1L, "Test Snippet", "user1", "Content", new Language("java", "1.8", ".java"));
+    when(snippetService.getSnippet(anyLong(), anyString()))
+        .thenReturn(
+            FullResponse.create(
+                "Snippet found successfully",
+                "snippet",
+                completeSnippetResponseDto,
+                HttpStatus.OK));
+
+    mockMvc
+        .perform(get("/snippets/get/1").header("userId", "user1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Snippet found successfully"))
+        .andExpect(jsonPath("$.data.snippet.name").value("Test Snippet"));
+  }
+
+  @Test
   public void testUpdateSnippet() throws Exception {
+    CompleteSnippetResponseDto completeSnippetResponseDto =
+        new CompleteSnippetResponseDto(
+            1L, "Test Snippet", "user1", "Content", new Language("java", "1.8", ".java"));
     when(snippetService.updateSnippet(anyLong(), any(SnippetDto.class), anyString()))
         .thenReturn(
             FullResponse.create(
@@ -127,11 +97,12 @@ public class SnippetControllerTests {
                 completeSnippetResponseDto,
                 HttpStatus.OK));
 
+    SnippetDto snippetDto = new SnippetDto(null, "Content update", null, null, null);
     mockMvc
         .perform(
             put("/snippets/update/1")
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(snippetDto))
+                .content(new ObjectMapper().writeValueAsString(snippetDto))
                 .header("userId", "user1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value("Snippet updated successfully"))

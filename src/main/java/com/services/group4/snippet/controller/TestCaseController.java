@@ -6,12 +6,11 @@ import com.services.group4.snippet.dto.testCase.response.TestCaseResponseDto;
 import com.services.group4.snippet.dto.testCase.response.TestCaseResponseStateDto;
 import com.services.group4.snippet.services.TestCaseService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -56,5 +55,5 @@ public class TestCaseController {
     return testCaseService.updateTestCase(testCaseRequestDto, userId, testCaseId, snippetId);
   }
 
-  //TODO: add endpoint to test a test case :)
+  // TODO: add endpoint to test a test case :)
 }

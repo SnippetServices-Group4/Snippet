@@ -15,6 +15,7 @@ import com.services.group4.snippet.repositories.SnippetRepository;
 import com.services.group4.snippet.services.BlobStorageService;
 import com.services.group4.snippet.services.PermissionService;
 import com.services.group4.snippet.services.SnippetService;
+import com.services.group4.snippet.services.TestCaseService;
 import feign.FeignException;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class SnippetServiceTests {
   @Mock private PermissionService permissionService;
 
   @Mock private BlobStorageService blobStorageService;
+
+  @Mock private TestCaseService testCaseService;
 
   @InjectMocks private SnippetService snippetService;
 

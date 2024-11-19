@@ -1,4 +1,4 @@
-package com.services.group4.snippet.communication.json;
+package com.services.group4.snippet.json;
 
 import static org.junit.jupiter.api.Assertions.*;
 

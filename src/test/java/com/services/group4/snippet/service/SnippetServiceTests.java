@@ -144,6 +144,23 @@ public class SnippetServiceTests {
   }
 
   @Test
+  public void testDeleteSnippet_Forbidden() {
+    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
+    Long snippetId = 1L;
+
+    when(snippetRepository.findById(anyLong())).thenReturn(Optional.of(snippet));
+    when(permissionService.deletePermissions(1L, "user1"))
+        .thenReturn(
+            FullResponse.create("Permission denied", "snippetId", 1L, HttpStatus.FORBIDDEN));
+
+    // Test execution
+    ResponseEntity<ResponseDto<Long>> response = snippetService.deleteSnippet(1L, "user1");
+
+    // Assertions
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+  }
+
+  @Test
   public void testUpdateSnippet_INTERNALERROR() {
     SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
     Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
@@ -186,5 +203,20 @@ public class SnippetServiceTests {
     // Assertions
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("Snippet shared successfully", response.getBody().message());
+  }
+
+  @Test
+  public void testUpdateSnippet_Empty() {
+    SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
+    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
+
+    when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+    ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
+        snippetService.updateSnippet(1L, snippetDto, "user1");
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals("Snippet not found", response.getBody().message());
   }
 }

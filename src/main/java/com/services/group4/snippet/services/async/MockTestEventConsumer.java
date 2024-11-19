@@ -37,10 +37,12 @@ public class MockTestEventConsumer extends RedisStreamConsumer<String> {
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
+      Long testId = (Long) ((Integer) messageMap.get("testId")).longValue();
       String inputsJson = (String) messageMap.get("inputs");
       String outputsJson = (String) messageMap.get("outputs");
 
       System.out.println("SnippetId: " + snippetId);
+      System.out.println("TestId: " + testId);
       System.out.println("Inputs JSON String: " + inputsJson);
       System.out.println("Outputs JSON String: " + outputsJson);
 

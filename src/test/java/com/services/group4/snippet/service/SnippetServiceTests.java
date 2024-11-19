@@ -142,4 +142,49 @@ public class SnippetServiceTests {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(snippetId, response.getBody().data().data());
   }
+
+  @Test
+  public void testUpdateSnippet_INTERNALERROR() {
+    SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
+    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
+
+    when(snippetRepository.findById(anyLong())).thenReturn(Optional.of(snippet));
+    when(permissionService.hasOwnershipPermission(anyString(), anyLong()))
+        .thenReturn(
+            FullResponse.create("Permission denied", "permission", false, HttpStatus.FORBIDDEN));
+
+    ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
+        snippetService.updateSnippet(1L, snippetDto, "user1");
+
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    assertEquals("Something went wrong updating the snippet", response.getBody().message());
+  }
+
+  @Test
+  public void testDeleteSnippetNotFound() {
+    // Mocking
+    when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+    // Test execution
+    ResponseEntity<ResponseDto<Long>> response = snippetService.deleteSnippet(1L, "user1");
+
+    // Assertions
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertEquals("Snippet not found", response.getBody().message());
+  }
+
+  @Test
+  public void testShareSnippet() {
+    // Mocking
+    when(permissionService.shareSnippet(anyLong(), anyString(), anyString()))
+        .thenReturn(
+            FullResponse.create("Snippet shared successfully", "snippetId", 1L, HttpStatus.OK));
+
+    // Test execution
+    ResponseEntity<ResponseDto<Long>> response = snippetService.shareSnippet(1L, "owner1", "user2");
+
+    // Assertions
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Snippet shared successfully", response.getBody().message());
+  }
 }

@@ -17,6 +17,8 @@ import com.services.group4.snippet.services.PermissionService;
 import com.services.group4.snippet.services.SnippetService;
 import java.util.List;
 import java.util.Optional;
+
+import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -219,4 +221,44 @@ public class SnippetServiceTests {
     assertNotNull(response.getBody());
     assertEquals("Snippet not found", response.getBody().message());
   }
+
+  @Test
+  public void testShareSnippet_FeignExceptionForbidden() {
+    Long snippetId = 1L;
+    String ownerId = "owner1";
+    String targetUserId = "user2";
+
+    // Simula que el FeignClient lanza una FeignException.Forbidden
+    doThrow(FeignException.Forbidden.class)
+        .when(permissionService)
+        .shareSnippet(snippetId, ownerId, targetUserId);
+
+    ResponseEntity<ResponseDto<Long>> response =
+        snippetService.shareSnippet(snippetId, ownerId, targetUserId);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals("User does not have permission to share this snippet", response.getBody().message());
+  }
+
+  @Test
+  public void testGetAllSnippet_NotFound() {
+    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
+    List<Long> snippetIds = List.of(1L);
+
+    when(permissionService.getAllowedSnippets(anyString()))
+        .thenReturn(
+            FullResponse.create("Permission not found", "snippetIds", null, HttpStatus.NOT_FOUND));
+    when(snippetRepository.findSnippetById(anyLong())).thenReturn(Optional.of(snippet));
+
+    ResponseEntity<ResponseDto<List<SnippetResponseDto>>> response =
+        snippetService.getAllSnippet("user1");
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertNull(response.getBody().data().data());
+  }
+
+
+
 }

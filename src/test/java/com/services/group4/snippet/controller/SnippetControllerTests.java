@@ -1,4 +1,4 @@
-package com.services.group4.snippet.model;
+package com.services.group4.snippet.controller;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
-import com.services.group4.snippet.controller.SnippetController;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
@@ -132,5 +131,42 @@ class SnippetControllerTests {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value("Snippet shared successfully"))
         .andExpect(jsonPath("$.data.snippetId").value(1L));
+  }
+
+  @Test
+  public void testCreateSnippet() throws Exception {
+    CompleteSnippetResponseDto completeSnippetResponseDto =
+        new CompleteSnippetResponseDto(
+            1L, "Test Snippet", "user1", "Content", new Language("java", "1.8", ".java"));
+    when(snippetService.createSnippet(any(SnippetDto.class), anyString(), anyString()))
+        .thenReturn(
+            FullResponse.create(
+                "Snippet created successfully",
+                "snippet",
+                completeSnippetResponseDto,
+                HttpStatus.CREATED));
+
+    SnippetDto snippetDto = new SnippetDto("Test Snippet", "Content", "1.8", "java", ".java");
+    mockMvc
+        .perform(
+            post("/snippets/create")
+                .contentType("application/json")
+                .content(new ObjectMapper().writeValueAsString(snippetDto))
+                .header("userId", "user1")
+                .header("username", "user1"))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.message").value("Snippet created successfully"))
+        .andExpect(jsonPath("$.data.snippet.name").value("Test Snippet"));
+  }
+
+  @Test
+  public void testGetAllSnippetsCatch() throws Exception {
+    when(snippetService.getAllSnippet(anyString()))
+        .thenThrow(new RuntimeException("Error fetching snippets"));
+
+    mockMvc
+        .perform(get("/snippets/getAll").header("userId", "user1"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Error fetching snippets"));
   }
 }

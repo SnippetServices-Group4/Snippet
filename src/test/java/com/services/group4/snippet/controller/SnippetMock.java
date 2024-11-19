@@ -1,6 +1,7 @@
-package com.services.group4.snippet.model;
+package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.model.Snippet;
 import java.util.List;
 
 public class SnippetMock {

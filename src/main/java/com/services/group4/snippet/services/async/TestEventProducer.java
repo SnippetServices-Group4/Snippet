@@ -46,6 +46,7 @@ public class TestEventProducer {
       Map<String, Object> message =
           Map.of(
               "snippetId", snippetId,
+              "testId", testCase.getId(),
               "inputs", jsonInputs,
               "outputs", jsonOutputs);
 

@@ -20,7 +20,7 @@ import java.util.Map;
 public class LintEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
   private final SnippetService snippetService;
-  private final FinalFormatEventProducer publisher;
+  private final FinalLintEventProducer publisher;
 
   @Autowired
   public LintEventConsumer(
@@ -28,7 +28,7 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
       @Value("${groups.lint}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
       @NotNull SnippetService snippetService,
-      @NotNull FinalFormatEventProducer publisher) {
+      @NotNull FinalLintEventProducer publisher) {
     super(streamKey, groupId, redis);
     this.mapper = new ObjectMapper();
     this.snippetService = snippetService;

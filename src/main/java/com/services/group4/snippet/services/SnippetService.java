@@ -82,8 +82,8 @@ public class SnippetService {
       ResponseEntity<ResponseDto<Boolean>> hasPermission =
           permissionService.hasPermissionOnSnippet(userId, snippetId);
 
-      if (Objects.requireNonNull(hasPermission.getBody()).data() != null
-          || hasPermission.getBody().data().data()) {
+      if (Objects.requireNonNull(hasPermission.getBody()).data().data() != null
+          && hasPermission.getBody().data().data()) {
         Snippet snippet = snippetOptional.get();
 
         Optional<String> content = blobStorageService.getSnippet(container, snippetId);

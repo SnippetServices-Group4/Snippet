@@ -10,7 +10,6 @@ import com.services.group4.snippet.model.TestCase;
 import com.services.group4.snippet.repositories.TestCaseRepository;
 import com.services.group4.snippet.services.async.TestEventProducer;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -134,35 +133,22 @@ public class TestCaseService {
     }
   }
 
-  public List<Long> executeSnippetTestCases(Long snippetId) {
+  public void executeSnippetTestCases(Long snippetId) {
     Optional<List<TestCase>> optionalTestCases =
         testCaseRepository.findTestCaseBySnippetId(snippetId);
 
     if (optionalTestCases.isPresent()) {
       List<TestCase> testCases = optionalTestCases.get();
 
-      return publishTestingEvents(snippetId, testCases);
+      publishTestingEvents(snippetId, testCases);
     }
-
-    return List.of();
   }
 
-  private List<Long> publishTestingEvents(Long snippetId, List<TestCase> testCases) {
-    List<Long> testCaseIds = new ArrayList<>();
-
-    try {
-      for (TestCase testCase : testCases) {
-        System.out.println("Producing testing event for snippet: " + snippetId);
-
-        testEventProducer.publishEvent(snippetId, testCase);
-
-        testCaseIds.add(testCase.getId());
-      }
-    } catch (Exception e) {
-      return List.of();
+  private void publishTestingEvents(Long snippetId, List<TestCase> testCases) {
+    for (TestCase testCase : testCases) {
+      System.out.println("Producing testing event for snippet: " + snippetId);
+      testEventProducer.publishEvent(snippetId, testCase);
     }
-
-    return testCaseIds;
   }
 
   public ResponseEntity<ResponseDto<TestCaseResponseStateDto>> updateTestCase(

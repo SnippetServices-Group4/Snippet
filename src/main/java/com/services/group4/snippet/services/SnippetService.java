@@ -5,7 +5,7 @@ import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
-import com.services.group4.snippet.dto.snippet.response.snippetResponseDto;
+import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import feign.FeignException;
@@ -86,8 +86,8 @@ public class SnippetService {
       ResponseEntity<ResponseDto<Boolean>> hasPermission =
           permissionService.hasPermissionOnSnippet(userId, snippetId);
 
-      if (Objects.requireNonNull(hasPermission.getBody()).data() != null
-          || hasPermission.getBody().data().data()) {
+      if (Objects.requireNonNull(hasPermission.getBody()).data().data() != null
+          && hasPermission.getBody().data().data()) {
         Snippet snippet = snippetOptional.get();
 
         Optional<String> content = blobStorageService.getSnippet(container, snippetId);
@@ -122,7 +122,7 @@ public class SnippetService {
   }
 
   // este no va a tener el content del snippet solo la data de la tabla para la UI
-  public ResponseEntity<ResponseDto<List<snippetResponseDto>>> getAllSnippet(String userId) {
+  public ResponseEntity<ResponseDto<List<SnippetResponseDto>>> getAllSnippet(String userId) {
     ResponseEntity<ResponseDto<List<Long>>> snippetIds =
         permissionService.getAllowedSnippets(userId);
 
@@ -134,7 +134,7 @@ public class SnippetService {
           HttpStatus.NOT_FOUND);
     }
 
-    List<snippetResponseDto> snippets =
+    List<SnippetResponseDto> snippets =
         snippetIds.getBody().data().data().stream()
             .map(
                 snippetId ->
@@ -142,7 +142,7 @@ public class SnippetService {
                         .findSnippetById(snippetId)
                         .map(
                             snippet ->
-                                new snippetResponseDto(
+                                new SnippetResponseDto(
                                     snippet.getId(),
                                     snippet.getName(),
                                     snippet.getOwner(),

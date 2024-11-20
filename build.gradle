@@ -66,3 +66,45 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+def basePackage = 'com/services/group4/snippet/'
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "${basePackage}DotenvConfig.class",
+                    "${basePackage}CorrelationIdFilter.class",
+                    "${basePackage}CorrelationIdInterceptor.class",
+                    "${basePackage}RequestLogFilter.class",
+                    "${basePackage}services/async/TestEventProducer.class",
+                    "${basePackage}services/async/MockTestEventConsumer.class",
+                    "${basePackage}config/FeignConfig.class",
+                    "${basePackage}config/RestTemplateConfig.class",
+                    "${basePackage}controller/test/TestController.class",
+                    "${basePackage}model/CommunicationMessage.class",
+                    "${basePackage}security/WebConfig.class",
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "${basePackage}DotenvConfig.class",
+                    "${basePackage}CorrelationIdFilter.class",
+                    "${basePackage}CorrelationIdInterceptor.class",
+                    "${basePackage}RequestLogFilter.class",
+                    "${basePackage}services/async/TestEventProducer.class",
+                    "${basePackage}services/async/MockTestEventConsumer.class",
+                    "${basePackage}config/FeignConfig.class",
+                    "${basePackage}config/RestTemplateConfig.class",
+                    "${basePackage}controller/test/TestController.class",
+                    "${basePackage}model/CommunicationMessage.class",
+                    "${basePackage}security/WebConfig.class",
+            ])
+        }))
+    }
+}

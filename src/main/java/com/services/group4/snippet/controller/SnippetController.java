@@ -4,7 +4,7 @@ import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
-import com.services.group4.snippet.dto.snippet.response.snippetResponseDto;
+import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -42,11 +42,13 @@ public class SnippetController {
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<ResponseDto<List<snippetResponseDto>>> getAllSnippet(
+  public ResponseEntity<ResponseDto<List<SnippetResponseDto>>> getAllSnippet(
       @RequestHeader("userId") String userId) {
     try {
-      return snippetService.getAllSnippet(userId);
-    } catch (Exception e) { // "User doesn't have name to view any snippet"
+      ResponseEntity<ResponseDto<List<SnippetResponseDto>>> allSnippet =
+          snippetService.getAllSnippet(userId);
+      return allSnippet;
+    } catch (Exception e) {
       return FullResponse.create(e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
     }
   }

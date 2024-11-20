@@ -1,9 +1,12 @@
 package com.services.group4.snippet.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.services.group4.snippet.DotenvConfig;
@@ -46,7 +49,7 @@ class PermissionServiceTests {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(3, response.getBody().data().data().size());
-    assertEquals(1L, response.getBody().data().data().get(0));
+    assertEquals(1L, response.getBody().data().data().getFirst());
     verify(permissionsClient).getAllowedSnippets("user1");
   }
 

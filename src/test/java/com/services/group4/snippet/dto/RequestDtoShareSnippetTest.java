@@ -1,6 +1,8 @@
 package com.services.group4.snippet.dto;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.services.group4.snippet.dto.snippet.request.RequestDtoShareSnippet;
 import org.junit.jupiter.api.Test;
@@ -21,17 +23,13 @@ class RequestDtoShareSnippetTest {
     Exception exception =
         assertThrows(
             IllegalArgumentException.class,
-            () -> {
-              new RequestDtoShareSnippet(null, 1L, "targetUser456");
-            });
+            () -> new RequestDtoShareSnippet(null, 1L, "targetUser456"));
     assertEquals("userId and snippetId must not be null", exception.getMessage());
 
     exception =
         assertThrows(
             IllegalArgumentException.class,
-            () -> {
-              new RequestDtoShareSnippet("user123", null, "targetUser456");
-            });
+            () -> new RequestDtoShareSnippet("user123", null, "targetUser456"));
     assertEquals("userId and snippetId must not be null", exception.getMessage());
   }
 }

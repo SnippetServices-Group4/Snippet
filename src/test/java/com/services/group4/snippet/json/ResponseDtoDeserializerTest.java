@@ -1,7 +1,10 @@
 package com.services.group4.snippet.json;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import java.util.List;
@@ -24,14 +27,14 @@ class ResponseDtoDeserializerTest {
             }
         """;
 
-    ResponseDto<List<Long>> responseDto = objectMapper.readValue(json, ResponseDto.class);
+    ResponseDto<List<Long>> responseDto = objectMapper.readValue(json, new TypeReference<>() {});
 
     assertNotNull(responseDto);
     assertEquals("Test message", responseDto.message());
     assertNotNull(responseDto.data());
     assertEquals("snippetList", responseDto.data().name());
-    assertTrue(responseDto.data().data() instanceof List);
-    assertEquals(3, ((List<Long>) responseDto.data().data()).size());
+    assertInstanceOf(List.class, responseDto.data().data());
+    assertEquals(3, (responseDto.data().data()).size());
   }
 
   @Test
@@ -46,14 +49,14 @@ class ResponseDtoDeserializerTest {
             }
         """;
 
-    ResponseDto<List<Long>> responseDto = objectMapper.readValue(json, ResponseDto.class);
+    ResponseDto<List<Long>> responseDto = objectMapper.readValue(json, new TypeReference<>() {});
 
     assertNotNull(responseDto);
     assertEquals("Test message", responseDto.message());
     assertNotNull(responseDto.data());
     assertEquals("snippetList", responseDto.data().name());
-    assertTrue(responseDto.data().data() instanceof List);
-    assertEquals(3, ((List<Long>) responseDto.data().data()).size());
+    assertInstanceOf(List.class, responseDto.data().data());
+    assertEquals(3, (responseDto.data().data()).size());
   }
 
   @Test
@@ -68,7 +71,7 @@ class ResponseDtoDeserializerTest {
             }
         """;
 
-    ResponseDto<List<Long>> responseDto = objectMapper.readValue(json, ResponseDto.class);
+    ResponseDto<List<Long>> responseDto = objectMapper.readValue(json, new TypeReference<>() {});
 
     assertNotNull(responseDto);
     assertEquals("Test message", responseDto.message());

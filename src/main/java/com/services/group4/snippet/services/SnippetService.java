@@ -10,6 +10,7 @@ import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import feign.FeignException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -242,5 +243,13 @@ public class SnippetService {
           null,
           HttpStatus.FORBIDDEN);
     }
+  }
+
+  public Language getLanguage(Long snippetId) {
+    Optional<Snippet> snippet = snippetRepository.findById(snippetId);
+    if (snippet.isEmpty()) {
+      throw new NoSuchElementException("Snippet not found");
+    }
+    return snippet.get().getLanguage();
   }
 }

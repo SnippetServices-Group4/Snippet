@@ -1,7 +1,7 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
-import com.services.group4.snippet.dto.snippet.request.TestRunningDto;
+import com.services.group4.snippet.dto.testCase.request.TestRunningDto;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;

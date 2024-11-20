@@ -1,6 +1,6 @@
 package com.services.group4.snippet.clients;
 
-import com.services.group4.snippet.dto.snippet.request.TestRunningDto;
+import com.services.group4.snippet.dto.testCase.request.TestRunningDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

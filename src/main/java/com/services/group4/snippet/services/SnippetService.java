@@ -49,11 +49,9 @@ public class SnippetService {
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       SnippetDto snippetDto, String username, String userId) {
 
-    if (analyze(snippetDto)) return FullResponse.create(
-        "Snippet not created, because it has errors",
-        "snippet",
-        null,
-        HttpStatus.BAD_REQUEST);
+    if (analyze(snippetDto))
+      return FullResponse.create(
+          "Snippet not created, because it has errors", "snippet", null, HttpStatus.BAD_REQUEST);
 
     Language language =
         new Language(snippetDto.language(), snippetDto.version(), snippetDto.extension());
@@ -160,10 +158,7 @@ public class SnippetService {
                                     snippet.getName(),
                                     snippet.getOwner(),
                                     snippet.getLanguage(),
-                                    snippet.getStatus()
-                                )
-                        )
-            )
+                                    snippet.getStatus())))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .toList();
@@ -175,11 +170,9 @@ public class SnippetService {
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> updateSnippet(
       Long id, SnippetDto snippetRequest, String userId) {
 
-    if (analyze(snippetRequest)) return FullResponse.create(
-        "Snippet not created, because it has errors",
-        "snippet",
-        null,
-        HttpStatus.BAD_REQUEST);
+    if (analyze(snippetRequest))
+      return FullResponse.create(
+          "Snippet not created, because it has errors", "snippet", null, HttpStatus.BAD_REQUEST);
 
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 
@@ -225,9 +218,13 @@ public class SnippetService {
   }
 
   private boolean analyze(SnippetDto snippetRequest) {
-    ResponseEntity<ResponseDto<ValidationState>> analyzing = parserService.analyze(new ProcessingRequestDto(snippetRequest.version(), snippetRequest.language(), snippetRequest.content()));
+    ResponseEntity<ResponseDto<ValidationState>> analyzing =
+        parserService.analyze(
+            new ProcessingRequestDto(
+                snippetRequest.version(), snippetRequest.language(), snippetRequest.content()));
 
-    return analyzing.getStatusCode().isError() || (analyzing.getBody().data().data() == ValidationState.INVALID);
+    return analyzing.getStatusCode().isError()
+        || (analyzing.getBody().data().data() == ValidationState.INVALID);
   }
 
   public ResponseEntity<ResponseDto<Long>> deleteSnippet(Long snippetId, String userId) {

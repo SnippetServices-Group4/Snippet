@@ -25,8 +25,7 @@ public class Snippet {
 
   @Embedded private Language language;
 
-  @NotNull
-  private LintStatus status;
+  @NotNull private LintStatus status;
 
   public Snippet() {}
 

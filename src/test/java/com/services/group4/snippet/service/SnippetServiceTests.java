@@ -17,6 +17,7 @@ import com.services.group4.snippet.repositories.SnippetRepository;
 import com.services.group4.snippet.services.*;
 import feign.FeignException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -347,4 +348,18 @@ public class SnippetServiceTests {
   //    assertEquals(snippet.getName(), response.getBody().data().data().name());
   //  }
 
+  @Test
+  public void getLanguage(){
+    Language language = new Language("java", "1.8", ".java");
+    when(snippetRepository.findById(anyLong())).thenReturn(Optional.of(new Snippet("Test Snippet", "user1", language)));
+    Language l = snippetService.getLanguage(1L);
+    assertEquals(language, l);
+  }
+
+  @Test
+  public void getLanguageException(){
+    Language language = new Language("java", "1.8", ".java");
+    when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
+    assertThrows(NoSuchElementException.class, () -> snippetService.getLanguage(1L));
+  }
 }

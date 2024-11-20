@@ -29,6 +29,10 @@ public class Snippet {
 
   public Snippet() {}
 
+  public Snippet(String name, String owner, Language languageVersion) {
+    this(name, owner, languageVersion, LintStatus.NON_COMPLIANT);
+  }
+
   public Snippet(String name, String owner, Language languageVersion, LintStatus status) {
     this.name = name;
     this.owner = owner;

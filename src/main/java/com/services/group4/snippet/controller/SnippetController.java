@@ -1,15 +1,14 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
-import com.services.group4.snippet.dto.testCase.request.TestRunningDto;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
+import com.services.group4.snippet.dto.testCase.request.TestRunningDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +43,8 @@ public class SnippetController {
   }
 
   @GetMapping("/getInfo/{snippetId}")
-  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(@PathVariable Long snippetId) {
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(
+      @PathVariable Long snippetId) {
     return snippetService.getSnippetInfo(snippetId);
   }
 
@@ -52,7 +52,7 @@ public class SnippetController {
   public ResponseEntity<ResponseDto<List<SnippetResponseDto>>> getAllSnippet(
       @RequestHeader("userId") String userId) {
     try {
-        return snippetService.getAllSnippet(userId);
+      return snippetService.getAllSnippet(userId);
     } catch (Exception e) {
       return FullResponse.create(e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
     }
@@ -81,7 +81,10 @@ public class SnippetController {
   }
 
   @PostMapping("/runTest/{snippetId}")
-  public ResponseEntity<ResponseDto<Object>> runTest(@RequestBody TestRunningDto requestBody, @RequestHeader("userId") String userId, @PathVariable Long snippetId) {
+  public ResponseEntity<ResponseDto<Object>> runTest(
+      @RequestBody TestRunningDto requestBody,
+      @RequestHeader("userId") String userId,
+      @PathVariable Long snippetId) {
     return snippetService.runTest(requestBody, userId, snippetId);
   }
 }

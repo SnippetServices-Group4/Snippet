@@ -1,6 +1,7 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
+import com.services.group4.snippet.dto.snippet.request.TestRunningDto;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
@@ -8,6 +9,7 @@ import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -73,5 +75,10 @@ public class SnippetController {
       @PathVariable Long snippetId,
       @PathVariable String targetUserId) {
     return snippetService.shareSnippet(snippetId, userId, targetUserId);
+  }
+
+  @PostMapping("/runTest")
+  public ResponseEntity<ResponseDto<Object>> runTest(@RequestBody TestRunningDto requestBody, @RequestHeader("userId") String userId) {
+    return snippetService.runTest(requestBody, userId);
   }
 }

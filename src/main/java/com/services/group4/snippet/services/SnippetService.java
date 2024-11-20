@@ -2,6 +2,7 @@ package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.dto.snippet.request.TestRunningDto;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
@@ -9,10 +10,9 @@ import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import feign.FeignException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +25,20 @@ public class SnippetService {
   final SnippetRepository snippetRepository;
   final BlobStorageService blobStorageService;
   final PermissionService permissionService;
+  final ParserService parserService;
   final TestCaseService testCaseService;
 
   @Autowired
   public SnippetService(
-      SnippetRepository snippetRepository,
-      BlobStorageService blobStorageService,
-      PermissionService permissionService,
-      TestCaseService testCaseService) {
+          SnippetRepository snippetRepository,
+          BlobStorageService blobStorageService,
+          PermissionService permissionService, ParserService parserService,
+          TestCaseService testCaseService) {
     this.snippetRepository = snippetRepository;
     this.blobStorageService = blobStorageService;
     this.permissionService = permissionService;
-    this.testCaseService = testCaseService;
+      this.parserService = parserService;
+      this.testCaseService = testCaseService;
   }
 
   @Transactional
@@ -251,5 +253,32 @@ public class SnippetService {
       throw new NoSuchElementException("Snippet not found");
     }
     return snippet.get().getLanguage();
+  }
+
+  public  ResponseEntity<ResponseDto<Object>> runTest(TestRunningDto request, String userId) {
+    Long snippetId = request.snippetId();
+    Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
+
+    if (snippetOptional.isEmpty()) {
+      return FullResponse.create("Snippet not found", "snippet", null, HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      ResponseEntity<ResponseDto<Boolean>> hasPermission =
+              permissionService.hasPermissionOnSnippet(userId, snippetId);
+
+      if (Objects.requireNonNull(hasPermission.getBody()).data().data() != null
+              && hasPermission.getBody().data().data()) {
+        Snippet snippet = snippetOptional.get();
+        TestRunningDto forwardedRequest = new TestRunningDto(snippetId, request.testId(), request.inputs(), request.outputs(), snippet.getLanguage().getLangName(), snippet.getLanguage().getVersion());
+        return parserService.runTest(forwardedRequest);
+      }
+      else {
+        return FullResponse.create("User does not have permission to get this snippet", "snippet", null, HttpStatus.FORBIDDEN);
+      }
+    }
+    catch (Exception e) {
+        return FullResponse.create("Something went wrong validating the user's permission", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

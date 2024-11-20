@@ -26,6 +26,14 @@ public class FinalLintEventProducer {
   }
 
   public void emit(String jsonMessage) {
+//    try {
+//      // Introduce a delay before publishing the message
+//      Thread.sleep(5000);
+//    } catch (InterruptedException e) {
+//      Thread.currentThread().interrupt();
+//      System.err.println("Thread was interrupted: " + e.getMessage());
+//    }
+
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
 
@@ -33,6 +41,8 @@ public class FinalLintEventProducer {
   }
 
   public void publishEvent(Map<String, Object> messageMap) {
+    System.out.println("\nFINAL LINT EVENT PRODUCER\n\n");
+
     String request = null;
     try {
       request = mapper.writeValueAsString(messageMap);

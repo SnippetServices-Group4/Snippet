@@ -7,4 +7,8 @@ public record SnippetDto(
     @NotNull(message = "Content is required") String content,
     String version,
     String language,
-    String extension) {}
+    String extension) {
+  public SnippetDto(String content, String language, String version){
+    this(null, content, version, language, null);
+  }
+}

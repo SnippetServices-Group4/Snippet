@@ -3,6 +3,7 @@ package com.services.group4.snippet.services.async;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.common.states.snippet.LintStatus;
 import com.services.group4.snippet.services.SnippetService;
 import java.time.Duration;
 import java.util.Map;
@@ -36,12 +37,13 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
 
   @Override
   protected void onMessage(@NotNull ObjectRecord<String, String> objectRecord) {
+
+    System.out.println("\nLINT EVENT CONSUMER\n\n");
+
     String jsonString = objectRecord.getValue();
-    System.out.println("Received JSON: " + jsonString);
 
     try {
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});
-      System.out.println("Parsed JSON as Map: " + messageMap);
 
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
       Language language = snippetService.getLanguage(snippetId);
@@ -52,7 +54,7 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
       messageMap.put("language", langName);
       messageMap.put("version", version);
 
-      System.out.println("Updated message: " + messageMap);
+      snippetService.updateLintStatus(snippetId, LintStatus.PENDING);
 
       publisher.publishEvent(messageMap);
     } catch (Exception e) {
@@ -64,7 +66,7 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
   protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
-        .pollTimeout(Duration.ofSeconds(1))
+        .pollTimeout(Duration.ofSeconds(2))
         .targetType(String.class)
         .build();
   }

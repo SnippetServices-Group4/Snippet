@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.DataTuple;
+import com.services.group4.snippet.common.ValidationState;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.TestResponseDto;
 
@@ -42,8 +43,9 @@ public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>>
         data = (T) list;
       } else if (name.equals("executedTest")) {
         data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(TestResponseDto.class));
-      }
-      else {
+      } else if (name.equals("validationResult")) {
+        data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(ValidationState.class));
+      } else {
         data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(Object.class));
       }
       dataTuple = new DataTuple<>(name, data);

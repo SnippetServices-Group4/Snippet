@@ -170,10 +170,13 @@ public class SnippetService {
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> updateSnippet(
       Long id, SnippetDto snippetRequest, String userId) {
 
-    if (analyze(snippetRequest)) {
+    Language language = getLanguage(id);
+
+    SnippetDto snippetDto = new SnippetDto(snippetRequest.content(), language.getLangName(), language.getVersion());
+
+    if (analyze(snippetDto))
       return FullResponse.create(
-          "Snippet not created, because it has errors", "snippet", null, HttpStatus.BAD_REQUEST);
-    }
+          "Snippet not updated, because it has errors", "snippet", null, HttpStatus.BAD_REQUEST);
 
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 

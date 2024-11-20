@@ -84,6 +84,10 @@ jacocoTestReport {
                     "${basePackage}controller/test/TestController.class",
                     "${basePackage}model/CommunicationMessage.class",
                     "${basePackage}security/WebConfig.class",
+                    "${basePackage}services/async/FinalFormatEventProducer.class",
+                    "${basePackage}services/async/LintEventProducer.class",
+                    "${basePackage}services/async/FormatEventConsumer.class",
+                    "${basePackage}services/async/LintEventConsumer.class",
             ])
         }))
     }
@@ -104,6 +108,10 @@ jacocoTestCoverageVerification {
                     "${basePackage}controller/test/TestController.class",
                     "${basePackage}model/CommunicationMessage.class",
                     "${basePackage}security/WebConfig.class",
+                    "${basePackage}services/async/FinalFormatEventProducer.class",
+                    "${basePackage}services/async/FinalLintEventProducer.class",
+                    "${basePackage}services/async/FormatEventConsumer.class",
+                    "${basePackage}services/async/LintEventConsumer.class",
             ])
         }))
     }

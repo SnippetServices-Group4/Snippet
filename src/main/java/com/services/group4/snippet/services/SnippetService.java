@@ -255,8 +255,7 @@ public class SnippetService {
     return snippet.get().getLanguage();
   }
 
-  public  ResponseEntity<ResponseDto<Object>> runTest(TestRunningDto request, String userId) {
-    Long snippetId = request.snippetId();
+  public  ResponseEntity<ResponseDto<Object>> runTest(TestRunningDto request, String userId,  Long snippetId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
     if (snippetOptional.isEmpty()) {
@@ -270,8 +269,8 @@ public class SnippetService {
       if (Objects.requireNonNull(hasPermission.getBody()).data().data() != null
               && hasPermission.getBody().data().data()) {
         Snippet snippet = snippetOptional.get();
-        TestRunningDto forwardedRequest = new TestRunningDto(snippetId, request.testId(), request.inputs(), request.outputs(), snippet.getLanguage().getLangName(), snippet.getLanguage().getVersion());
-        return parserService.runTest(forwardedRequest);
+        TestRunningDto forwardedRequest = new TestRunningDto(request.testId(), request.inputs(), request.outputs(), snippet.getLanguage().getLangName(), snippet.getLanguage().getVersion());
+        return parserService.runTest(forwardedRequest, snippetId);
       }
       else {
         return FullResponse.create("User does not have permission to get this snippet", "snippet", null, HttpStatus.FORBIDDEN);

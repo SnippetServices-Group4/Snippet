@@ -80,8 +80,8 @@ public class SnippetController {
     return snippetService.shareSnippet(snippetId, userId, targetUserId);
   }
 
-  @PostMapping("/runTest")
-  public ResponseEntity<ResponseDto<Object>> runTest(@RequestBody TestRunningDto requestBody, @RequestHeader("userId") String userId) {
-    return snippetService.runTest(requestBody, userId);
+  @PostMapping("/runTest/{snippetId}")
+  public ResponseEntity<ResponseDto<Object>> runTest(@RequestBody TestRunningDto requestBody, @RequestHeader("userId") String userId, @PathVariable Long snippetId) {
+    return snippetService.runTest(requestBody, userId, snippetId);
   }
 }

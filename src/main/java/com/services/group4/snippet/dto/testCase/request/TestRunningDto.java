@@ -2,14 +2,14 @@ package com.services.group4.snippet.dto.testCase.request;
 
 import java.util.List;
 
-public record TestRunningDto(Long snippetId, String testId, List<String> inputs, List<String> outputs, String language, String version) {
+public record TestRunningDto(String testId, List<String> inputs, List<String> outputs, String language, String version) {
     public TestRunningDto {
-        if (snippetId == null || testId == null) {
-            throw new IllegalArgumentException("The testId and userId are required");
+        if (testId == null) {
+            throw new IllegalArgumentException("The testId is required");
         }
     }
 
-    public TestRunningDto(Long snippetId, String testId, List<String> inputs, List<String> outputs) {
-        this(snippetId, testId, inputs, outputs, "", "");
+    public TestRunningDto(String testId, List<String> inputs, List<String> outputs) {
+        this(testId, inputs, outputs, "", "");
     }
 }

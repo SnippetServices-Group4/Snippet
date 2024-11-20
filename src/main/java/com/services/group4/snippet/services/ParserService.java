@@ -16,7 +16,7 @@ public class ParserService {
         this.parserClient = parserClient;
     }
 
-    public ResponseEntity<ResponseDto<Object>> runTest(TestRunningDto forwardedRequest) {
-        return parserClient.runTest(forwardedRequest);
+    public ResponseEntity<ResponseDto<Object>> runTest(TestRunningDto forwardedRequest, Long snippetId) {
+        return parserClient.runTest(forwardedRequest, snippetId);
     }
 }

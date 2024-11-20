@@ -199,4 +199,14 @@ public class TestCaseService {
           HttpStatus.FORBIDDEN);
     }
   }
+
+  public void updateTestState(Long testCaseId, TestState testState) {
+    Optional<TestCase> optionalTestCase = testCaseRepository.findById(testCaseId);
+
+    if (optionalTestCase.isPresent()) {
+      TestCase testCase = optionalTestCase.get();
+      testCase.setState(testState);
+      testCaseRepository.save(testCase);
+    }
+  }
 }

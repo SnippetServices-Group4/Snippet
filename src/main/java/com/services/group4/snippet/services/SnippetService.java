@@ -2,6 +2,7 @@ package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.common.states.snippet.LintStatus;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
@@ -44,7 +45,7 @@ public class SnippetService {
       SnippetDto snippetDto, String username, String userId) {
     Language language =
         new Language(snippetDto.language(), snippetDto.version(), snippetDto.extension());
-    Snippet snippet = new Snippet(snippetDto.name(), username, language);
+    Snippet snippet = new Snippet(snippetDto.name(), username, language, LintStatus.NON_COMPLIANT);
 
     snippetRepository.save(snippet);
 
@@ -146,7 +147,11 @@ public class SnippetService {
                                     snippet.getId(),
                                     snippet.getName(),
                                     snippet.getOwner(),
-                                    snippet.getLanguage())))
+                                    snippet.getLanguage(),
+                                    snippet.getStatus()
+                                )
+                        )
+            )
             .filter(Optional::isPresent)
             .map(Optional::get)
             .toList();
@@ -251,5 +256,16 @@ public class SnippetService {
       throw new NoSuchElementException("Snippet not found");
     }
     return snippet.get().getLanguage();
+  }
+
+  public LintStatus updateLintStatus(Long snippetId, LintStatus status) {
+    Optional<Snippet> snippet = snippetRepository.findById(snippetId);
+    if (snippet.isEmpty()) {
+      throw new NoSuchElementException("Snippet not found");
+    }
+    Snippet snippetToUpdate = snippet.get();
+    snippetToUpdate.setStatus(status);
+    snippetRepository.save(snippetToUpdate);
+    return status;
   }
 }

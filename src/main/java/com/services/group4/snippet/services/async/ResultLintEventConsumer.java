@@ -3,6 +3,7 @@ package com.services.group4.snippet.services.async;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.states.snippet.LintStatus;
+import com.services.group4.snippet.services.SnippetService;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,18 @@ import java.util.Map;
 @Component
 public class ResultLintEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
+  private final SnippetService snippetService;
 
   @Autowired
   public ResultLintEventConsumer(
       @Value("${stream.result.lint.key}") String streamKey,
       @Value("${groups.lint}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
-      @NotNull ObjectMapper mapper) {
+      @NotNull ObjectMapper mapper,
+      @NotNull SnippetService snippetService) {
     super(streamKey, groupId, redis);
     this.mapper = mapper;
+    this.snippetService = snippetService;
   }
 
   @Override
@@ -45,6 +49,8 @@ public class ResultLintEventConsumer extends RedisStreamConsumer<String> {
 
       System.out.println("SnippetId: " + snippetId);
       System.out.println("Status: " + status);
+
+      snippetService.updateLintStatus(snippetId, status);
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }

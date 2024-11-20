@@ -281,4 +281,9 @@ public class SnippetService {
         return FullResponse.create("Something went wrong validating the user's permission", "snippet", null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(Long snippetId) {
+    // This method is called from permission, so it does not need any further validation
+    return snippetRepository.findSnippetById(snippetId).map(snippet -> FullResponse.create("Snippet found", "snippet", new SnippetResponseDto(snippet), HttpStatus.OK)).orElseGet(() -> FullResponse.create("Snippet not found", "snippet", null, HttpStatus.NOT_FOUND));
+  }
 }

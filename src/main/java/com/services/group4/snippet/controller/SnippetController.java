@@ -43,13 +43,16 @@ public class SnippetController {
     return snippetService.getSnippet(id, userId);
   }
 
+  @GetMapping("/getInfo/{snippetId}")
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(@PathVariable Long snippetId) {
+    return snippetService.getSnippetInfo(snippetId);
+  }
+
   @GetMapping("/getAll")
   public ResponseEntity<ResponseDto<List<SnippetResponseDto>>> getAllSnippet(
       @RequestHeader("userId") String userId) {
     try {
-      ResponseEntity<ResponseDto<List<SnippetResponseDto>>> allSnippet =
-          snippetService.getAllSnippet(userId);
-      return allSnippet;
+        return snippetService.getAllSnippet(userId);
     } catch (Exception e) {
       return FullResponse.create(e.getMessage(), "Snippet", null, HttpStatus.NOT_FOUND);
     }

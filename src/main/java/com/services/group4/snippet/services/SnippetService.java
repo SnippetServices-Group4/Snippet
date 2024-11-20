@@ -4,10 +4,8 @@ import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.ValidationState;
 import com.services.group4.snippet.common.states.snippet.LintStatus;
-import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
-import com.services.group4.snippet.dto.snippet.response.ResponseDto;
-import com.services.group4.snippet.dto.snippet.response.SnippetDto;
-import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
+import com.services.group4.snippet.common.states.test.TestState;
+import com.services.group4.snippet.dto.snippet.response.*;
 import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
 import com.services.group4.snippet.dto.testcase.request.TestRunningDto;
 import com.services.group4.snippet.model.Snippet;
@@ -294,7 +292,7 @@ public class SnippetService {
     return status;
   }
 
-  public ResponseEntity<ResponseDto<Object>> runTest(
+  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(
       TestRunningDto request, String userId, Long snippetId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
@@ -316,18 +314,21 @@ public class SnippetService {
                 request.outputs(),
                 snippet.getLanguage().getLangName(),
                 snippet.getLanguage().getVersion());
-        return parserService.runTest(forwardedRequest, snippetId);
+        ResponseEntity<ResponseDto<TestResponseDto>> parserResponse = parserService.runTest(forwardedRequest, snippetId);
+        TestState testState = Objects.requireNonNull(parserResponse.getBody()).data().data().testState();
+        testCaseService.updateTestState(Long.valueOf(request.testId()), testState);
+        return parserResponse;
       } else {
         return FullResponse.create(
             "User does not have permission to get this snippet",
-            "snippet",
+            "executedTest",
             null,
             HttpStatus.FORBIDDEN);
       }
     } catch (Exception e) {
       return FullResponse.create(
-          "Something went wrong validating the user's permission",
-          "snippet",
+          "Something went wrong running the tests",
+          "executedTest",
           null,
           HttpStatus.INTERNAL_SERVER_ERROR);
     }

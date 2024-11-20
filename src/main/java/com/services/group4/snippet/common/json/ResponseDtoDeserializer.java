@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.DataTuple;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
+import com.services.group4.snippet.dto.snippet.response.TestResponseDto;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,10 @@ public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>>
         List<Long> list = new ArrayList<>();
         valueNode.forEach(node -> list.add(node.asLong()));
         data = (T) list;
-      } else {
+      } else if (name.equals("executedTest")) {
+        data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(TestResponseDto.class));
+      }
+      else {
         data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(Object.class));
       }
       dataTuple = new DataTuple<>(name, data);

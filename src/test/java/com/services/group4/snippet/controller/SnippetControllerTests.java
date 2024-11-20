@@ -1,6 +1,8 @@
 package com.services.group4.snippet.controller;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
+import com.services.group4.snippet.common.states.snippet.LintStatus;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
@@ -46,9 +49,17 @@ class SnippetControllerTests {
     List<SnippetResponseDto> snippetList =
         List.of(
             new SnippetResponseDto(
-                1L, "Test Snippet 1", "user1", new Language("java", "1.8", ".java")),
+                1L,
+                "Test Snippet 1",
+                "user1",
+                new Language("java", "1.8", ".java"),
+                LintStatus.NON_COMPLIANT),
             new SnippetResponseDto(
-                2L, "Test Snippet 2", "user2", new Language("python", "3.8", ".py")));
+                2L,
+                "Test Snippet 2",
+                "user2",
+                new Language("python", "3.8", ".py"),
+                LintStatus.NON_COMPLIANT));
 
     when(snippetService.getAllSnippet(anyString()))
         .thenReturn(

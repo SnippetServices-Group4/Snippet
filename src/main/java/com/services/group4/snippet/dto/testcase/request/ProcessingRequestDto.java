@@ -1,4 +1,4 @@
-package com.services.group4.snippet.dto.testCase.request;
+package com.services.group4.snippet.dto.testcase.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Generated;

@@ -1,6 +1,8 @@
 package com.services.group4.snippet.dto;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.services.group4.snippet.dto.snippet.request.RequestDtoSnippet;
 import org.junit.jupiter.api.Test;
@@ -18,19 +20,11 @@ class RequestDtoSnippetTest {
   @Test
   void testInvalidRequestDtoSnippet() {
     Exception exception =
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> {
-              new RequestDtoSnippet(null, 1L);
-            });
+        assertThrows(IllegalArgumentException.class, () -> new RequestDtoSnippet(null, 1L));
     assertEquals("userId and snippetId must not be null", exception.getMessage());
 
     exception =
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> {
-              new RequestDtoSnippet("user123", null);
-            });
+        assertThrows(IllegalArgumentException.class, () -> new RequestDtoSnippet("user123", null));
     assertEquals("userId and snippetId must not be null", exception.getMessage());
   }
 }

@@ -2,8 +2,7 @@ package com.services.group4.snippet.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.group4.snippet.common.Language;
-import com.services.group4.snippet.services.SnippetService;
+import com.services.group4.snippet.common.states.snippet.LintStatus;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +16,17 @@ import java.time.Duration;
 import java.util.Map;
 
 @Component
-public class LintEventConsumer extends RedisStreamConsumer<String> {
+public class ResultLintEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
-  private final SnippetService snippetService;
-  private final FinalLintEventProducer publisher;
 
   @Autowired
-  public LintEventConsumer(
-      @Value("${stream.initial.lint.key}") String streamKey,
+  public ResultLintEventConsumer(
+      @Value("${stream.result.lint.key}") String streamKey,
       @Value("${groups.lint}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
-      @NotNull SnippetService snippetService,
-      @NotNull FinalLintEventProducer publisher) {
+      @NotNull ObjectMapper mapper) {
     super(streamKey, groupId, redis);
-    this.mapper = new ObjectMapper();
-    this.snippetService = snippetService;
-    this.publisher = publisher;
+    this.mapper = mapper;
   }
 
   @Override
@@ -41,21 +35,16 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
     System.out.println("Received JSON: " + jsonString);
 
     try {
+      // Deserialize the JSON string into a Map
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});
       System.out.println("Parsed JSON as Map: " + messageMap);
 
+      // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      Language language = snippetService.getLanguage(snippetId);
+      LintStatus status = LintStatus.valueOf(messageMap.get("status").toString());
 
-      String langName = language.getLangName();
-      String version = language.getVersion();
-
-      messageMap.put("language", langName);
-      messageMap.put("version", version);
-
-      System.out.println("Updated message: " + messageMap);
-
-      publisher.publishEvent(messageMap);
+      System.out.println("SnippetId: " + snippetId);
+      System.out.println("Status: " + status);
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }

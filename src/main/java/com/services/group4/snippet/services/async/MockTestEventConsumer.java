@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class MockTestEventConsumer extends RedisStreamConsumer<String> {
   @Autowired
   public MockTestEventConsumer(
-      @Value("${stream.test.key}") String streamKey,
+      @Value("${stream.initial.test.key}") String streamKey,
       @Value("mock-test-group") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);

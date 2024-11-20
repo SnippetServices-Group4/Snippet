@@ -19,7 +19,7 @@ public class TestEventProducer {
 
   @Autowired
   public TestEventProducer(
-      @Value("${stream.test.key}") String streamKey,
+      @Value("${stream.initial.test.key}") String streamKey,
       @NotNull RedisTemplate<String, String> redis,
       ObjectMapper mapper) {
     this.streamKey = streamKey;

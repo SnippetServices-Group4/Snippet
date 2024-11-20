@@ -34,20 +34,17 @@ public class ResultLintEventConsumer extends RedisStreamConsumer<String> {
 
   @Override
   protected void onMessage(@NotNull ObjectRecord<String, String> objectRecord) {
+    System.out.println("\nRESULT LINT EVENT PRODUCER\n\n");
+
     String jsonString = objectRecord.getValue();
-    System.out.println("Received JSON: " + jsonString);
 
     try {
       // Deserialize the JSON string into a Map
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});
-      System.out.println("Parsed JSON as Map: " + messageMap);
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
       LintStatus status = LintStatus.valueOf(messageMap.get("status").toString());
-
-      System.out.println("SnippetId: " + snippetId);
-      System.out.println("Status: " + status);
 
       snippetService.updateLintStatus(snippetId, status);
     } catch (Exception e) {
@@ -59,7 +56,7 @@ public class ResultLintEventConsumer extends RedisStreamConsumer<String> {
   protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
-        .pollTimeout(Duration.ofSeconds(1))
+        .pollTimeout(Duration.ofSeconds(2))
         .targetType(String.class)
         .build();
   }

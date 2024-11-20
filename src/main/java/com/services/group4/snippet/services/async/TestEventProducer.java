@@ -28,6 +28,14 @@ public class TestEventProducer {
   }
 
   public void emit(String jsonMessage) {
+//    try {
+//      // Introduce a delay before publishing the message
+//      Thread.sleep(5000);
+//    } catch (InterruptedException e) {
+//      Thread.currentThread().interrupt();
+//      System.err.println("Thread was interrupted: " + e.getMessage());
+//    }
+
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
 
@@ -35,7 +43,7 @@ public class TestEventProducer {
   }
 
   public void publishEvent(Long snippetId, TestCase testCase) {
-    System.out.println("Publishing event for snippetId: " + snippetId);
+    System.out.println("\nTEST EVENT PRODUCER\n\n");
 
     try {
       // Create the JSON for the `config` field

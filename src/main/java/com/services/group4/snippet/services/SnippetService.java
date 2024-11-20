@@ -8,7 +8,8 @@ import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseD
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
-import com.services.group4.snippet.dto.testCase.request.ProcessingRequestDto;
+import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
+import com.services.group4.snippet.dto.testcase.request.TestRunningDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import feign.FeignException;
@@ -28,34 +29,35 @@ public class SnippetService {
   final SnippetRepository snippetRepository;
   final BlobStorageService blobStorageService;
   final PermissionService permissionService;
-  final TestCaseService testCaseService;
   final ParserService parserService;
+  final TestCaseService testCaseService;
 
   @Autowired
   public SnippetService(
       SnippetRepository snippetRepository,
       BlobStorageService blobStorageService,
       PermissionService permissionService,
-      TestCaseService testCaseService,
-      ParserService parserService) {
+      ParserService parserService,
+      TestCaseService testCaseService) {
     this.snippetRepository = snippetRepository;
     this.blobStorageService = blobStorageService;
     this.permissionService = permissionService;
-    this.testCaseService = testCaseService;
     this.parserService = parserService;
+    this.testCaseService = testCaseService;
   }
 
   @Transactional
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       SnippetDto snippetDto, String username, String userId) {
 
-    if (analyze(snippetDto))
+    if (analyze(snippetDto)) {
       return FullResponse.create(
           "Snippet not created, because it has errors", "snippet", null, HttpStatus.BAD_REQUEST);
+    }
 
     Language language =
         new Language(snippetDto.language(), snippetDto.version(), snippetDto.extension());
-    Snippet snippet = new Snippet(snippetDto.name(), username, language, LintStatus.NON_COMPLIANT);
+    Snippet snippet = new Snippet(snippetDto.name(), username, language);
 
     snippetRepository.save(snippet);
 
@@ -293,5 +295,56 @@ public class SnippetService {
     snippetToUpdate.setStatus(status);
     snippetRepository.save(snippetToUpdate);
     return status;
+  }
+
+  public ResponseEntity<ResponseDto<Object>> runTest(
+      TestRunningDto request, String userId, Long snippetId) {
+    Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
+
+    if (snippetOptional.isEmpty()) {
+      return FullResponse.create("Snippet not found", "snippet", null, HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      ResponseEntity<ResponseDto<Boolean>> hasPermission =
+          permissionService.hasPermissionOnSnippet(userId, snippetId);
+
+      if (Objects.requireNonNull(hasPermission.getBody()).data().data() != null
+          && hasPermission.getBody().data().data()) {
+        Snippet snippet = snippetOptional.get();
+        TestRunningDto forwardedRequest =
+            new TestRunningDto(
+                request.testId(),
+                request.inputs(),
+                request.outputs(),
+                snippet.getLanguage().getLangName(),
+                snippet.getLanguage().getVersion());
+        return parserService.runTest(forwardedRequest, snippetId);
+      } else {
+        return FullResponse.create(
+            "User does not have permission to get this snippet",
+            "snippet",
+            null,
+            HttpStatus.FORBIDDEN);
+      }
+    } catch (Exception e) {
+      return FullResponse.create(
+          "Something went wrong validating the user's permission",
+          "snippet",
+          null,
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(Long snippetId) {
+    // This method is called from permission, so it does not need any further validation
+    return snippetRepository
+        .findSnippetById(snippetId)
+        .map(
+            snippet ->
+                FullResponse.create(
+                    "Snippet found", "snippet", new SnippetResponseDto(snippet), HttpStatus.OK))
+        .orElseGet(
+            () -> FullResponse.create("Snippet not found", "snippet", null, HttpStatus.NOT_FOUND));
   }
 }

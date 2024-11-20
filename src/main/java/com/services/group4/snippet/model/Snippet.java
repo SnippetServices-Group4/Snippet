@@ -2,7 +2,11 @@ package com.services.group4.snippet.model;
 
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.states.snippet.LintStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -28,6 +32,10 @@ public class Snippet {
   @NotNull private LintStatus status;
 
   public Snippet() {}
+
+  public Snippet(String name, String owner, Language languageVersion) {
+    this(name, owner, languageVersion, LintStatus.NON_COMPLIANT);
+  }
 
   public Snippet(String name, String owner, Language languageVersion, LintStatus status) {
     this.name = name;

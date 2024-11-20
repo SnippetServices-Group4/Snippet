@@ -83,24 +83,27 @@ public class SnippetServiceTests {
   }
 
   // mismo caso loco de create
-//  @Test
-//  public void testUpdateSnippet() {
-//    SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
-//    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
-//
-//    when(snippetRepository.findById(anyLong())).thenReturn(Optional.of(snippet));
-//    when(parserService.analyze(any(ProcessingRequestDto.class))).thenReturn(
-//        FullResponse.create("Snippet analyzed successfully", "validationState", ValidationState.VALID, HttpStatus.OK));
-//    when(permissionService.hasOwnershipPermission(anyString(), anyLong()))
-//        .thenReturn(FullResponse.create("Permission granted", "permission", true, HttpStatus.OK));
-//
-//    ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
-//        snippetService.updateSnippet(1L, snippetDto, "user1");
-//
-//    assertEquals(HttpStatus.OK, response.getStatusCode());
-//    assertNotNull(response.getBody());
-//    assertEquals("Test Snippet", response.getBody().data().data().name());
-//  }
+  //  @Test
+  //  public void testUpdateSnippet() {
+  //    SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
+  //    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8",
+  // ".java"));
+  //
+  //    when(snippetRepository.findById(anyLong())).thenReturn(Optional.of(snippet));
+  //    when(parserService.analyze(any(ProcessingRequestDto.class))).thenReturn(
+  //        FullResponse.create("Snippet analyzed successfully", "validationState",
+  // ValidationState.VALID, HttpStatus.OK));
+  //    when(permissionService.hasOwnershipPermission(anyString(), anyLong()))
+  //        .thenReturn(FullResponse.create("Permission granted", "permission", true,
+  // HttpStatus.OK));
+  //
+  //    ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
+  //        snippetService.updateSnippet(1L, snippetDto, "user1");
+  //
+  //    assertEquals(HttpStatus.OK, response.getStatusCode());
+  //    assertNotNull(response.getBody());
+  //    assertEquals("Test Snippet", response.getBody().data().data().name());
+  //  }
 
   @Test
   public void testDeleteSnippet() {
@@ -142,8 +145,13 @@ public class SnippetServiceTests {
     Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
 
     when(snippetRepository.findById(anyLong())).thenReturn(Optional.of(snippet));
-    when(parserService.analyze(any(ProcessingRequestDto.class))).thenReturn(
-        FullResponse.create("Snippet analyzed successfully", "validationState", ValidationState.VALID, HttpStatus.OK));
+    when(parserService.analyze(any(ProcessingRequestDto.class)))
+        .thenReturn(
+            FullResponse.create(
+                "Snippet analyzed successfully",
+                "validationState",
+                ValidationState.VALID,
+                HttpStatus.OK));
     when(permissionService.hasOwnershipPermission(anyString(), anyLong()))
         .thenReturn(
             FullResponse.create("Permission denied", "permission", false, HttpStatus.FORBIDDEN));
@@ -182,8 +190,13 @@ public class SnippetServiceTests {
     SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
 
     when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
-    when(parserService.analyze(any(ProcessingRequestDto.class))).thenReturn(
-        FullResponse.create("Snippet analyzed successfully", "validationState", ValidationState.VALID, HttpStatus.OK));
+    when(parserService.analyze(any(ProcessingRequestDto.class)))
+        .thenReturn(
+            FullResponse.create(
+                "Snippet analyzed successfully",
+                "validationState",
+                ValidationState.VALID,
+                HttpStatus.OK));
 
     ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
         snippetService.updateSnippet(1L, snippetDto, "user1");
@@ -239,8 +252,13 @@ public class SnippetServiceTests {
         new SnippetDto("Test Snippet", "updated content", "java", "1.8", ".java");
 
     when(snippetRepository.findById(snippetId)).thenReturn(Optional.of(snippet));
-    when(parserService.analyze(any(ProcessingRequestDto.class))).thenReturn(
-        FullResponse.create("Snippet analyzed successfully", "validationState", ValidationState.VALID, HttpStatus.OK));
+    when(parserService.analyze(any(ProcessingRequestDto.class)))
+        .thenReturn(
+            FullResponse.create(
+                "Snippet analyzed successfully",
+                "validationState",
+                ValidationState.VALID,
+                HttpStatus.OK));
 
     // Simular que el FeignClient lanza FeignException.Forbidden
     doThrow(FeignException.Forbidden.class)
@@ -349,15 +367,16 @@ public class SnippetServiceTests {
   //  }
 
   @Test
-  public void getLanguage(){
+  public void getLanguage() {
     Language language = new Language("java", "1.8", ".java");
-    when(snippetRepository.findById(anyLong())).thenReturn(Optional.of(new Snippet("Test Snippet", "user1", language)));
+    when(snippetRepository.findById(anyLong()))
+        .thenReturn(Optional.of(new Snippet("Test Snippet", "user1", language)));
     Language l = snippetService.getLanguage(1L);
     assertEquals(language, l);
   }
 
   @Test
-  public void getLanguageException(){
+  public void getLanguageException() {
     Language language = new Language("java", "1.8", ".java");
     when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThrows(NoSuchElementException.class, () -> snippetService.getLanguage(1L));

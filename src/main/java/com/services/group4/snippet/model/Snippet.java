@@ -1,9 +1,10 @@
 package com.services.group4.snippet.model;
 
 import com.services.group4.snippet.common.Language;
-import com.services.group4.snippet.common.states.snippet.SnippetState;
+import com.services.group4.snippet.common.states.snippet.LintStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Generated;
 
@@ -24,13 +25,14 @@ public class Snippet {
 
   @Embedded private Language language;
 
-  @Embedded private SnippetState status = new SnippetState();
+  @NotNull private LintStatus status;
 
   public Snippet() {}
 
-  public Snippet(String name, String owner, Language languageVersion) {
+  public Snippet(String name, String owner, Language languageVersion, LintStatus status) {
     this.name = name;
     this.owner = owner;
     this.language = languageVersion;
+    this.status = status;
   }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.services.SnippetService;
+import java.time.Duration;
+import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.util.Map;
-
 @Component
 public class FormatEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
@@ -24,7 +23,7 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
   @Autowired
   public FormatEventConsumer(
-      @Value("${stream.format.key}") String streamKey,
+      @Value("${stream.initial.format.key}") String streamKey,
       @Value("${groups.format}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
       @NotNull SnippetService snippetService,
@@ -62,7 +61,8 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
   }
 
   @Override
-  protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>> options() {
+  protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
+      options() {
     return StreamReceiver.StreamReceiverOptions.builder()
         .pollTimeout(Duration.ofSeconds(1))
         .targetType(String.class)

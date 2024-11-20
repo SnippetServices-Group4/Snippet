@@ -2,8 +2,8 @@ package com.services.group4.snippet.clients;
 
 import com.services.group4.snippet.common.ValidationState;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
-import com.services.group4.snippet.dto.testCase.request.ProcessingRequestDto;
-import com.services.group4.snippet.dto.testCase.request.TestRunningDto;
+import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
+import com.services.group4.snippet.dto.testcase.request.TestRunningDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

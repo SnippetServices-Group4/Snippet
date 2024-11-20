@@ -8,12 +8,15 @@ import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseD
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
-import com.services.group4.snippet.dto.testCase.request.ProcessingRequestDto;
-import com.services.group4.snippet.dto.testCase.request.TestRunningDto;
+import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
+import com.services.group4.snippet.dto.testcase.request.TestRunningDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import feign.FeignException;
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,9 +50,10 @@ public class SnippetService {
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> createSnippet(
       SnippetDto snippetDto, String username, String userId) {
 
-    if (analyze(snippetDto))
+    if (analyze(snippetDto)) {
       return FullResponse.create(
           "Snippet not created, because it has errors", "snippet", null, HttpStatus.BAD_REQUEST);
+    }
 
     Language language =
         new Language(snippetDto.language(), snippetDto.version(), snippetDto.extension());
@@ -168,9 +172,10 @@ public class SnippetService {
   public ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> updateSnippet(
       Long id, SnippetDto snippetRequest, String userId) {
 
-    if (analyze(snippetRequest))
+    if (analyze(snippetRequest)) {
       return FullResponse.create(
           "Snippet not created, because it has errors", "snippet", null, HttpStatus.BAD_REQUEST);
+    }
 
     Optional<Snippet> snippetOptional = snippetRepository.findById(id);
 

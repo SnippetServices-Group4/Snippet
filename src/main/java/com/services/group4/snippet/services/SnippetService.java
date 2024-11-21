@@ -5,10 +5,10 @@ import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.ValidationState;
 import com.services.group4.snippet.common.states.snippet.LintStatus;
 import com.services.group4.snippet.common.states.test.TestState;
-import com.services.group4.snippet.dto.snippet.response.*;
 import com.services.group4.snippet.dto.request.ProcessingRequestDto;
 import com.services.group4.snippet.dto.request.TestRunningDto;
 import com.services.group4.snippet.dto.request.TestingRequestDto;
+import com.services.group4.snippet.dto.snippet.response.*;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import feign.FeignException;
@@ -173,7 +173,8 @@ public class SnippetService {
 
     Language language = getLanguage(id);
 
-    SnippetDto snippetDto = new SnippetDto(snippetRequest.content(), language.getLangName(), language.getVersion());
+    SnippetDto snippetDto =
+        new SnippetDto(snippetRequest.content(), language.getLangName(), language.getVersion());
 
     if (analyze(snippetDto))
       return FullResponse.create(
@@ -297,7 +298,7 @@ public class SnippetService {
   }
 
   public ResponseEntity<ResponseDto<TestState>> runTest(
-          TestingRequestDto request, String userId, Long snippetId) {
+      TestingRequestDto request, String userId, Long snippetId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
     if (snippetOptional.isEmpty()) {
@@ -317,13 +318,14 @@ public class SnippetService {
                 request.outputs(),
                 snippet.getLanguage().getLangName(),
                 snippet.getLanguage().getVersion());
-        ResponseEntity<ResponseDto<TestState>> parserResponse = parserService.runTest(forwardedRequest, snippetId);
+        ResponseEntity<ResponseDto<TestState>> parserResponse =
+            parserService.runTest(forwardedRequest, snippetId);
         // If the test already exists, persists its new running state
-        if (request.testId() != null){
+        if (request.testId() != null) {
           TestState testState = Objects.requireNonNull(parserResponse.getBody()).data().data();
           testCaseService.updateTestState(Long.valueOf(request.testId()), testState);
         }
-          return parserResponse;
+        return parserResponse;
       } else {
         return FullResponse.create(
             "User does not have permission to get this snippet",

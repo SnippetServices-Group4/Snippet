@@ -8,7 +8,7 @@ public record SnippetDto(
     String version,
     String language,
     String extension) {
-  public SnippetDto(String content, String language, String version){
+  public SnippetDto(String content, String language, String version) {
     this(null, content, version, language, null);
   }
 }

@@ -14,11 +14,11 @@ import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.ValidationState;
+import com.services.group4.snippet.dto.request.ProcessingRequestDto;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
-import com.services.group4.snippet.dto.request.ProcessingRequestDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import com.services.group4.snippet.services.BlobStorageService;
@@ -196,22 +196,25 @@ public class SnippetServiceTests {
 
   @Test
   public void testUpdateSnippet_Empty() {
-      SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
+    SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
 
-      when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
-      when(parserService.analyze(any(ProcessingRequestDto.class)))
-          .thenReturn(
-              FullResponse.create(
-                  "Snippet analyzed successfully",
-                  "validationState",
-                  ValidationState.VALID,
-                  HttpStatus.OK));
+    when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
+    when(parserService.analyze(any(ProcessingRequestDto.class)))
+        .thenReturn(
+            FullResponse.create(
+                "Snippet analyzed successfully",
+                "validationState",
+                ValidationState.VALID,
+                HttpStatus.OK));
 
-      NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-          snippetService.updateSnippet(1L, snippetDto, "user1");
-      });
+    NoSuchElementException exception =
+        assertThrows(
+            NoSuchElementException.class,
+            () -> {
+              snippetService.updateSnippet(1L, snippetDto, "user1");
+            });
 
-      assertEquals("Snippet not found", exception.getMessage());
+    assertEquals("Snippet not found", exception.getMessage());
   }
 
   @Test

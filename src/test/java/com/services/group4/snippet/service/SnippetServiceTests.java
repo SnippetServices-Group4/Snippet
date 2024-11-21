@@ -7,8 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.common.FullResponse;
@@ -92,7 +91,6 @@ public class SnippetServiceTests {
     assertEquals("Test Snippet", response.getBody().data().data().getFirst().name());
   }
 
-  // mismo caso loco de create
   //  @Test
   //  public void testUpdateSnippet() {
   //    SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
@@ -339,44 +337,6 @@ public class SnippetServiceTests {
     assertEquals("Something went wrong getting the snippet", response.getBody().message());
   }
 
-  // Posta no entiendo xq no mockea bien el create
-  //  @Test
-  //  public void testCreateSnippet() {
-  //    SnippetDto snippetDto = new SnippetDto("Test Snippet", "Updated Content", "java", "1.8",
-  // ".java");
-  //    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8",
-  // ".java"));
-  //    snippet.setId(1L); // Simular ID generado por el repositorio.
-  //
-  //    // Mock del snippetRepository.save
-  //    when(snippetRepository.save(any(Snippet.class))).thenReturn(snippet);
-  //
-  //    // Mock del permiso para grantOwnerPermission
-  //    when(permissionService.grantOwnerPermission(anyLong(), anyString()))
-  //        .thenAnswer(invocation -> {
-  //          Long id = invocation.getArgument(0);
-  //          return new ResponseEntity<>(new ResponseDto<>("Permission granted", new
-  // DataTuple<>("permission", id)), HttpStatus.CREATED);
-  //        });
-  //
-  //
-  //    // Mock del blobStorageService.saveSnippet
-  //    doNothing().when(blobStorageService).saveSnippet(anyString(), anyLong(), anyString());
-  //
-  //
-  //    ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
-  //        snippetService.createSnippet(snippetDto, "user1", "user1");
-  //
-  //    // Verificación
-  //    verify(permissionService).grantOwnerPermission(eq(snippet.getId()), eq("user1")); //
-  // Confirma que se llama.
-  //    assertNotNull(response);
-  //    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-  //    assertNotNull(response.getBody());
-  //    assertEquals("Snippet created successfully", response.getBody().message());
-  //    assertEquals(snippet.getName(), response.getBody().data().data().name());
-  //  }
-
   @Test
   public void getLanguage() {
     Language language = new Language("java", "1.8", ".java");
@@ -391,4 +351,52 @@ public class SnippetServiceTests {
     when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThrows(NoSuchElementException.class, () -> snippetService.getLanguage(1L));
   }
+
+  @Test
+  public void testCreateSnippet() {
+    // Datos de entrada
+    SnippetDto snippetDto = new SnippetDto("Test Snippet", "Updated Content", "java", "1.8", ".java");
+    Snippet snippet = new Snippet("Test Snippet", "user1", new Language("java", "1.8", ".java"));
+    snippet.setId(1L); // Simular ID generado por el repositorio.
+
+    // Configurar mocks
+    when(snippetRepository.save(any(Snippet.class))).thenAnswer(invocation -> {
+      Snippet savedSnippet = invocation.getArgument(0);
+      savedSnippet.setId(1L); // Simular el ID generado.
+      return savedSnippet;
+    });
+
+    when(permissionService.grantOwnerPermission(eq(1L), eq("user1")))
+        .thenReturn(
+            FullResponse.create("Permission granted", "permission", 1L, HttpStatus.CREATED)
+        );
+
+    when(parserService.analyze(any(ProcessingRequestDto.class)))
+        .thenReturn(
+            FullResponse.create(
+                "Snippet analyzed successfully",
+                "validationState",
+                ValidationState.VALID,
+                HttpStatus.OK));
+
+    doNothing().when(blobStorageService).saveSnippet(anyString(), eq(1L), anyString());
+
+    // Ejecutar la prueba
+    ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
+        snippetService.createSnippet(snippetDto, "user1", "user1");
+
+    // Verificaciones
+    assertNotNull(response);
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals("Snippet created successfully", response.getBody().message());
+    assertEquals("Test Snippet", response.getBody().data().data().name());
+
+    // Verificar interacciones
+    verify(snippetRepository, times(1)).save(any(Snippet.class));
+    verify(permissionService, times(1)).grantOwnerPermission(eq(1L), eq("user1"));
+    verify(blobStorageService, times(1)).saveSnippet(anyString(), eq(1L), anyString());
+  }
+
+
 }

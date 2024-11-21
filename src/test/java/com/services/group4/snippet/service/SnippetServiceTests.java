@@ -18,7 +18,7 @@ import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseD
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
-import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
+import com.services.group4.snippet.dto.request.ProcessingRequestDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import com.services.group4.snippet.services.BlobStorageService;

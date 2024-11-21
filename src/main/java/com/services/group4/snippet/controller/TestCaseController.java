@@ -1,9 +1,9 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
-import com.services.group4.snippet.dto.testcase.request.TestCaseRequestDto;
-import com.services.group4.snippet.dto.testcase.response.TestCaseResponseDto;
-import com.services.group4.snippet.dto.testcase.response.TestCaseResponseStateDto;
+import com.services.group4.snippet.dto.request.TestCaseRequestDto;
+import com.services.group4.snippet.dto.response.TestCaseResponseDto;
+import com.services.group4.snippet.dto.response.TestCaseResponseStateDto;
 import com.services.group4.snippet.services.TestCaseService;
 import jakarta.validation.Valid;
 import java.util.List;

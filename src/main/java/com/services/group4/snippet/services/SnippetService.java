@@ -9,7 +9,6 @@ import com.services.group4.snippet.dto.snippet.response.*;
 import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
 import com.services.group4.snippet.dto.testcase.request.TestRunningDto;
 import com.services.group4.snippet.dto.testcase.request.TestingRequestDto;
-import com.services.group4.snippet.dto.testcase.request.TestingTestDto;
 import com.services.group4.snippet.model.Snippet;
 import com.services.group4.snippet.repositories.SnippetRepository;
 import feign.FeignException;
@@ -297,7 +296,7 @@ public class SnippetService {
     return status;
   }
 
-  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(
+  public ResponseEntity<ResponseDto<TestState>> runTest(
           TestingRequestDto request, String userId, Long snippetId) {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
@@ -319,13 +318,12 @@ public class SnippetService {
                 snippet.getLanguage().getLangName(),
                 snippet.getLanguage().getVersion());
         ResponseEntity<ResponseDto<TestState>> parserResponse = parserService.runTest(forwardedRequest, snippetId);
-        TestState testState = Objects.requireNonNull(parserResponse.getBody()).data().data();
-        testCaseService.updateTestState(Long.valueOf(request.testId()), testState);
-        return FullResponse.create(
-            "Test executed successfully",
-            "executedTest",
-            new TestResponseDto(snippetId, request.testId(), testState),
-            HttpStatus.OK);
+        // If the test already exists, persists its new running state
+        if (request.testId() != null){
+          TestState testState = Objects.requireNonNull(parserResponse.getBody()).data().data();
+          testCaseService.updateTestState(Long.valueOf(request.testId()), testState);
+        }
+          return parserResponse;
       } else {
         return FullResponse.create(
             "User does not have permission to get this snippet",
@@ -339,43 +337,6 @@ public class SnippetService {
           "executedTest",
           null,
           HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  public ResponseEntity<ResponseDto<TestState>> tryTest(TestingTestDto requestBody, String userId, Long snippetId) {
-    Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
-
-    if (snippetOptional.isEmpty()) {
-      return FullResponse.create("Snippet not found", "testState", null, HttpStatus.NOT_FOUND);
-    }
-
-    try {
-      ResponseEntity<ResponseDto<Boolean>> hasPermission =
-              permissionService.hasPermissionOnSnippet(userId, snippetId);
-
-      if (Objects.requireNonNull(hasPermission.getBody()).data().data() != null
-              && hasPermission.getBody().data().data()) {
-        Snippet snippet = snippetOptional.get();
-        TestRunningDto forwardedRequest =
-                new TestRunningDto(
-                        requestBody.inputs(),
-                        requestBody.outputs(),
-                        snippet.getLanguage().getLangName(),
-                        snippet.getLanguage().getVersion());
-        return parserService.runTest(forwardedRequest, snippetId);
-      } else {
-        return FullResponse.create(
-                "User does not have permission to get this snippet",
-                "testState",
-                null,
-                HttpStatus.FORBIDDEN);
-      }
-    } catch (Exception e) {
-      return FullResponse.create(
-              "Something went wrong running the tests",
-              "testState",
-              null,
-              HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

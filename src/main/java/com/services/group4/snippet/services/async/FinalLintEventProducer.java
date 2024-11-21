@@ -8,36 +8,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 public class FinalLintEventProducer {
   private final String streamKey;
-  private final RedisTemplate<String, String> redis;
+  private final ReactiveRedisTemplate<String, String> redis;
   private final ObjectMapper mapper = new ObjectMapper();
 
   @Autowired
   public FinalLintEventProducer(
       @Value("${stream.final.lint.key}") String streamKey,
-      @NotNull RedisTemplate<String, String> redis) {
+      @NotNull ReactiveRedisTemplate<String, String> redis) {
     this.streamKey = streamKey;
     this.redis = redis;
   }
 
-  public void emit(String jsonMessage) {
-//    try {
-//      // Introduce a delay before publishing the message
-//      Thread.sleep(5000);
-//    } catch (InterruptedException e) {
-//      Thread.currentThread().interrupt();
-//      System.err.println("Thread was interrupted: " + e.getMessage());
-//    }
-
+  public Mono<ObjectRecord<String, String>> emit(String jsonMessage) {
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
 
-    redis.opsForStream().add(result);
+    return redis.opsForStream().add(result).thenReturn(result);
   }
 
   public void publishEvent(Map<String, Object> messageMap) {
@@ -51,6 +44,6 @@ public class FinalLintEventProducer {
     }
 
     System.out.println("Publishing final lint event: " + request);
-    emit(request);
+    emit(request).block();
   }
 }

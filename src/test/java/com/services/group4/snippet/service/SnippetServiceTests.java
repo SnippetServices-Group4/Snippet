@@ -196,23 +196,22 @@ public class SnippetServiceTests {
 
   @Test
   public void testUpdateSnippet_Empty() {
-    SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
+      SnippetDto snippetDto = new SnippetDto(null, "Updated Content", null, null, null);
 
-    when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
-    when(parserService.analyze(any(ProcessingRequestDto.class)))
-        .thenReturn(
-            FullResponse.create(
-                "Snippet analyzed successfully",
-                "validationState",
-                ValidationState.VALID,
-                HttpStatus.OK));
+      when(snippetRepository.findById(anyLong())).thenReturn(Optional.empty());
+      when(parserService.analyze(any(ProcessingRequestDto.class)))
+          .thenReturn(
+              FullResponse.create(
+                  "Snippet analyzed successfully",
+                  "validationState",
+                  ValidationState.VALID,
+                  HttpStatus.OK));
 
-    ResponseEntity<ResponseDto<CompleteSnippetResponseDto>> response =
-        snippetService.updateSnippet(1L, snippetDto, "user1");
+      NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+          snippetService.updateSnippet(1L, snippetDto, "user1");
+      });
 
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    assertNotNull(response.getBody());
-    assertEquals("Snippet not found", response.getBody().message());
+      assertEquals("Snippet not found", exception.getMessage());
   }
 
   @Test

@@ -3,6 +3,7 @@ package com.services.group4.snippet.services;
 import com.services.group4.snippet.clients.ParserClient;
 import com.services.group4.snippet.common.ValidationState;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
+import com.services.group4.snippet.dto.snippet.response.TestResponseDto;
 import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
 import com.services.group4.snippet.dto.testcase.request.TestRunningDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class ParserService {
     this.parserClient = parserClient;
   }
 
-  public ResponseEntity<ResponseDto<Object>> runTest(
+  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(
       TestRunningDto forwardedRequest, Long snippetId) {
     return parserClient.runTest(forwardedRequest, snippetId);
   }

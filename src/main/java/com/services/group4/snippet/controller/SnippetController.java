@@ -1,10 +1,7 @@
 package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
-import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
-import com.services.group4.snippet.dto.snippet.response.ResponseDto;
-import com.services.group4.snippet.dto.snippet.response.SnippetDto;
-import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
+import com.services.group4.snippet.dto.snippet.response.*;
 import com.services.group4.snippet.dto.testcase.request.TestRunningDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
@@ -89,7 +86,7 @@ public class SnippetController {
   }
 
   @PostMapping("/runTest/{snippetId}")
-  public ResponseEntity<ResponseDto<Object>> runTest(
+  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(
       @RequestBody TestRunningDto requestBody,
       @RequestHeader("userId") String userId,
       @PathVariable Long snippetId) {

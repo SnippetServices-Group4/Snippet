@@ -1,13 +1,12 @@
 package com.services.group4.snippet.config;
 
 import com.services.group4.snippet.CorrelationIdInterceptor;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 public class RestTemplateConfig {
@@ -20,6 +19,6 @@ public class RestTemplateConfig {
     interceptors.add(correlationIdInterceptor);
     restTemplate.setInterceptors(interceptors);
 
-    return new RestTemplate();
+    return restTemplate;
   }
 }

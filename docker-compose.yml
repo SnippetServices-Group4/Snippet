@@ -18,8 +18,11 @@ services:
       SPRING_APPLICATION_NAME: "${SPRING_APPLICATION_NAME}"
       PERMISSIONS_SERVICE_URL: "${PERMISSIONS_SERVICE_URL}"
       ASSET_SERVICE_URL: "${ASSET_SERVICE_URL}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORT}"
     depends_on:
       - db
+
   db:
     container_name: "${DB_HOST}"
     image: postgres:15

@@ -16,6 +16,14 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		name = "GitHubPackages"
+		url = "https://maven.pkg.github.com/austral-ingsis/class-redis-streams"
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
+			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
+		}
+	}
 }
 
 ext {
@@ -42,6 +50,12 @@ dependencies {
 
 	compileOnly 'org.projectlombok:lombok:1.18.32'
 	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+//	Redis dependencies
+	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
+	implementation 'org.jetbrains:annotations:24.0.1'
+	implementation 'io.projectreactor:reactor-core:3.5.0'
 }
 
 dependencyManagement {
@@ -52,4 +66,73 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def basePackage = 'com/services/group4/snippet/'
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+					"${basePackage}DotenvConfig.class",
+					"${basePackage}CorrelationIdFilter.class",
+					"${basePackage}CorrelationIdInterceptor.class",
+					"${basePackage}RequestLogFilter.class",
+					"${basePackage}config/FeignConfig.class",
+					"${basePackage}config/RestTemplateConfig.class",
+					"${basePackage}controller/test/TestController.class",
+					"${basePackage}model/CommunicationMessage.class",
+					"${basePackage}security/WebConfig.class",
+					"${basePackage}services/async/FinalFormatEventProducer.class",
+					"${basePackage}services/async/FinalLintEventProducer.class",
+					"${basePackage}services/async/FormatEventConsumer.class",
+					"${basePackage}services/async/LintEventConsumer.class",
+					"${basePackage}services/async/TestEventProducer.class",
+					"${basePackage}services/async/MockTestEventConsumer.class",
+					"${basePackage}dto/testCase/request.class",
+					"${basePackage}dto/testCase/response.class",
+					"${basePackage}services/async/ResultLintEventConsumer\$*.class",
+					"${basePackage}services/async/ResultLintEventConsumer.class",
+					"${basePackage}services/async/FinalLintEventProducer\$*.class",
+					"${basePackage}services/async/FormatEventConsumer\$*.class",
+					"${basePackage}services/async/LintEventConsumer\$*.class",
+					"${basePackage}services/async/MockTestEventConsumer\$*.class",
+					"${basePackage}config/FeignConfig\$*.class",
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"${basePackage}DotenvConfig.class",
+					"${basePackage}CorrelationIdFilter.class",
+					"${basePackage}CorrelationIdInterceptor.class",
+					"${basePackage}RequestLogFilter.class",
+					"${basePackage}config/FeignConfig.class",
+					"${basePackage}config/RestTemplateConfig.class",
+					"${basePackage}controller/test/TestController.class",
+					"${basePackage}model/CommunicationMessage.class",
+					"${basePackage}security/WebConfig.class",
+					"${basePackage}services/async/FinalFormatEventProducer.class",
+					"${basePackage}services/async/FinalLintEventProducer.class",
+					"${basePackage}services/async/FormatEventConsumer.class",
+					"${basePackage}services/async/LintEventConsumer.class",
+					"${basePackage}services/async/TestEventProducer.class",
+					"${basePackage}services/async/MockTestEventConsumer.class",
+					"${basePackage}dto/testCase/request.class",
+					"${basePackage}dto/testCase/response.class",
+					"${basePackage}services/async/FinalLintEventProducer\$*.class",
+					"${basePackage}services/async/ResultLintEventConsumer\$*.class",
+					"${basePackage}services/async/ResultLintEventConsumer.class",
+					"${basePackage}services/async/FormatEventConsumer\$*.class",
+					"${basePackage}services/async/LintEventConsumer\$*.class",
+					"${basePackage}services/async/MockTestEventConsumer\$*.class",
+					"${basePackage}config/FeignConfig\$*.class",
+
+			])
+		}))
+	}
 }

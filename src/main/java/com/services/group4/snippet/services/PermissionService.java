@@ -28,8 +28,9 @@ public class PermissionService {
     return permissionsClient.hasPermission(userId, snippetId);
   }
 
-  public ResponseEntity<ResponseDto<Boolean>> updateSnippet(String userId, Long snippetId) {
-    return permissionsClient.updateSnippet(userId, snippetId);
+  public ResponseEntity<ResponseDto<Boolean>> hasOwnershipPermission(
+      String userId, Long snippetId) {
+    return permissionsClient.hasOwnershipPermission(userId, snippetId);
   }
 
   public ResponseEntity<ResponseDto<Long>> grantOwnerPermission(Long snippetId, String userId) {

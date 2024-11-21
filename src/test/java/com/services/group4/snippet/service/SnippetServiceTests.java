@@ -13,6 +13,7 @@ import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.ValidationState;
+import com.services.group4.snippet.common.states.snippet.LintStatus;
 import com.services.group4.snippet.common.states.test.TestState;
 import com.services.group4.snippet.dto.request.ProcessingRequestDto;
 import com.services.group4.snippet.dto.request.TestingRequestDto;
@@ -442,5 +443,36 @@ public class SnippetServiceTests {
     assertEquals(TestState.RUNNING, response.getBody().data().data());
   }
 
+  @Test
+  public void testGetSnippetInfo_SnippetFound() {
+    Long snippetId = 1L;
+    Snippet snippet = new Snippet();
+    snippet.setId(snippetId);
+    snippet.setName("Test Snippet");
+    snippet.setOwner("user123");
+    snippet.setStatus(LintStatus.NON_COMPLIANT);
+    snippet.setLanguage(new Language("java", "11", "java")); // Establecer lenguaje en el snippet
+
+    when(snippetRepository.findSnippetById(snippetId)).thenReturn(Optional.of(snippet));
+
+    ResponseEntity<ResponseDto<SnippetResponseDto>> response = snippetService.getSnippetInfo(snippetId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Snippet found", response.getBody().message());
+    assertNotNull(response.getBody().data());
+    assertEquals(snippetId, response.getBody().data().data().snippetId());
+  }
+
+  @Test
+  public void testGetSnippetInfo_SnippetNotFound() {
+    Long snippetId = 1L;
+
+    when(snippetRepository.findSnippetById(snippetId)).thenReturn(Optional.empty());
+
+    ResponseEntity<ResponseDto<SnippetResponseDto>> response = snippetService.getSnippetInfo(snippetId);
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertEquals("Snippet not found", response.getBody().message());
+  }
 
 }

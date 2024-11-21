@@ -2,6 +2,7 @@ package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.clients.ParserClient;
 import com.services.group4.snippet.common.ValidationState;
+import com.services.group4.snippet.common.states.test.TestState;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.TestResponseDto;
 import com.services.group4.snippet.dto.testcase.request.ProcessingRequestDto;
@@ -19,7 +20,7 @@ public class ParserService {
     this.parserClient = parserClient;
   }
 
-  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(
+  public ResponseEntity<ResponseDto<TestState>> runTest(
       TestRunningDto forwardedRequest, Long snippetId) {
     return parserClient.runTest(forwardedRequest, snippetId);
   }

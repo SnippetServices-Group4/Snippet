@@ -88,6 +88,8 @@ jacocoTestReport {
 					"${basePackage}services/async/LintEventConsumer.class",
 					"${basePackage}services/async/TestEventProducer.class",
 					"${basePackage}services/async/MockTestEventConsumer.class",
+					"${basePackage}dto/testCase/request.class",
+					"${basePackage}dto/testCase/response.class",
 
 					"${basePackage}services/async/FinalLintEventProducer\$*.class",
 					"${basePackage}services/async/FormatEventConsumer\$*.class",
@@ -118,7 +120,8 @@ jacocoTestCoverageVerification {
 					"${basePackage}services/async/LintEventConsumer.class",
 					"${basePackage}services/async/TestEventProducer.class",
 					"${basePackage}services/async/MockTestEventConsumer.class",
-
+					"${basePackage}dto/testCase/request.class",
+					"${basePackage}dto/testCase/response.class",
 					"${basePackage}services/async/FinalLintEventProducer\$*.class",
 					"${basePackage}services/async/FormatEventConsumer\$*.class",
 					"${basePackage}services/async/LintEventConsumer\$*.class",

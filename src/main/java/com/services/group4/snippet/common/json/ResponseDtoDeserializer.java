@@ -10,8 +10,6 @@ import com.services.group4.snippet.common.DataTuple;
 import com.services.group4.snippet.common.ValidationState;
 import com.services.group4.snippet.common.states.test.TestState;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
-import com.services.group4.snippet.dto.snippet.response.TestResponseDto;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +42,10 @@ public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>>
         data = (T) list;
       } else if (name.equals("testState")) {
         data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(TestState.class));
-      }
-      else if (name.equals("validationResult")) {
-        data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(ValidationState.class));
+      } else if (name.equals("validationResult")) {
+        data =
+            mapper.convertValue(
+                valueNode, ctxt.getTypeFactory().constructType(ValidationState.class));
       } else {
         data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(Object.class));
       }

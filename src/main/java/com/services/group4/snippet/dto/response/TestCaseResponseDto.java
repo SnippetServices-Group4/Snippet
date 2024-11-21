@@ -1,4 +1,4 @@
-package com.services.group4.snippet.dto.testcase.response;
+package com.services.group4.snippet.dto.response;
 
 import java.util.List;
 

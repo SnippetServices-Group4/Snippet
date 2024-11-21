@@ -17,6 +17,7 @@ import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.states.snippet.LintStatus;
 import com.services.group4.snippet.dto.snippet.response.CompleteSnippetResponseDto;
+import com.services.group4.snippet.dto.snippet.response.ResponseDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetDto;
 import com.services.group4.snippet.dto.snippet.response.SnippetResponseDto;
 import com.services.group4.snippet.services.SnippetService;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -180,4 +182,21 @@ class SnippetControllerTests {
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value("Error fetching snippets"));
   }
+
+  @Test
+  void testGetSnippetInfo_Success() throws Exception {
+    SnippetResponseDto snippetResponse =
+        new SnippetResponseDto(1L, "Sample Snippet", "owner123", new Language("JAVA", "1.8", ".java"), LintStatus.NON_COMPLIANT);
+
+    when(snippetService.getSnippetInfo(1L)).thenReturn(FullResponse.create("Snippet retrieved successfully", "data", snippetResponse, HttpStatus.OK));
+
+    mockMvc
+        .perform(get("/snippets/getInfo/1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data.data.snippetId").value(1L))
+        .andExpect(jsonPath("$.data.data.name").value("Sample Snippet"))
+        .andExpect(jsonPath("$.data.data.owner").value("owner123"))
+        .andExpect(jsonPath("$.message").value("Snippet retrieved successfully"));
+  }
+
 }

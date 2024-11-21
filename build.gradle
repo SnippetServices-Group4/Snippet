@@ -74,21 +74,30 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "${basePackage}DotenvConfig.class",
-                    "${basePackage}CorrelationIdFilter.class",
-                    "${basePackage}CorrelationIdInterceptor.class",
-                    "${basePackage}RequestLogFilter.class",
-                    "${basePackage}services/async/TestEventProducer.class",
-                    "${basePackage}services/async/MockTestEventConsumer.class",
-                    "${basePackage}config/FeignConfig.class",
-                    "${basePackage}config/RestTemplateConfig.class",
-                    "${basePackage}controller/test/TestController.class",
-                    "${basePackage}model/CommunicationMessage.class",
-                    "${basePackage}security/WebConfig.class",
-                    "${basePackage}services/async/FinalFormatEventProducer.class",
-                    "${basePackage}services/async/LintEventProducer.class",
-                    "${basePackage}services/async/FormatEventConsumer.class",
-                    "${basePackage}services/async/LintEventConsumer.class",
+					"${basePackage}DotenvConfig.class",
+					"${basePackage}CorrelationIdFilter.class",
+					"${basePackage}CorrelationIdInterceptor.class",
+					"${basePackage}RequestLogFilter.class",
+					"${basePackage}config/FeignConfig.class",
+					"${basePackage}config/RestTemplateConfig.class",
+					"${basePackage}controller/test/TestController.class",
+					"${basePackage}model/CommunicationMessage.class",
+					"${basePackage}security/WebConfig.class",
+					"${basePackage}services/async/FinalFormatEventProducer.class",
+					"${basePackage}services/async/FinalLintEventProducer.class",
+					"${basePackage}services/async/FormatEventConsumer.class",
+					"${basePackage}services/async/LintEventConsumer.class",
+					"${basePackage}services/async/TestEventProducer.class",
+					"${basePackage}services/async/MockTestEventConsumer.class",
+					"${basePackage}dto/testCase/request.class",
+					"${basePackage}dto/testCase/response.class",
+					"${basePackage}services/async/ResultLintEventConsumer\$*.class",
+					"${basePackage}services/async/ResultLintEventConsumer.class",
+					"${basePackage}services/async/FinalLintEventProducer\$*.class",
+					"${basePackage}services/async/FormatEventConsumer\$*.class",
+					"${basePackage}services/async/LintEventConsumer\$*.class",
+					"${basePackage}services/async/MockTestEventConsumer\$*.class",
+					"${basePackage}config/FeignConfig\$*.class",
             ])
         }))
     }
@@ -97,23 +106,33 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    "${basePackage}DotenvConfig.class",
-                    "${basePackage}CorrelationIdFilter.class",
-                    "${basePackage}CorrelationIdInterceptor.class",
-                    "${basePackage}RequestLogFilter.class",
-                    "${basePackage}services/async/TestEventProducer.class",
-                    "${basePackage}services/async/MockTestEventConsumer.class",
-                    "${basePackage}config/FeignConfig.class",
-                    "${basePackage}config/RestTemplateConfig.class",
-                    "${basePackage}controller/test/TestController.class",
-                    "${basePackage}model/CommunicationMessage.class",
-                    "${basePackage}security/WebConfig.class",
-                    "${basePackage}services/async/FinalFormatEventProducer.class",
-                    "${basePackage}services/async/FinalLintEventProducer.class",
-                    "${basePackage}services/async/FormatEventConsumer.class",
-                    "${basePackage}services/async/LintEventConsumer.class",
-            ])
-        }))
-    }
+			fileTree(dir: it, exclude: [
+					"${basePackage}DotenvConfig.class",
+					"${basePackage}CorrelationIdFilter.class",
+					"${basePackage}CorrelationIdInterceptor.class",
+					"${basePackage}RequestLogFilter.class",
+					"${basePackage}config/FeignConfig.class",
+					"${basePackage}config/RestTemplateConfig.class",
+					"${basePackage}controller/test/TestController.class",
+					"${basePackage}model/CommunicationMessage.class",
+					"${basePackage}security/WebConfig.class",
+					"${basePackage}services/async/FinalFormatEventProducer.class",
+					"${basePackage}services/async/FinalLintEventProducer.class",
+					"${basePackage}services/async/FormatEventConsumer.class",
+					"${basePackage}services/async/LintEventConsumer.class",
+					"${basePackage}services/async/TestEventProducer.class",
+					"${basePackage}services/async/MockTestEventConsumer.class",
+					"${basePackage}dto/testCase/request.class",
+					"${basePackage}dto/testCase/response.class",
+					"${basePackage}services/async/FinalLintEventProducer\$*.class",
+					"${basePackage}services/async/ResultLintEventConsumer\$*.class",
+					"${basePackage}services/async/ResultLintEventConsumer.class",
+					"${basePackage}services/async/FormatEventConsumer\$*.class",
+					"${basePackage}services/async/LintEventConsumer\$*.class",
+					"${basePackage}services/async/MockTestEventConsumer\$*.class",
+					"${basePackage}config/FeignConfig\$*.class",
+
+			])
+		}))
+	}
 }

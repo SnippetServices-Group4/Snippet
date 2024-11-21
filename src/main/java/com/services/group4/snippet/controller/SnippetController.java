@@ -2,8 +2,8 @@ package com.services.group4.snippet.controller;
 
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.states.test.TestState;
+import com.services.group4.snippet.dto.request.TestingRequestDto;
 import com.services.group4.snippet.dto.snippet.response.*;
-import com.services.group4.snippet.dto.testcase.request.TestingRequestDto;
 import com.services.group4.snippet.services.SnippetService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO: add logs in each service
 @Slf4j
 @RestController
 @RequestMapping("/snippets")

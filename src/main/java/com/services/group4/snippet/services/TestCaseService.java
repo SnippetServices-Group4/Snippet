@@ -1,6 +1,7 @@
 package com.services.group4.snippet.services;
 
 import com.services.group4.snippet.common.FullResponse;
+import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.common.states.test.TestState;
 import com.services.group4.snippet.dto.request.TestCaseRequestDto;
 import com.services.group4.snippet.dto.response.TestCaseResponseDto;
@@ -133,21 +134,21 @@ public class TestCaseService {
     }
   }
 
-  public void executeSnippetTestCases(Long snippetId) {
+  public void executeSnippetTestCases(Long snippetId, Language language) {
     Optional<List<TestCase>> optionalTestCases =
         testCaseRepository.findTestCaseBySnippetId(snippetId);
 
     if (optionalTestCases.isPresent()) {
       List<TestCase> testCases = optionalTestCases.get();
 
-      publishTestingEvents(snippetId, testCases);
+      publishTestingEvents(snippetId, testCases, language);
     }
   }
 
-  private void publishTestingEvents(Long snippetId, List<TestCase> testCases) {
+  private void publishTestingEvents(Long snippetId, List<TestCase> testCases, Language language) {
     for (TestCase testCase : testCases) {
       System.out.println("Producing testing event for snippet: " + snippetId);
-      testEventProducer.publishEvent(snippetId, testCase);
+      testEventProducer.publishEvent(snippetId, testCase, language);
     }
   }
 

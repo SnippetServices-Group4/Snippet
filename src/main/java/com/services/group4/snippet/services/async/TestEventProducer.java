@@ -1,6 +1,7 @@
 package com.services.group4.snippet.services.async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.model.TestCase;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
@@ -35,10 +36,13 @@ public class TestEventProducer {
     return redis.opsForStream().add(result).thenReturn(result);
   }
 
-  public void publishEvent(Long snippetId, TestCase testCase) {
+  public void publishEvent(Long snippetId, TestCase testCase, Language language) {
     System.out.println("\nTEST EVENT PRODUCER\n\n");
 
     try {
+      Map<String, Object> languageMap = Map.of("name", language.getLangName(), "version", language.getVersion());
+      String languageJson = mapper.writeValueAsString(languageMap);
+
       // Create the JSON for the `config` field
       String jsonInputs = mapper.writeValueAsString(testCase.getInputs());
       String jsonOutputs = mapper.writeValueAsString(testCase.getOutputs());
@@ -47,6 +51,7 @@ public class TestEventProducer {
       Map<String, Object> message =
           Map.of(
               "snippetId", snippetId,
+              "language", languageJson,
               "testId", testCase.getId(),
               "inputs", jsonInputs,
               "outputs", jsonOutputs);

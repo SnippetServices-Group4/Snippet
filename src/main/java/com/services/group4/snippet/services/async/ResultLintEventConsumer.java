@@ -2,8 +2,9 @@ package com.services.group4.snippet.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.services.group4.snippet.common.states.snippet.LintStatus;
+import com.services.group4.snippet.services.SnippetService;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
@@ -15,43 +16,37 @@ import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MockTestEventConsumer extends RedisStreamConsumer<String> {
+public class ResultLintEventConsumer extends RedisStreamConsumer<String> {
+  private final ObjectMapper mapper;
+  private final SnippetService snippetService;
+
   @Autowired
-  public MockTestEventConsumer(
-      @Value("${stream.test.key}") String streamKey,
-      @Value("mock-test-group") String groupId,
-      @NotNull RedisTemplate<String, String> redis) {
+  public ResultLintEventConsumer(
+      @Value("${stream.result.lint.key}") String streamKey,
+      @Value("${groups.lint}") String groupId,
+      @NotNull RedisTemplate<String, String> redis,
+      @NotNull ObjectMapper mapper,
+      @NotNull SnippetService snippetService) {
     super(streamKey, groupId, redis);
+    this.mapper = mapper;
+    this.snippetService = snippetService;
   }
 
   @Override
   protected void onMessage(@NotNull ObjectRecord<String, String> objectRecord) {
-    String jsonString = objectRecord.getValue();
-    System.out.println("Received JSON: " + jsonString);
+    System.out.println("\nRESULT LINT EVENT PRODUCER\n\n");
 
-    ObjectMapper mapper = new ObjectMapper();
+    String jsonString = objectRecord.getValue();
+
     try {
       // Deserialize the JSON string into a Map
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});
-      System.out.println("Parsed JSON as Map: " + messageMap);
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      Long testId = (Long) ((Integer) messageMap.get("testId")).longValue();
-      String inputsJson = (String) messageMap.get("inputs");
-      String outputsJson = (String) messageMap.get("outputs");
+      LintStatus status = LintStatus.valueOf(messageMap.get("status").toString());
 
-      System.out.println("SnippetId: " + snippetId);
-      System.out.println("TestId: " + testId);
-      System.out.println("Inputs JSON String: " + inputsJson);
-      System.out.println("Outputs JSON String: " + outputsJson);
-
-      // Optionally parse the `inputs` and `outputs` fields if needed
-      String[] inputs = mapper.readValue(inputsJson, String[].class);
-      String[] outputs = mapper.readValue(outputsJson, String[].class);
-
-      System.out.println("Parsed Inputs as Array: " + Arrays.toString(inputs));
-      System.out.println("Parsed Outputs as Array: " + Arrays.toString(outputs));
+      snippetService.updateLintStatus(snippetId, status);
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }
@@ -61,7 +56,7 @@ public class MockTestEventConsumer extends RedisStreamConsumer<String> {
   protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
-        .pollTimeout(Duration.ofSeconds(1))
+        .pollTimeout(Duration.ofSeconds(7))
         .targetType(String.class)
         .build();
   }

@@ -3,9 +3,9 @@ package com.services.group4.snippet.services;
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.states.test.TestState;
 import com.services.group4.snippet.dto.snippet.response.ResponseDto;
-import com.services.group4.snippet.dto.testCase.request.TestCaseRequestDto;
-import com.services.group4.snippet.dto.testCase.response.TestCaseResponseDto;
-import com.services.group4.snippet.dto.testCase.response.TestCaseResponseStateDto;
+import com.services.group4.snippet.dto.testcase.request.TestCaseRequestDto;
+import com.services.group4.snippet.dto.testcase.response.TestCaseResponseDto;
+import com.services.group4.snippet.dto.testcase.response.TestCaseResponseStateDto;
 import com.services.group4.snippet.model.TestCase;
 import com.services.group4.snippet.repositories.TestCaseRepository;
 import com.services.group4.snippet.services.async.TestEventProducer;
@@ -197,6 +197,16 @@ public class TestCaseService {
           "testCase",
           null,
           HttpStatus.FORBIDDEN);
+    }
+  }
+
+  public void updateTestState(Long testCaseId, TestState testState) {
+    Optional<TestCase> optionalTestCase = testCaseRepository.findById(testCaseId);
+
+    if (optionalTestCase.isPresent()) {
+      TestCase testCase = optionalTestCase.get();
+      testCase.setState(testState);
+      testCaseRepository.save(testCase);
     }
   }
 }

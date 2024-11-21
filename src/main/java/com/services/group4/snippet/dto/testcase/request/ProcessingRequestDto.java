@@ -1,4 +1,4 @@
-package com.services.group4.snippet.dto.testCase.request;
+package com.services.group4.snippet.dto.testcase.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Generated;
@@ -7,5 +7,4 @@ import lombok.Generated;
 public record ProcessingRequestDto(
     @NotNull(message = "The version is required") String version,
     @NotNull(message = "The language is required") String language,
-    String content
-) {}
+    String content) {}

@@ -1,6 +1,8 @@
 package com.services.group4.snippet;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.services.group4.snippet.common.states.ProcessState;
 import com.services.group4.snippet.common.states.snippet.SnippetState;
@@ -55,13 +57,13 @@ class SnippetStateTest {
     SnippetState snippetState2 = new SnippetState();
 
     // Ambos objetos deberían ser iguales porque tienen el mismo estado por defecto
-    assertTrue(snippetState1.equals(snippetState2));
+    assertEquals(snippetState1, snippetState2);
 
     // Verificar que no se considera igual a un objeto de tipo diferente
-    assertFalse(snippetState1.equals("SomeString"));
+    assertNotEquals("SomeString", snippetState1);
 
     // Asegurarse de que el hashCode también sea igual si los objetos son iguales
-    assertTrue(snippetState1.hashCode() == snippetState2.hashCode());
+    assertEquals(snippetState1.hashCode(), snippetState2.hashCode());
   }
 
   @Test

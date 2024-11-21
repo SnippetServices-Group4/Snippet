@@ -1,8 +1,13 @@
 package com.services.group4.snippet.controller;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -10,9 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.DotenvConfig;
 import com.services.group4.snippet.common.FullResponse;
 import com.services.group4.snippet.common.states.test.TestState;
-import com.services.group4.snippet.dto.testCase.request.TestCaseRequestDto;
-import com.services.group4.snippet.dto.testCase.response.TestCaseResponseDto;
-import com.services.group4.snippet.dto.testCase.response.TestCaseResponseStateDto;
+import com.services.group4.snippet.dto.testcase.request.TestCaseRequestDto;
+import com.services.group4.snippet.dto.testcase.response.TestCaseResponseDto;
+import com.services.group4.snippet.dto.testcase.response.TestCaseResponseStateDto;
 import com.services.group4.snippet.services.TestCaseService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;

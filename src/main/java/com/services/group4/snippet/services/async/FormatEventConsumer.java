@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.snippet.common.Language;
 import com.services.group4.snippet.services.SnippetService;
+import java.time.Duration;
+import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.util.Map;
-
 @Component
 public class FormatEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
@@ -24,7 +23,7 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
   @Autowired
   public FormatEventConsumer(
-      @Value("${stream.format.key}") String streamKey,
+      @Value("${stream.initial.format.key}") String streamKey,
       @Value("${groups.format}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
       @NotNull SnippetService snippetService,
@@ -37,12 +36,12 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
   @Override
   protected void onMessage(@NotNull ObjectRecord<String, String> objectRecord) {
+    System.out.println("\nFORMAT EVENT CONSUMER\n\n");
+
     String jsonString = objectRecord.getValue();
-    System.out.println("Received JSON: " + jsonString);
 
     try {
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});
-      System.out.println("Parsed JSON as Map: " + messageMap);
 
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
       Language language = snippetService.getLanguage(snippetId);
@@ -53,8 +52,6 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
       messageMap.put("language", langName);
       messageMap.put("version", version);
 
-      System.out.println("Updated message: " + messageMap);
-
       publisher.publishEvent(messageMap);
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
@@ -62,9 +59,10 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
   }
 
   @Override
-  protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>> options() {
+  protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
+      options() {
     return StreamReceiver.StreamReceiverOptions.builder()
-        .pollTimeout(Duration.ofSeconds(1))
+        .pollTimeout(Duration.ofSeconds(3))
         .targetType(String.class)
         .build();
   }

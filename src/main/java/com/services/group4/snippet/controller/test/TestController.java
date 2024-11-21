@@ -22,4 +22,9 @@ public class TestController {
   public CommunicationMessage testPermissionCommunication() {
     return new CommunicationMessage("Snippet", "Communication from Permission to Snippet works!");
   }
+
+  @GetMapping("/topo")
+  public String helloTopo() {
+    return "Hello Topo!";
+  }
 }

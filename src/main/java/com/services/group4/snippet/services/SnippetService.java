@@ -301,7 +301,7 @@ public class SnippetService {
     Optional<Snippet> snippetOptional = this.snippetRepository.findSnippetById(snippetId);
 
     if (snippetOptional.isEmpty()) {
-      return FullResponse.create("Snippet not found", "executedTest", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create("Snippet not found", "testState", null, HttpStatus.NOT_FOUND);
     }
 
     try {
@@ -327,14 +327,14 @@ public class SnippetService {
       } else {
         return FullResponse.create(
             "User does not have permission to get this snippet",
-            "executedTest",
+            "testState",
             null,
             HttpStatus.FORBIDDEN);
       }
     } catch (Exception e) {
       return FullResponse.create(
           "Something went wrong running the tests",
-          "executedTest",
+          "testState",
           null,
           HttpStatus.INTERNAL_SERVER_ERROR);
     }

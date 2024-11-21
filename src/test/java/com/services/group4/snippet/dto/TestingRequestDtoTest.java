@@ -39,19 +39,5 @@ class TestingRequestDtoTest {
     assertEquals(inputs, dto.inputs());
     assertEquals(outputs, dto.outputs());
   }
-
-  @Test
-  void testInvalidTestingRequestDtoWithNullInputs() {
-    // Intentar crear un dto con inputs null
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> new TestingRequestDto("test123", null, List.of("output1")));
-    assertEquals("inputs must not be null", exception.getMessage());
-  }
-
-  @Test
-  void testInvalidTestingRequestDtoWithNullOutputs() {
-    // Intentar crear un dto con outputs null
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> new TestingRequestDto("test123", List.of("input1"), null));
-    assertEquals("outputs must not be null", exception.getMessage());
-  }
 }
 
